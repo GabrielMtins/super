@@ -10,13 +10,13 @@ class Context {
 	public:
 		Context(void);
 
+		void init(void);
 		void pollEvents(void);
 		SDL_Renderer * getRenderer(void);
 		bool isRunning(void);
 		void renderClear(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 		void renderPresent(void);
-
-		~Context(void);
+		void quit(void);
 
 	private:
 		SDL_Window *window;

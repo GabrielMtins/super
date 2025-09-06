@@ -1,15 +1,35 @@
 #include "core/Context.hpp"
+#include "core/Console.hpp"
 
 Context::Context(void) {
-	SDL_Init(SDL_INIT_VIDEO);
+	window = NULL;
+	renderer = NULL;
+	running = false;
+}
 
-	SDL_CreateWindowAndRenderer(
+void Context::init(void) {
+	int error = 0;
+	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+		console.error((std::string) "[Context] Failed to initialize SDL2: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	console.log("[Context] Initialized SDL2 successfully.");
+
+	error = SDL_CreateWindowAndRenderer(
 			480 * 3,
 			270 * 3,
 			SDL_WINDOW_SHOWN,
 			&window,
 			&renderer
 			);
+
+	if(error < 0) {
+		console.error((std::string) "[Context] Failed to create window and renderer: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	console.log("[Context] Created window and renderer.");
 
 	SDL_RenderSetLogicalSize(renderer, 480, 270);
 
@@ -43,9 +63,11 @@ void Context::renderPresent(void) {
 	SDL_RenderPresent(renderer);
 }
 
-Context::~Context(void) {
+void Context::quit(void) {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 
 	SDL_Quit();
+
+	console.log("[Context] Quitting SDL2.");
 }

@@ -1,7 +1,9 @@
 #include "core/Texture.hpp"
+#include "core/Console.hpp"
 
 Texture::Texture(void) {
 	texture = NULL;
+	name = "";
 }
 
 bool Texture::load(Context *context, const std::string& filename) {
@@ -12,6 +14,7 @@ bool Texture::load(Context *context, const std::string& filename) {
 
 
 	if(texture == NULL) {
+		console.error("[Texture] Failed to load texture: " + filename);
 		return false;
 	}
 
@@ -23,6 +26,7 @@ bool Texture::load(Context *context, const std::string& filename) {
 			&height
 			);
 
+	console.log("[Texture] Loaded texture: " + filename);
 	return true;
 }
 
@@ -60,8 +64,17 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 
 void Texture::unload(void) {
 	if(texture != NULL) {
+		console.log("[Texture] Unloading texture: " + name);
 		SDL_DestroyTexture(texture);
 	}
+}
+
+void Texture::setName(const std::string& name) {
+	this->name = name;
+}
+
+const std::string& Texture::getName(void) const {
+	return name;
 }
 
 SDL_Rect Texture::getCell(int cell) {

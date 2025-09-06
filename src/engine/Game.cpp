@@ -1,8 +1,8 @@
 #include "engine/Game.hpp"
 
 Game::Game(void) {
-	texture.load(&context, "character.png");
-	texture.setCellSize(24, 24);
+	context.init();
+	resource_manager.load(&context, "res/res.json");
 }
 
 void Game::run(void) {
@@ -19,7 +19,13 @@ EntityList * Game::getEntityList(void) {
 	return &entity_list;
 }
 
+Texture * Game::getTexture(const std::string& name) {
+	return resource_manager.getTexture(name);
+}
+
 Game::~Game(void) {
+	resource_manager.quit();
+	context.quit();
 }
 
 void Game::loop(void) {

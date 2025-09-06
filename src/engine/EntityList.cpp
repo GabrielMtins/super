@@ -55,7 +55,6 @@ EntityId EntityList::addEntity(Game *game, EntityType type) {
 	if(handler.create != NULL)
 		handler.create(game, new_entity);
 
-
 	num_entities++;
 
 	return new_id;
