@@ -3,6 +3,7 @@ project(super)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 file(GLOB_RECURSE all_SRCS
 		"${PROJECT_SOURCE_DIR}/src/*.cpp"
