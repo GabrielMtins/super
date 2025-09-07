@@ -11,10 +11,10 @@ void EntityList::update(Game *game, float dt) {
 		EntityHandler& handler = type_to_handler[entity.type];
 
 		entity.position.x += entity.velocity.x * dt;
-		findAndSolveEntityCollisions(game->getWorld(), entity, Entity::AXIS_X);
+		findAndSolveEntityCollisions(game, game->getWorld(), entity, Entity::AXIS_X);
 
 		entity.position.y += entity.velocity.y * dt;
-		findAndSolveEntityCollisions(game->getWorld(), entity, Entity::AXIS_Y);
+		findAndSolveEntityCollisions(game, game->getWorld(), entity, Entity::AXIS_Y);
 
 		if(handler.update == NULL)
 			continue;
@@ -72,7 +72,12 @@ void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler)
 	type_to_handler[type] = handler;
 }
 
-void EntityList::findAndSolveEntityCollisions(const World *world, Entity& entity, Entity::Axis axis) {
+void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity, Entity::Axis axis) {
+	if(!(entity.collision_trigger || entity.collision_mask))
+		return;
+
+	EntityHandler& handler = type_to_handler[entity.type];
+
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
 
@@ -83,10 +88,18 @@ void EntityList::findAndSolveEntityCollisions(const World *world, Entity& entity
 			continue;
 
 		entity.solveCollision(other, axis);
+
+		if(handler.collision != NULL) {
+			handler.collision(game, &entity, &other);
+		}
 	}
 
 	if(entity.checkCollision(world)) {
 		entity.solveCollision(world, axis);
+
+		if(handler.collision != NULL) {
+			handler.collision(game, &entity, NULL);
+		}
 	}
 }
 

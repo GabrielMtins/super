@@ -20,11 +20,11 @@ namespace Player {
 		entity->velocity.x = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {
-			entity->velocity.x = -150.0f;
+			entity->velocity.x += -150.0f;
 		}
 
 		if(game->getKey(Game::INPUT_RIGHT)) {
-			entity->velocity.x = 150.0f;
+			entity->velocity.x += 150.0f;
 		}
 
 		if(game->getKey(Game::INPUT_DOWN)) {
@@ -36,9 +36,15 @@ namespace Player {
 		}
 
 		entity->velocity.y += 300.0f * dt;
+
+		//entity->texture_cell = 0;
+	}
+
+	static void collision(Game *game, Entity *entity, Entity *other) {
+		entity->texture_cell = 2;
 	}
 };
 
 EntityHandler Player_GetHandler(void) {
-	return EntityHandler(Player::create, Player::update);
+	return EntityHandler(Player::create, Player::update, Player::collision);
 }

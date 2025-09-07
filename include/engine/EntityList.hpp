@@ -23,7 +23,7 @@ class EntityList {
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 
 	private:
-		void findAndSolveEntityCollisions(const World *world, Entity& entity, Entity::Axis axis);
+		void findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity, Entity::Axis axis);
 		void removeEntity(int position);
 
 		std::array<Entity, MAX_ENTITIES> entities;

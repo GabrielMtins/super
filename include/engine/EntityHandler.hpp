@@ -11,7 +11,7 @@ using EntityCollisionCallback = void (*) (Game *, Entity *, Entity *);
 
 struct EntityHandler {
 	EntityHandler(void);
-	EntityHandler(EntityCreateCallback create, EntityUpdateCallback update);
+	EntityHandler(EntityCreateCallback create, EntityUpdateCallback update, EntityCollisionCallback collision);
 
 	EntityCreateCallback create;
 	EntityUpdateCallback update;
