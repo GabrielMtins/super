@@ -6,9 +6,7 @@
 /*
  * TODO:
  * Adicionar leitor de configuração via json
- * Terminar renderização de mundo
  * Adicionar one way collisions
- * Adicionar sistema de câmera no game
  *
  * DONE:
  * Adicionar interface de input no game
@@ -17,6 +15,8 @@
  * Adicionar interface de música
  * Adicionar leitor de recursos (texturas, sfx etc) utilizando arquivos json
  * Adicionar interfaces no Game para obter recursos
+ * Adicionar sistema de câmera no game
+ * Terminar renderização de mundo
  */
 
 int main(int argc, char **argv) {
@@ -32,13 +32,17 @@ int main(int argc, char **argv) {
 
 	World *world = game->getWorld();
 
-	world->load("res/map01.tmj");
+	world->load(game->getContext(), "res/map01.tmj");
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(1);
 
 	EntityList *entity_list = game->getEntityList();
 	entity_list->addHandlerToType(0, Player_GetHandler());
 	entity_list->addEntity(game, 0);
+
+	Entity *entity = entity_list->getEntityFromId(entity_list->addEntity(game, 1));
+	entity->texture = game->getTexture("character");
+	//entity->hud_element = true;
 
 	game->run();
 

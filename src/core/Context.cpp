@@ -65,7 +65,7 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	console.log("[Context] Created window and renderer.");
 
 	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
-	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	running = true;
 }
@@ -84,7 +84,7 @@ SDL_Renderer * Context::getRenderer(void) {
 	return renderer;
 }
 
-bool Context::isRunning(void) {
+bool Context::isRunning(void) const {
 	return running;
 }
 
@@ -109,10 +109,10 @@ void Context::quit(void) {
 	console.log("[Context] Quitting SDL2.");
 }
 
-int Context::getInternalWidth(void) {
+int Context::getInternalWidth(void) const {
 	return internal_width;
 }
 
-int Context::getInternalHeight(void) {
+int Context::getInternalHeight(void) const {
 	return internal_height;
 }

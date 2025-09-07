@@ -17,6 +17,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
 	setKeyInput(INPUT_UP, SDL_SCANCODE_W);
 
+	screen_dimensions = Vec2(internal_width, internal_height);
+
 	dt = 0.0f;
 	current_tick = 0;
 }
@@ -55,14 +57,27 @@ Music * Game::getMusic(const std::string& name) {
 	return resource_manager.getMusic(name);
 }
 
-bool Game::getKey(InputType input_type) {
+const Vec2& Game::getCameraPosition(void) const {
+	return camera_position;
+}
+
+void Game::setCameraPosition(const Vec2& camera_position) {
+	this->camera_position = camera_position;
+}
+
+const Vec2& Game::getScreenDimensions(void) const {
+	return screen_dimensions;
+}
+
+bool Game::getKey(InputType input_type) const {
 	return pressed[input_type];
 }
 
-bool Game::getKeyDown(InputType input_type) {
+bool Game::getKeyDown(InputType input_type) const {
 	return input_tick_down[input_type] == current_tick;
 }
-bool Game::getKeyUp(InputType input_type) {
+
+bool Game::getKeyUp(InputType input_type) const {
 	return input_tick_up[input_type] == current_tick;
 }
 

@@ -8,7 +8,15 @@ namespace Player {
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
-		(void) dt;
+		Vec2 camera_pos(
+				entity->position.x - game->getScreenDimensions().x / 2,
+				-32.0f
+			   );
+
+		if(camera_pos.x < 0.0f)
+			camera_pos.x = 0.0f;
+
+		game->setCameraPosition(camera_pos);
 		entity->velocity.x = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {

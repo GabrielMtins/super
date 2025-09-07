@@ -15,7 +15,7 @@ World::World(void) {
 	texture = NULL;
 }
 
-bool World::load(const std::string& filename) {
+bool World::load(const Context *context, const std::string& filename) {
 	std::ifstream file;
 	json data;
 
@@ -51,6 +51,9 @@ bool World::load(const std::string& filename) {
 		tile_width = data["tilewidth"];
 		tile_height = data["tileheight"];
 		tile_size = Vec2(tile_width, tile_height);
+
+		screen_tiles_x = context->getInternalWidth() / tile_width + 1;
+		screen_tiles_y = context->getInternalHeight() / tile_height + 1;
 	} catch(const json::exception& ex) {
 		console.error("[World] There's no tile width or tile height data in world file.");
 		return false;
@@ -93,22 +96,27 @@ void World::setTexture(Texture *texture) {
 	this->texture = texture;
 }
 
-void World::render(Game *game, int layer) {
+void World::render(Game *game, int layer) const {
 	Context *context;
 	int pos_x, pos_y;
+	int start_x, start_y;
 	TileId current_id;
+	const Vec2& camera_position = game->getCameraPosition();
+
+	start_x = floorf(camera_position.x / tile_size.x);
+	start_y = floorf(camera_position.y / tile_size.y);
 
 	if(texture == NULL)
 		return;
 
 	context = game->getContext();
 
-	for(int j = 0; j < 15; j++) {
-		for(int i = 0; i < 40; i++) {
-			pos_x = i * tile_width;
-			pos_y = j * tile_height;
+	for(int j = -1; j <= screen_tiles_y; j++) {
+		for(int i = -1; i <= screen_tiles_x; i++) {
+			pos_x = (i + start_x) * tile_width - camera_position.x;
+			pos_y = (j + start_y) * tile_height - camera_position.y;
 
-			current_id = getTile(i, j, layer);
+			current_id = getTile(i + start_x, j + start_y, layer);
 
 			if(!current_id)
 				continue;

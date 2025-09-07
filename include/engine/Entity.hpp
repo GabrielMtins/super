@@ -34,6 +34,7 @@ struct Entity {
 	EntityType type;
 
 	bool alive;
+	bool hud_element;
 
 	Texture *texture;
 	int texture_cell;

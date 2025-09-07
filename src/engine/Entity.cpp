@@ -7,6 +7,7 @@
 Entity::Entity(void) {
 	id = -1;
 	alive = false;
+	hud_element = false;
 	texture = NULL;
 
 	texture_cell = 0;
@@ -27,10 +28,18 @@ void Entity::render(Game *game) const {
 	if(texture == NULL)
 		return;
 
+	Vec2 render_position;
+
+	render_position = position + texture_offset;
+	
+	if(!hud_element) {
+		render_position -= game->getCameraPosition();
+	}
+
 	texture->renderCell(
 			game->getContext(),
-			(int) (position.x + texture_offset.x),
-			(int) (position.y + texture_offset.y),
+			(int) roundf(render_position.x),
+			(int) roundf(render_position.y),
 			texture_cell,
 			flip_x,
 			flip_y

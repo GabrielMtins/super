@@ -35,16 +35,20 @@ class Game {
 		Sfx * getSfx(const std::string& name);
 		Music * getMusic(const std::string& name);
 
-		bool getKey(InputType input_type);
-		bool getKeyDown(InputType input_type);
-		bool getKeyUp(InputType input_type);
+		const Vec2& getCameraPosition(void) const;
+		void setCameraPosition(const Vec2& camera_position);
+
+		const Vec2& getScreenDimensions(void) const;
+
+		bool getKey(InputType input_type) const;
+		bool getKeyDown(InputType input_type) const;
+		bool getKeyUp(InputType input_type) const;
 
 		void setKeyInput(InputType input_type, int scancode);
 
 		Tick getCurrentTick(void);
 
 		void quit(void);
-		World world;
 
 	private:
 		void loop(void);
@@ -53,6 +57,10 @@ class Game {
 		Context context;
 		EntityList entity_list;
 		ResourceManager resource_manager;
+		World world;
+
+		Vec2 camera_position;
+		Vec2 screen_dimensions;
 
 		std::array<bool, MAX_INPUT> pressed;
 		std::array<Tick, MAX_INPUT> input_tick_down;
