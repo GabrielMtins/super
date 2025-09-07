@@ -46,6 +46,30 @@ bool ResourceManager::load(Context *context, const std::string& filename) {
 		console.exit(1);
 	}
 
+	/* load sfxs */
+	try {
+		json& json_sfxs = data["sfxs"];
+
+		for(json& it : json_sfxs) {
+			jsonToSfx(it);
+		}
+	} catch(const json::exception& ex) {
+		console.error("[Resource Manager] " + (std::string) ex.what());
+		console.exit(1);
+	}
+
+	/* load musics */
+	try {
+		json& json_musics = data["musics"];
+
+		for(json& it : json_musics) {
+			jsonToMusic(it);
+		}
+	} catch(const json::exception& ex) {
+		console.error("[Resource Manager] " + (std::string) ex.what());
+		console.exit(1);
+	}
+
 	/* load level paths */
 	try {
 		std::vector<std::string> vec_level_paths = data["levels"];
@@ -74,9 +98,31 @@ Texture * ResourceManager::getTexture(const std::string& name) {
 	return &(textures.at(name));
 }
 
+Sfx * ResourceManager::getSfx(const std::string& name) {
+	if(sfxs.find(name) == sfxs.end())
+		return NULL;
+
+	return &(sfxs.at(name));
+}
+
+Music * ResourceManager::getMusic(const std::string& name) {
+	if(musics.find(name) == musics.end())
+		return NULL;
+
+	return &(musics.at(name));
+}
+
 void ResourceManager::quit(void) {
 	for(auto& [_, texture] : textures) {
 		texture.unload();
+	}
+
+	for(auto& [_, sfx] : sfxs) {
+		sfx.unload();
+	}
+
+	for(auto& [_, music] : musics) {
+		music.unload();
 	}
 }
 
@@ -84,7 +130,7 @@ void ResourceManager::jsonToTexture(const nlohmann::json& j, Context *context) {
 	const std::string& name = j.at("name");
 
 	if(textures.find(name) != textures.end()) {
-		console.error("[ResourceManager] There is already a texture with name: " + name);
+		console.error("[Resource Manager] There is already a texture with name: " + name);
 		console.exit(1);
 	}
 
@@ -95,4 +141,30 @@ void ResourceManager::jsonToTexture(const nlohmann::json& j, Context *context) {
 			j.at("cell_width"),
 			j.at("cell_height")
 			);
+}
+
+void ResourceManager::jsonToSfx(const nlohmann::json& j) {
+	const std::string& name = j.at("name");
+
+	if(sfxs.find(name) != sfxs.end()) {
+		console.error("[Resource Manager] There is already a sfx with name: " + name);
+		console.exit(1);
+	}
+
+	Sfx& sfx = sfxs[name];
+
+	sfx.load(j.at("path"));
+}
+
+void ResourceManager::jsonToMusic(const nlohmann::json& j) {
+	const std::string& name = j.at("name");
+
+	if(musics.find(name) != musics.end()) {
+		console.error("[Resource Manager] There is already a music with name: " + name);
+		console.exit(1);
+	}
+
+	Music& music = musics[name];
+
+	music.load(j.at("path"));
 }

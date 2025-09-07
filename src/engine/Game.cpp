@@ -47,6 +47,14 @@ Texture * Game::getTexture(const std::string& name) {
 	return resource_manager.getTexture(name);
 }
 
+Sfx * Game::getSfx(const std::string& name) {
+	return resource_manager.getSfx(name);
+}
+
+Music * Game::getMusic(const std::string& name) {
+	return resource_manager.getMusic(name);
+}
+
 bool Game::getKey(InputType input_type) {
 	return pressed[input_type];
 }

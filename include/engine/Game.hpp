@@ -32,6 +32,8 @@ class Game {
 		void loadRes(const std::string& filename);
 
 		Texture * getTexture(const std::string& name);
+		Sfx * getSfx(const std::string& name);
+		Music * getMusic(const std::string& name);
 
 		bool getKey(InputType input_type);
 		bool getKeyDown(InputType input_type);

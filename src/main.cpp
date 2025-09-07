@@ -6,15 +6,17 @@
 /*
  * TODO:
  * Adicionar leitor de configuração via json
- * Adicionar leitor de recursos (texturas, sfx etc) utilizando arquivos json
  * Terminar renderização de mundo
  * Adicionar one way collisions
+ * Adicionar sistema de câmera no game
  *
  * DONE:
  * Adicionar interface de input no game
  * Adicionar colisão de mundo
  * Adicionar interface sfx
  * Adicionar interface de música
+ * Adicionar leitor de recursos (texturas, sfx etc) utilizando arquivos json
+ * Adicionar interfaces no Game para obter recursos
  */
 
 int main(int argc, char **argv) {
