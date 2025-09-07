@@ -7,6 +7,7 @@ class Game;
 
 using EntityCreateCallback = void (*)(Game *, Entity *);
 using EntityUpdateCallback = void (*)(Game *, Entity *, float);
+using EntityCollisionCallback = void (*) (Game *, Entity *, Entity *);
 
 struct EntityHandler {
 	EntityHandler(void);
@@ -14,6 +15,7 @@ struct EntityHandler {
 
 	EntityCreateCallback create;
 	EntityUpdateCallback update;
+	EntityCollisionCallback collision;
 };
 
 #endif

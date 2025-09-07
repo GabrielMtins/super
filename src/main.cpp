@@ -7,6 +7,7 @@
  * TODO:
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
+ * Adicionar handler de colisão e de trigger
  *
  * DONE:
  * Adicionar interface de input no game

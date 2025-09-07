@@ -56,7 +56,10 @@ bool Entity::checkCollision(const Vec2& other_pos, const Vec2& other_size) const
 }
 
 bool Entity::checkCollision(const Entity& other) const {
-	if((collision_mask & other.collision_layer) == 0)
+	bool found_collision_mask = (collision_mask & other.collision_layer);
+	bool found_collision_trigger = (collision_trigger & other.collision_layer);
+
+	if(!(found_collision_trigger || found_collision_mask))
 		return false;
 
 	return checkCollision(other.position, other.size);
@@ -93,10 +96,14 @@ bool Entity::solveCollision(const Entity& other, Axis axis) {
 bool Entity::checkCollision(const World* world) const {
 	int min_x, max_x, min_y, max_y;
 	Vec2 tile_pos;
+	bool found_collision_trigger, found_collision_mask;
 
 	const Vec2& tile_size = world->getTileSize();
 
-	if((collision_mask & world->getCollisionLayer()) == 0) {
+	found_collision_mask = collision_mask & world->getCollisionLayer();
+	found_collision_trigger = collision_trigger & world->getCollisionLayer();
+
+	if(!(found_collision_trigger || found_collision_mask)) {
 		return false;
 	}
 
@@ -125,6 +132,9 @@ bool Entity::checkCollision(const World* world) const {
 bool Entity::solveCollision(const World* world, Axis axis) {
 	int min_x, max_x, min_y, max_y;
 	const Vec2& tile_size = world->getTileSize();
+
+	if(collision_trigger & world->getCollisionLayer())
+		return false;
 
 	min_x = ceilf(position.x / tile_size.x);
 	min_y = ceilf(position.y / tile_size.y);
