@@ -26,6 +26,8 @@ class Game {
 		Context * getContext(void);
 		EntityList * getEntityList(void);
 
+		void loadRes(const std::string& filename);
+
 		Texture * getTexture(const std::string& name);
 
 		bool getKey(InputType input_type);
@@ -43,6 +45,8 @@ class Game {
 
 		std::array<bool, MAX_INPUT> pressed;
 		std::unordered_map<int, int> input_to_keys;
+		Tick current_tick;
+		float dt;
 };
 
 #endif

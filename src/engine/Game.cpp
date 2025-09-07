@@ -2,12 +2,14 @@
 
 Game::Game(void) {
 	context.init();
-	resource_manager.load(&context, "res/res.json");
 
 	setKeyInput(INPUT_LEFT, SDL_SCANCODE_A);
 	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
 	setKeyInput(INPUT_UP, SDL_SCANCODE_W);
+
+	dt = 0.0f;
+	current_tick = 0;
 }
 
 void Game::run(void) {
@@ -22,6 +24,10 @@ Context * Game::getContext(void) {
 
 EntityList * Game::getEntityList(void) {
 	return &entity_list;
+}
+
+void Game::loadRes(const std::string& filename) {
+	resource_manager.load(&context, filename);
 }
 
 Texture * Game::getTexture(const std::string& name) {
@@ -42,15 +48,21 @@ Game::~Game(void) {
 }
 
 void Game::loop(void) {
+	uint32_t new_tick;
+	current_tick = SDL_GetTicks();
+
 	context.pollEvents();
 
 	updateKeyState();
 
-	entity_list.update(this);
+	entity_list.update(this, dt);
 
 	context.renderClear(0x00, 0x00, 0x00, 0xff);
 	entity_list.render(this);
 	context.renderPresent();
+
+	new_tick = SDL_GetTicks();
+	dt = (float) (new_tick - current_tick) / 1000.0f;
 }
 
 void Game::updateKeyState(void) {

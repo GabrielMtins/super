@@ -5,9 +5,7 @@ EntityList::EntityList(void) {
 	clearEntities();
 }
 
-void EntityList::update(Game *game) {
-	float dt = 0.001f;
-
+void EntityList::update(Game *game, float dt) {
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& entity = entities[i];
 		EntityHandler& handler = type_to_handler[entity.type];

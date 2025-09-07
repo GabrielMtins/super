@@ -67,6 +67,8 @@ bool Entity::solveCollision(const Entity& other, Axis axis) {
 		else {
 			position.x = other.position.x + other.size.x + EPS;
 		}
+
+		velocity.x = 0.0f;
 	}
 	else {
 		if(velocity.y > 0.0f) {
@@ -75,6 +77,8 @@ bool Entity::solveCollision(const Entity& other, Axis axis) {
 		else {
 			position.y = other.position.y + other.size.y + EPS;
 		}
+
+		velocity.y = 0.0f;
 	}
 
 	return true;

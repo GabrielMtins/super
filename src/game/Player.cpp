@@ -9,23 +9,27 @@ namespace Player {
 
 	static void update(Game *game, Entity *entity, float dt) {
 		(void) dt;
-		entity->velocity = Vec2(0.0f, 0.0f);
+		//entity->velocity = Vec2(0.0f, 0.0f);
+		//
+		entity->velocity.x = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {
-			entity->velocity.x += -40.0f;
+			entity->velocity.x = -40.0f;
 		}
 
 		if(game->getKey(Game::INPUT_RIGHT)) {
-			entity->velocity.x += 40.0f;
+			entity->velocity.x = 40.0f;
 		}
 
 		if(game->getKey(Game::INPUT_DOWN)) {
 			entity->velocity.y += 40.0f;
 		}
 
-		if(game->getKey(Game::INPUT_UP)) {
-			entity->velocity.y += -40.0f;
+		if(game->getKey(Game::INPUT_UP) && entity->velocity.y == 0.0f) {
+			entity->velocity.y = -240.0f;
 		}
+
+		entity->velocity.y += 300.0f * dt;
 	}
 };
 

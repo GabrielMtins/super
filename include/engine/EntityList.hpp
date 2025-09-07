@@ -14,7 +14,7 @@ class Game;
 class EntityList {
 	public:
 		EntityList(void);
-		void update(Game *game);
+		void update(Game *game, float dt);
 		void render(Game *game);
 		void clearEntities(void);
 		Entity * getEntityFromId(EntityId id);

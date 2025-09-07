@@ -3,7 +3,7 @@
 
 Texture::Texture(void) {
 	texture = NULL;
-	name = "";
+	path = "";
 }
 
 bool Texture::load(Context *context, const std::string& filename) {
@@ -12,6 +12,7 @@ bool Texture::load(Context *context, const std::string& filename) {
 			filename.c_str()
 			);
 
+	path = filename;
 
 	if(texture == NULL) {
 		console.error("[Texture] Failed to load texture: " + filename);
@@ -64,17 +65,9 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 
 void Texture::unload(void) {
 	if(texture != NULL) {
-		console.log("[Texture] Unloading texture: " + name);
+		console.log("[Texture] Unloading texture: " + path);
 		SDL_DestroyTexture(texture);
 	}
-}
-
-void Texture::setName(const std::string& name) {
-	this->name = name;
-}
-
-const std::string& Texture::getName(void) const {
-	return name;
 }
 
 SDL_Rect Texture::getCell(int cell) {
