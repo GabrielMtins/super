@@ -22,13 +22,14 @@ class EntityList {
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 
 	private:
+		void findAndSolveEntityCollisions(Entity& entity, Entity::Axis axis);
+		void removeEntity(int position);
+
 		std::array<Entity, MAX_ENTITIES> entities;
 		std::unordered_map<EntityId, Entity *> id_to_entity;
 		std::array<EntityHandler, MAX_ENTITY_TYPES> type_to_handler;
 		size_t num_entities;
 		EntityId next_id;
-
-		void removeEntity(int position);
 };
 
 #endif

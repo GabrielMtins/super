@@ -6,6 +6,8 @@
 #include <string>
 #include <cstdio>
 
+using Tick = uint32_t;
+
 class Context {
 	public:
 		Context(void);

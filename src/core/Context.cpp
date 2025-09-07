@@ -32,6 +32,7 @@ void Context::init(void) {
 	console.log("[Context] Created window and renderer.");
 
 	SDL_RenderSetLogicalSize(renderer, 480, 270);
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	running = true;
 }

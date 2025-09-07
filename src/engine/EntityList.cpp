@@ -6,8 +6,17 @@ EntityList::EntityList(void) {
 }
 
 void EntityList::update(Game *game) {
-	for(Entity& entity : entities) {
+	float dt = 0.001f;
+
+	for(size_t i = 0; i < num_entities; i++) {
+		Entity& entity = entities[i];
 		EntityHandler& handler = type_to_handler[entity.type];
+
+		entity.position.x += entity.velocity.x * dt;
+		findAndSolveEntityCollisions(entity, Entity::AXIS_X);
+
+		entity.position.y += entity.velocity.y * dt;
+		findAndSolveEntityCollisions(entity, Entity::AXIS_Y);
 
 		if(handler.update == NULL)
 			continue;
@@ -17,12 +26,10 @@ void EntityList::update(Game *game) {
 }
 
 void EntityList::render(Game *game) {
-	Context *context;
+	for(size_t i = 0; i < num_entities; i++) {
+		Entity& entity = entities[i];
 
-	context = game->getContext();
-
-	for(Entity& entity : entities) {
-		entity.render(context);
+		entity.render(game);
 	}
 }
 
@@ -61,7 +68,21 @@ EntityId EntityList::addEntity(Game *game, EntityType type) {
 }
 
 void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler) {
+	if(type < 0 || type >= MAX_ENTITY_TYPES)
+		return;
+
 	type_to_handler[type] = handler;
+}
+
+void EntityList::findAndSolveEntityCollisions(Entity& entity, Entity::Axis axis) {
+	for(size_t i = 0; i < num_entities; i++) {
+		Entity& other = entities[i];
+
+		if(entity.id == other.id)
+			continue;
+
+		entity.solveCollision(other, axis);
+	}
 }
 
 void EntityList::removeEntity(int position) {
