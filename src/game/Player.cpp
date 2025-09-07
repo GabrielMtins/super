@@ -14,11 +14,11 @@ namespace Player {
 		entity->velocity.x = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {
-			entity->velocity.x = -40.0f;
+			entity->velocity.x = -150.0f;
 		}
 
 		if(game->getKey(Game::INPUT_RIGHT)) {
-			entity->velocity.x = 40.0f;
+			entity->velocity.x = 150.0f;
 		}
 
 		if(game->getKey(Game::INPUT_DOWN)) {

@@ -9,6 +9,10 @@ Context::Context(void) {
 
 void Context::init(void) {
 	int error = 0;
+
+	internal_width = 480;
+	internal_height = 270;
+
 	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
 		console.error((std::string) "[Context] Failed to initialize SDL2: " + SDL_GetError());
 		console.exit(1);
@@ -17,8 +21,8 @@ void Context::init(void) {
 	console.log("[Context] Initialized SDL2 successfully.");
 
 	error = SDL_CreateWindowAndRenderer(
-			480 * 3,
-			270 * 3,
+			internal_width * 3,
+			internal_height * 3,
 			SDL_WINDOW_SHOWN,
 			&window,
 			&renderer
@@ -31,7 +35,7 @@ void Context::init(void) {
 
 	console.log("[Context] Created window and renderer.");
 
-	SDL_RenderSetLogicalSize(renderer, 480, 270);
+	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	running = true;
@@ -71,4 +75,12 @@ void Context::quit(void) {
 	SDL_Quit();
 
 	console.log("[Context] Quitting SDL2.");
+}
+
+int Context::getInternalWidth(void) {
+	return internal_width;
+}
+
+int Context::getInternalHeight(void) {
+	return internal_height;
 }

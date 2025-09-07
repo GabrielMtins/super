@@ -20,12 +20,16 @@ class Context {
 		void renderPresent(void);
 		void quit(void);
 
+		int getInternalWidth(void);
+		int getInternalHeight(void);
+
 	private:
 		SDL_Window *window;
 		SDL_Renderer* renderer;
 
 		SDL_Event event;
 		bool running;
+		int internal_width, internal_height;
 };
 
 #endif

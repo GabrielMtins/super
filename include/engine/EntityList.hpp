@@ -3,6 +3,7 @@
 
 #include "engine/Entity.hpp"
 #include "engine/EntityHandler.hpp"
+#include "engine/World.hpp"
 #include <array>
 #include <unordered_map>
 
@@ -22,7 +23,7 @@ class EntityList {
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 
 	private:
-		void findAndSolveEntityCollisions(Entity& entity, Entity::Axis axis);
+		void findAndSolveEntityCollisions(const World *world, Entity& entity, Entity::Axis axis);
 		void removeEntity(int position);
 
 		std::array<Entity, MAX_ENTITIES> entities;

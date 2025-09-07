@@ -26,6 +26,10 @@ EntityList * Game::getEntityList(void) {
 	return &entity_list;
 }
 
+World * Game::getWorld(void) {
+	return &world;
+}
+
 void Game::loadRes(const std::string& filename) {
 	resource_manager.load(&context, filename);
 }
@@ -59,6 +63,7 @@ void Game::loop(void) {
 
 	context.renderClear(0x00, 0x00, 0x00, 0xff);
 	entity_list.render(this);
+	world.render(this, 0);
 	context.renderPresent();
 
 	new_tick = SDL_GetTicks();

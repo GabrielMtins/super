@@ -4,6 +4,8 @@
 #include "core/Vec2.hpp"
 #include "core/Texture.hpp"
 
+#include "engine/World.hpp"
+
 class Game;
 
 using EntityId = int;
@@ -20,6 +22,8 @@ struct Entity {
 	bool checkCollision(const Vec2& other_pos, const Vec2& other_size) const;
 	bool checkCollision(const Entity& other) const;
 	bool solveCollision(const Entity& other, Axis axis);
+	bool checkCollision(const World* world) const;
+	bool solveCollision(const World* world, Axis axis);
 
 	Vec2 position;
 	Vec2 size;

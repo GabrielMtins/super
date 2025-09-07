@@ -5,6 +5,7 @@
 #include "core/Texture.hpp"
 #include "engine/EntityList.hpp"
 #include "core/ResourceManager.hpp"
+#include "engine/World.hpp"
 
 #include <array>
 #include <unordered_map>
@@ -25,6 +26,7 @@ class Game {
 		void run(void);
 		Context * getContext(void);
 		EntityList * getEntityList(void);
+		World * getWorld(void);
 
 		void loadRes(const std::string& filename);
 
@@ -34,6 +36,7 @@ class Game {
 		void setKeyInput(InputType input_type, int scancode);
 
 		~Game(void);
+		World world;
 
 	private:
 		void loop(void);

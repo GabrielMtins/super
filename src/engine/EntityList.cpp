@@ -11,10 +11,10 @@ void EntityList::update(Game *game, float dt) {
 		EntityHandler& handler = type_to_handler[entity.type];
 
 		entity.position.x += entity.velocity.x * dt;
-		findAndSolveEntityCollisions(entity, Entity::AXIS_X);
+		findAndSolveEntityCollisions(game->getWorld(), entity, Entity::AXIS_X);
 
 		entity.position.y += entity.velocity.y * dt;
-		findAndSolveEntityCollisions(entity, Entity::AXIS_Y);
+		findAndSolveEntityCollisions(game->getWorld(), entity, Entity::AXIS_Y);
 
 		if(handler.update == NULL)
 			continue;
@@ -72,14 +72,21 @@ void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler)
 	type_to_handler[type] = handler;
 }
 
-void EntityList::findAndSolveEntityCollisions(Entity& entity, Entity::Axis axis) {
+void EntityList::findAndSolveEntityCollisions(const World *world, Entity& entity, Entity::Axis axis) {
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
 
 		if(entity.id == other.id)
 			continue;
 
+		if(!entity.checkCollision(other))
+			continue;
+
 		entity.solveCollision(other, axis);
+	}
+
+	if(entity.checkCollision(world)) {
+		entity.solveCollision(world, axis);
 	}
 }
 
