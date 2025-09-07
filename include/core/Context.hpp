@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <cstdio>
 
@@ -12,7 +13,7 @@ class Context {
 	public:
 		Context(void);
 
-		void init(void);
+		void init(const std::string& title, int internal_width, int internal_height);
 		void pollEvents(void);
 		SDL_Renderer * getRenderer(void);
 		bool isRunning(void);

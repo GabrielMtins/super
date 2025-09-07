@@ -23,6 +23,7 @@ class Game {
 		};
 
 		Game(void);
+		void init(const std::string& title, int internal_width, int internal_height);
 		void run(void);
 		Context * getContext(void);
 		EntityList * getEntityList(void);
@@ -33,9 +34,14 @@ class Game {
 		Texture * getTexture(const std::string& name);
 
 		bool getKey(InputType input_type);
+		bool getKeyDown(InputType input_type);
+		bool getKeyUp(InputType input_type);
+
 		void setKeyInput(InputType input_type, int scancode);
 
-		~Game(void);
+		Tick getCurrentTick(void);
+
+		void quit(void);
 		World world;
 
 	private:
@@ -47,6 +53,9 @@ class Game {
 		ResourceManager resource_manager;
 
 		std::array<bool, MAX_INPUT> pressed;
+		std::array<Tick, MAX_INPUT> input_tick_down;
+		std::array<Tick, MAX_INPUT> input_tick_up;
+
 		std::unordered_map<int, int> input_to_keys;
 		Tick current_tick;
 		float dt;

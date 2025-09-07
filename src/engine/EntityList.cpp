@@ -19,7 +19,7 @@ void EntityList::update(Game *game, float dt) {
 		if(handler.update == NULL)
 			continue;
 
-		handler.update(game, &entity, 0.001f);
+		handler.update(game, &entity, dt);
 	}
 }
 

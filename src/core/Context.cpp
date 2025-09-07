@@ -7,36 +7,65 @@ Context::Context(void) {
 	running = false;
 }
 
-void Context::init(void) {
-	int error = 0;
-
-	internal_width = 480;
-	internal_height = 270;
+void Context::init(const std::string& title, int internal_width, int internal_height) {
+	this->internal_width = internal_width;
+	this->internal_height = internal_height;
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
 		console.error((std::string) "[Context] Failed to initialize SDL2: " + SDL_GetError());
 		console.exit(1);
 	}
 
-	console.log("[Context] Initialized SDL2 successfully.");
+	console.log("[Context] Initialized SDL2 successfully!");
 
-	error = SDL_CreateWindowAndRenderer(
+	if(IMG_Init(IMG_INIT_PNG) < 0) {
+		console.error((std::string) "[Context] Failed to initialize SDL2 image: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	console.log("[Context] Initialized SDL2 image successfully!");
+
+	if(Mix_Init(MIX_INIT_MP3) < 0) {
+		console.error((std::string) "[Context] Failed to initialize SDL2 Mixer: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+		console.error((std::string) "[Context] Failed to open audio: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	console.log("[Context] Initialized SDL2 mixer successfully!");
+
+	window = SDL_CreateWindow(
+			title.c_str(),
+			SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED,
 			internal_width * 3,
 			internal_height * 3,
-			SDL_WINDOW_SHOWN,
-			&window,
-			&renderer
+			SDL_WINDOW_SHOWN
 			);
 
-	if(error < 0) {
-		console.error((std::string) "[Context] Failed to create window and renderer: " + SDL_GetError());
+	if(window == NULL) {
+		console.error((std::string) "[Context] Failed to create window: " + SDL_GetError());
+		console.exit(1);
+	}
+
+	renderer = SDL_CreateRenderer(
+			window,
+			-1,
+			SDL_RENDERER_PRESENTVSYNC
+			);
+
+	if(renderer == NULL) {
+		console.error((std::string) "[Context] Failed to create renderer: " + SDL_GetError());
 		console.exit(1);
 	}
 
 	console.log("[Context] Created window and renderer.");
 
 	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	running = true;
 }
@@ -72,7 +101,10 @@ void Context::quit(void) {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 
+	IMG_Quit();
 	SDL_Quit();
+	Mix_CloseAudio();
+	Mix_Quit();
 
 	console.log("[Context] Quitting SDL2.");
 }

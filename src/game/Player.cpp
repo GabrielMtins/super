@@ -9,8 +9,6 @@ namespace Player {
 
 	static void update(Game *game, Entity *entity, float dt) {
 		(void) dt;
-		//entity->velocity = Vec2(0.0f, 0.0f);
-		//
 		entity->velocity.x = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {

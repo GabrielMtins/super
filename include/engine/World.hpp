@@ -12,7 +12,7 @@
 
 class Game;
 
-using TileId = int;
+using TileId = uint8_t;
 
 class World {
 	public:

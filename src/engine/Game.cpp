@@ -1,7 +1,16 @@
 #include "engine/Game.hpp"
 
 Game::Game(void) {
-	context.init();
+	dt = 0.0f;
+	current_tick = 0;
+}
+
+void Game::init(const std::string& title, int internal_width, int internal_height) {
+	context.init(
+			title,
+			internal_width,
+			internal_height
+			);
 
 	setKeyInput(INPUT_LEFT, SDL_SCANCODE_A);
 	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
@@ -42,21 +51,30 @@ bool Game::getKey(InputType input_type) {
 	return pressed[input_type];
 }
 
+bool Game::getKeyDown(InputType input_type) {
+	return input_tick_down[input_type] == current_tick;
+}
+bool Game::getKeyUp(InputType input_type) {
+	return input_tick_up[input_type] == current_tick;
+}
+
 void Game::setKeyInput(InputType input_type, int scancode) {
 	input_to_keys[input_type] = scancode;
 }
 
-Game::~Game(void) {
+Tick Game::getCurrentTick(void) {
+	return current_tick;
+}
+
+void Game::quit(void) {
 	resource_manager.quit();
 	context.quit();
 }
 
 void Game::loop(void) {
 	uint32_t new_tick;
-	current_tick = SDL_GetTicks();
 
 	context.pollEvents();
-
 	updateKeyState();
 
 	entity_list.update(this, dt);
@@ -68,12 +86,24 @@ void Game::loop(void) {
 
 	new_tick = SDL_GetTicks();
 	dt = (float) (new_tick - current_tick) / 1000.0f;
+	current_tick = new_tick;
 }
 
 void Game::updateKeyState(void) {
 	const uint8_t *keys = SDL_GetKeyboardState(NULL);
 
 	for(int i = 0; i < NUM_INPUTS; i++) {
-		pressed[i] = keys[input_to_keys[i]];
+		bool new_state;
+
+		new_state = keys[input_to_keys[i]];
+
+		if(new_state == true && pressed[i] == false) {
+			input_tick_down[i] = current_tick;
+		}
+		else if(new_state == false && pressed[i] == true) {
+			input_tick_up[i] = current_tick;
+		}
+
+		pressed[i] = new_state;
 	}
 }

@@ -108,16 +108,16 @@ void World::render(Game *game, int layer) {
 			pos_x = i * tile_width;
 			pos_y = j * tile_height;
 
-			current_id = getTile(i, j, layer) - 1;
+			current_id = getTile(i, j, layer);
 
-			if(current_id == -1)
+			if(!current_id)
 				continue;
 
 			texture->renderCell(
 					context,
 					pos_x,
 					pos_y,
-					current_id,
+					current_id - 1,
 					false,
 					false
 					);
