@@ -26,8 +26,8 @@ void EntityList::update(Game *game, float dt) {
 void EntityList::setSpriteRenderList(Game *game, SpriteRenderer* sprite_renderer) {
 	sprite_renderer->reset();
 
-	for(Entity& entity : entities) {
-		sprite_renderer->addSpriteToRenderList(game, entity.sprite);
+	for(size_t i = 0; i < num_entities; i++) {
+		sprite_renderer->addSpriteToRenderList(game, entities[i].sprite);
 	}
 }
 
