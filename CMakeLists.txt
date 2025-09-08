@@ -32,6 +32,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${SDL2_MIXER_INCLUDE_DIRS}
 	${SDL2_TTF_INCLUDE_DIRS}
 	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_SOURCE_DIR}/external/json/single_include"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
