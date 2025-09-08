@@ -8,7 +8,6 @@
  * TODO:
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
- * Adicionar modo de pause
  * Adicionar leitor de inimigos para as fases
  *
  * DONE:
@@ -24,6 +23,7 @@
  * Adicionar sistemas de sprites (renderização)
  * Adicionar sprite renderer a parte
  * Adicionar gerador de textos para chaves dadas
+ * Adicionar modo de pause
  *
  * Divisão de pastas explicadas:
  * - core: pasta utilizada para o core da engine, que pode ser reutilizado
@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
 	game->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
 	game->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
 	game->addEntity(ENTITY_PLAYER);
+	game->addEntity(ENTITY_WALKER);
 
 	printf("%lu\n", sizeof(Game) / 1024);
 

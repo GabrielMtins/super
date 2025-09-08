@@ -41,6 +41,12 @@ struct Entity {
 		AXIS_Y
 	};
 
+	enum PauseMode {
+		PAUSEMODE_PAUSABLE,
+		PAUSEMODE_ALWAYS,
+		PAUSEMODE_WHENPAUSED
+	};
+
 	Entity(void);
 	Entity(EntityId id);
 	EntityId getId(void) const;
@@ -73,6 +79,8 @@ struct Entity {
 	uint32_t collision_layer;
 	uint32_t collision_mask;
 	uint32_t collision_trigger;
+
+	PauseMode pause_mode;
 
 	std::array<Tick, ENTITY_MAX_TIMERS> timers;
 	std::array<int, ENTITY_MAX_FLAGS> flags;

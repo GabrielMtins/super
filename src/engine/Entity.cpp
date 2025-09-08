@@ -75,6 +75,7 @@ Entity::Entity(void) {
 	collision_layer = 0;
 	collision_mask = 0;
 	collision_trigger = 0;
+	pause_mode = PAUSEMODE_PAUSABLE;
 }
 
 Entity::Entity(EntityId id) : Entity() {

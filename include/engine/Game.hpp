@@ -42,6 +42,9 @@ class Game {
 		const Vec2& getCameraPosition(void) const;
 		void setCameraPosition(const Vec2& camera_position);
 
+		void pause(void);
+		bool isPaused(void);
+
 		const Vec2& getScreenDimensions(void) const;
 
 		bool getKey(InputType input_type) const;
@@ -80,6 +83,8 @@ class Game {
 		std::unordered_map<int, int> input_to_keys;
 		Tick current_tick;
 		float dt;
+
+		bool paused;
 };
 
 #endif

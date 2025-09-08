@@ -17,6 +17,9 @@ namespace Walker {
 		entity->collision_layer = 1;
 		entity->collision_mask = 1;
 		entity->state = STATE_LEFT;
+
+		entity->position = Vec2(300.0f, 0.0f);
+		entity->updateSprite();
 	}
 
 	static void changeState(Entity *entity) {

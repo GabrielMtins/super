@@ -8,6 +8,8 @@ namespace Player {
 		entity->collision_layer = 1;
 		entity->collision_mask = 1;
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
+
+		entity->pause_mode = Entity::PAUSEMODE_WHENPAUSED;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
@@ -43,8 +45,7 @@ namespace Player {
 
 
 		if(game->getKeyDown(Game::INPUT_FIRE)) {
-			Entity *goomba = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
-			goomba->position = entity->position + Vec2(0.0f, 25.0f);
+			game->pause();
 		}
 
 		entity->velocity.y += 200.0f * dt;

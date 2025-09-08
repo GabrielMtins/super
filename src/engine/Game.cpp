@@ -12,6 +12,10 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 			internal_height
 			);
 
+	for(int i = 0; i < NUM_INPUTS; i++) {
+		input_to_keys[i] = SDL_SCANCODE_UNKNOWN;
+	}
+
 	setKeyInput(INPUT_LEFT, SDL_SCANCODE_A);
 	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
@@ -22,6 +26,19 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 
 	dt = 0.0f;
 	current_tick = 0;
+	paused = false;
+
+	for(Tick& tick : input_tick_down) 
+		tick = 999999;
+
+	for(Tick& tick : input_tick_up) 
+		tick = 999999;
+
+	for(bool& press : pressed) {
+		press = false;
+	}
+
+	pause();
 }
 
 void Game::run(void) {
@@ -68,6 +85,14 @@ const Vec2& Game::getCameraPosition(void) const {
 
 void Game::setCameraPosition(const Vec2& camera_position) {
 	this->camera_position = camera_position;
+}
+
+void Game::pause(void) {
+	paused = !paused;
+}
+
+bool Game::isPaused(void) {
+	return paused;
 }
 
 const Vec2& Game::getScreenDimensions(void) const {

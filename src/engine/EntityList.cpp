@@ -10,6 +10,14 @@ void EntityList::update(Game *game, float dt) {
 		Entity& entity = entities[i];
 		EntityHandler& handler = type_to_handler[entity.type];
 
+		if(game->isPaused()){
+			if(entity.pause_mode == Entity::PAUSEMODE_PAUSABLE)
+				continue;
+		} else {
+			if(entity.pause_mode == Entity::PAUSEMODE_WHENPAUSED)
+				continue;
+		}
+
 		entity.position.y += entity.velocity.y * dt;
 		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Entity::AXIS_Y);
 
