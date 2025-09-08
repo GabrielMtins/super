@@ -42,6 +42,14 @@ void Game::loadRes(const std::string& filename) {
 	resource_manager.load(&context, filename);
 }
 
+void Game::loadFont(const std::string& filename, int size) {
+	text_generator.loadFont(filename, size);
+}
+
+void Game::loadLocale(const std::string& filename, const std::string& locale_name) {
+	text_generator.loadLocale(&context, filename, locale_name);
+}
+
 Texture * Game::getTexture(const std::string& name) {
 	return resource_manager.getTexture(name);
 }
@@ -117,6 +125,9 @@ void Game::loop(void) {
 	sprite_renderer.render(this);
 
 	world.render(this, 0);
+
+	text_generator.getTexture("NAME_LANGUAGE")->render(&context, 0, 0);
+
 	context.renderPresent();
 
 	new_tick = SDL_GetTicks();

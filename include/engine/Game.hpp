@@ -5,6 +5,7 @@
 #include "core/Texture.hpp"
 #include "engine/EntityList.hpp"
 #include "core/ResourceManager.hpp"
+#include "core/TextGenerator.hpp"
 #include "engine/World.hpp"
 #include "engine/SpriteRenderer.hpp"
 
@@ -31,6 +32,8 @@ class Game {
 		World * getWorld(void);
 
 		void loadRes(const std::string& filename);
+		void loadFont(const std::string& filename, int size);
+		void loadLocale(const std::string& filename, const std::string& locale_name);
 
 		Texture * getTexture(const std::string& name);
 		Sfx * getSfx(const std::string& name);
@@ -64,6 +67,7 @@ class Game {
 		EntityList entity_list;
 		ResourceManager resource_manager;
 		SpriteRenderer sprite_renderer;
+		TextGenerator text_generator;
 		World world;
 
 		Vec2 camera_position;

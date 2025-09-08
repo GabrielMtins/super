@@ -2,6 +2,7 @@
 
 #include "engine/Game.hpp"
 #include "game/CustomEntities.hpp"
+#include "core/TextGenerator.hpp"
 
 /*
  * TODO:
@@ -22,6 +23,7 @@
  * Adicionar handler de colisão e de trigger
  * Adicionar sistemas de sprites (renderização)
  * Adicionar sprite renderer a parte
+ * Adicionar gerador de textos para chaves dadas
  *
  * Divisão de pastas explicadas:
  * - core: pasta utilizada para o core da engine, que pode ser reutilizado
@@ -46,6 +48,9 @@ int main(int argc, char **argv) {
 	game->init("super", 480, 270);
 	game->loadRes("res/res.json");
 
+	game->loadFont("res/PublicPixel.ttf", 8);
+	game->loadLocale("res/locale.json", "pt-br");
+
 	World *world = game->getWorld();
 
 	world->load(game->getContext(), "res/map01.tmj");
@@ -56,7 +61,7 @@ int main(int argc, char **argv) {
 	game->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
 	game->addEntity(ENTITY_PLAYER);
 
-	printf("%lu\n", sizeof(Entity));
+	printf("%lu\n", sizeof(Game) / 1024);
 
 	game->run();
 

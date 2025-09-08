@@ -31,6 +31,34 @@ bool Texture::load(Context *context, const std::string& filename) {
 	return true;
 }
 
+bool Texture::generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color) {
+	SDL_Surface *surface;
+
+	surface = TTF_RenderUTF8_Solid(
+			font,
+			text.c_str(),
+			color
+			);
+
+	if(surface == NULL) {
+		console.error("[Texture] Failed to generate text: " + text);
+		return false;
+	}
+
+	texture = SDL_CreateTextureFromSurface(
+			context->getRenderer(),
+			surface
+			);
+
+	path = "GENERATED TEXT - " + text;
+	width = surface->w;
+	height = surface->h;
+
+	SDL_FreeSurface(surface);
+
+	return true;
+}
+
 void Texture::setCellSize(int cell_width, int cell_height) {
 	this->cell_width = cell_width;
 	this->cell_height = cell_height;
@@ -42,15 +70,18 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 	SDL_Rect src_rect, dst_rect;
 	const SDL_Rect *used_src_rect = NULL;
 
-	if(cell >= 0) {
-		src_rect = getCell(cell);
-		used_src_rect = &src_rect;
-	}
-
 	dst_rect.x = x;
 	dst_rect.y = y;
 	dst_rect.w = cell_width;
 	dst_rect.h = cell_height;
+
+	if(cell >= 0) {
+		src_rect = getCell(cell);
+		used_src_rect = &src_rect;
+	} else {
+		dst_rect.w = width;
+		dst_rect.h = height;
+	}
 
 	SDL_RenderCopyEx(
 			context->getRenderer(),
@@ -61,6 +92,18 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 			NULL,
 			(SDL_RendererFlip) ((flip_x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (flip_y ?	SDL_FLIP_VERTICAL : SDL_FLIP_NONE))
 			);
+}
+
+void Texture::render(Context *context, int x, int y) {
+	renderCell(
+			context,
+			x,
+			y,
+			-1,
+			false,
+			false
+			);
+
 }
 
 void Texture::unload(void) {

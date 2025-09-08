@@ -27,6 +27,8 @@ void SpriteRenderer::render(Game *game) {
 	for(size_t i = 0; i < num_sprites; i++) {
 		sprites[i].render(game);
 	}
+
+	reset();
 }
 
 bool SpriteRenderer::spriteComparison(const Sprite& a, const Sprite& b) {

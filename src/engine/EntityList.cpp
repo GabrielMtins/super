@@ -23,11 +23,11 @@ void EntityList::update(Game *game, float dt) {
 
 		entity.updateSprite();
 	}
+
+	cleanUp();
 }
 
 void EntityList::setSpriteRenderList(Game *game, SpriteRenderer* sprite_renderer) {
-	sprite_renderer->reset();
-
 	for(size_t i = 0; i < num_entities; i++) {
 		sprite_renderer->addSpriteToRenderList(game, entities[i].sprite);
 	}
@@ -123,6 +123,14 @@ void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, E
 
 		if(handler.collision != NULL) {
 			handler.collision(game, &entity, NULL);
+		}
+	}
+}
+
+void EntityList::cleanUp(void) {
+	for(size_t i = 0; i < num_entities; i++) {
+		if(!entities[i].alive) {
+			removeEntity(i);
 		}
 	}
 }

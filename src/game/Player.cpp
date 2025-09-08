@@ -54,6 +54,13 @@ namespace Player {
 	static void collision(Game *game, Entity *entity, Entity *other) {
 		if(entity->velocity.y == 0.0f)
 			entity->sprite.cell = 0;
+
+		if(other == NULL)
+			return;
+
+		if(other->type == ENTITY_WALKER) {
+			other->alive = false;
+		}
 	}
 };
 

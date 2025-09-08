@@ -26,7 +26,7 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	console.log("[Context] Initialized SDL2 image successfully!");
 
 	if(Mix_Init(MIX_INIT_MP3) < 0) {
-		console.error((std::string) "[Context] Failed to initialize SDL2 Mixer: " + SDL_GetError());
+		console.error((std::string) "[Context] Failed to initialize SDL2 mixer: " + SDL_GetError());
 		console.exit(1);
 	}
 
@@ -36,6 +36,13 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	}
 
 	console.log("[Context] Initialized SDL2 mixer successfully!");
+
+	if(TTF_Init() < 0) {
+		console.error((std::string) "[Context] Failed to initialize SDL ttf: " + TTF_GetError());
+		console.exit(1);
+	}
+
+	console.log("[Context] Initialized SDL2 ttf successfully!");
 
 	window = SDL_CreateWindow(
 			title.c_str(),
@@ -101,10 +108,11 @@ void Context::quit(void) {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 
+	TTF_Quit();
 	IMG_Quit();
-	SDL_Quit();
 	Mix_CloseAudio();
 	Mix_Quit();
+	SDL_Quit();
 
 	console.log("[Context] Quitting SDL2.");
 }
