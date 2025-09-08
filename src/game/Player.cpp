@@ -2,9 +2,11 @@
 
 namespace Player {
 	static void create(Game *game, Entity *entity) {
-		entity->sprite.setTexture(game->getTexture("character"));
-		entity->collision_mask = 1;
-		entity->size = Vec2(24.0f, 24.0f);
+		entity->sprite.setTexture(game->getTexture("world_tilemap"));
+		entity->collision_mask = 0;
+		entity->size = Vec2(15.0f, 15.0f);
+		entity->collision_layer = 1;
+		//entity->sprite.offset = Vec2(2.0f, 4.0f);
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

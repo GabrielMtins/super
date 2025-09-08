@@ -2,7 +2,7 @@
 #include "engine/Game.hpp"
 #include "core/Hitbox.hpp"
 
-#define EPS 0.01f
+#define EPS 0.5f
 
 Sprite::Sprite(void) {
 	cell = 0;
@@ -75,6 +75,14 @@ Entity::Entity(void) {
 	collision_layer = 0;
 	collision_mask = 0;
 	collision_trigger = 0;
+}
+
+Entity::Entity(EntityId id) : Entity() {
+	this->id = id;
+}
+
+EntityId Entity::getId(void) const {
+	return id;
 }
 
 bool Entity::checkCollision(const Vec2& other_pos, const Vec2& other_size) const {
@@ -194,6 +202,47 @@ bool Entity::solveCollision(const World* world, Axis axis) {
 			position.y = min_y * tile_size.y + EPS;
 		}
 
+		velocity.y = 0.0f;
+	}
+
+	return true;
+}
+
+bool Entity::solveCollision(const Entity& other) {
+	Vec2 dir(999.0f, 999.0f);
+	float left, right, top, bottom;
+	float other_left, other_right, other_top, other_bottom;
+
+	if(collision_trigger & other.collision_layer)
+		return false;
+
+	left = position.x;
+	right = position.x + size.x;
+	bottom = position.y;
+	top = position.y + size.y;
+
+	other_left = other.position.x;
+	other_right = other.position.x + other.size.x;
+	other_bottom = other.position.y;
+	other_top = other.position.y + other.size.y;
+
+	if(left < other_right && right > other_right) {
+		dir.x = other_right - left + EPS;
+	} else if(right > other_left && left < other_left) {
+		dir.x = other_left - right - EPS;
+	}
+
+	if(bottom < other_top && top > other_top) {
+		dir.y = other_top - bottom + EPS;
+	} else if(top > other_bottom && bottom < other_bottom) {
+		dir.y = other_bottom - top - EPS;
+	}
+
+	if(fabsf(dir.x) < fabsf(dir.y)) {
+		position.x += dir.x;
+		velocity.x = 0.0f;
+	} else {
+		position.y += dir.y;
 		velocity.y = 0.0f;
 	}
 

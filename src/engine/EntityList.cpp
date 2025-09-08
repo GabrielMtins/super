@@ -10,11 +10,13 @@ void EntityList::update(Game *game, float dt) {
 		Entity& entity = entities[i];
 		EntityHandler& handler = type_to_handler[entity.type];
 
-		entity.position.x += entity.velocity.x * dt;
-		findAndSolveEntityCollisions(game, game->getWorld(), entity, Entity::AXIS_X);
-
 		entity.position.y += entity.velocity.y * dt;
-		findAndSolveEntityCollisions(game, game->getWorld(), entity, Entity::AXIS_Y);
+		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Entity::AXIS_Y);
+
+		entity.position.x += entity.velocity.x * dt;
+		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Entity::AXIS_X);
+
+		findAndSolveEntityCollisions(game, game->getWorld(), entity);
 
 		if(handler.update != NULL)
 			handler.update(game, &entity, dt);
@@ -52,8 +54,7 @@ EntityId EntityList::addEntity(Game *game, EntityType type) {
 	new_entity = &entities[num_entities];
 	id_to_entity[next_id++] = new_entity;
 
-	*new_entity = Entity();
-	new_entity->id = new_id;
+	*new_entity = Entity(new_id);
 	new_entity->type = type;
 	new_entity->alive = true;
 
@@ -72,27 +73,50 @@ void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler)
 	type_to_handler[type] = handler;
 }
 
-void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity, Entity::Axis axis) {
+void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {
+	EntityHandler& handler = type_to_handler[entity.type];
+
 	if(!(entity.collision_trigger || entity.collision_mask))
 		return;
 
-	EntityHandler& handler = type_to_handler[entity.type];
-
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
+		Vec2 old_position, old_velocity;
 
-		if(entity.id == other.id)
+		old_position = entity.position;
+		old_velocity = entity.velocity;
+
+		if(entity.getId() == other.getId())
 			continue;
 
 		if(!entity.checkCollision(other))
 			continue;
 
-		entity.solveCollision(other, axis);
+		entity.solveCollision(other);
+
+		if(entity.checkCollision(world)) {
+			entity.position = old_position;
+			entity.velocity = old_velocity;
+
+			old_position = other.position;
+			old_velocity = other.velocity;
+
+			other.solveCollision(entity);
+
+			if(other.checkCollision(world)) {
+				other.position = old_position;
+				other.velocity = old_velocity;
+			}
+		}
 
 		if(handler.collision != NULL) {
 			handler.collision(game, &entity, &other);
 		}
 	}
+}
+
+void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Entity::Axis axis) {
+	EntityHandler& handler = type_to_handler[entity.type];
 
 	if(entity.checkCollision(world)) {
 		entity.solveCollision(world, axis);
@@ -107,11 +131,11 @@ void EntityList::removeEntity(int position) {
 	if(num_entities == 0)
 		return;
 
-	id_to_entity.erase(entities[position].id);
+	id_to_entity.erase(entities[position].getId());
 
 	if(num_entities > 1) {
 		entities[position] = entities[num_entities - 1];
-		id_to_entity[entities[position].id] = &entities[position];
+		id_to_entity[entities[position].getId()] = &entities[position];
 	}
 
 	num_entities--;

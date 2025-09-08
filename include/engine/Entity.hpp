@@ -6,6 +6,11 @@
 
 #include "engine/World.hpp"
 
+#include <array>
+
+#define ENTITY_MAX_TIMERS 4
+#define ENTITY_MAX_FLAGS 4
+
 class Game;
 
 using EntityId = int;
@@ -37,6 +42,8 @@ struct Entity {
 	};
 
 	Entity(void);
+	Entity(EntityId id);
+	EntityId getId(void) const;
 	void updateSprite(void);
 	bool checkCollision(const Vec2& other_pos, const Vec2& other_size) const;
 	bool checkCollision(const Entity& other) const;
@@ -44,13 +51,14 @@ struct Entity {
 	bool checkCollision(const World* world) const;
 	bool solveCollision(const World* world, Axis axis);
 
+	bool solveCollision(const Entity& other);
+
 	Vec2 position;
 	Vec2 size;
 	Vec2 velocity;
 
 	Sprite sprite;
 
-	EntityId id;
 	EntityType type;
 
 	bool alive;
@@ -59,10 +67,18 @@ struct Entity {
 	EntityId target_id;
 	EntityId child_id;
 	EntityId parent_id;
+	
+	int state;
 
 	uint32_t collision_layer;
 	uint32_t collision_mask;
 	uint32_t collision_trigger;
+
+	std::array<Tick, ENTITY_MAX_TIMERS> timers;
+	std::array<int, ENTITY_MAX_FLAGS> flags;
+
+	private:
+		EntityId id;
 };
 
 #endif
