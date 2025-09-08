@@ -52,20 +52,9 @@ int main(int argc, char **argv) {
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(1);
 
-	EntityList *entity_list = game->getEntityList();
-	entity_list->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
-	entity_list->addEntity(game, ENTITY_PLAYER);
-
-	entity_list->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
-	Entity *entity = entity_list->getEntityFromId(entity_list->addEntity(game, ENTITY_WALKER));
-	entity->position = Vec2(300.0f, 100.0f);
-	entity->sprite.layer = 0;
-
-	for(int i = 0; i < 4; i++) {
-		entity = entity_list->getEntityFromId(entity_list->addEntity(game, ENTITY_WALKER));
-		entity->position = Vec2(350.0f + i * 17, 100.0f);
-		entity->sprite.layer = 0;
-	}
+	game->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
+	game->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
+	game->addEntity(ENTITY_PLAYER);
 
 	printf("%lu\n", sizeof(Entity));
 

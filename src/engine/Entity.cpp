@@ -2,7 +2,7 @@
 #include "engine/Game.hpp"
 #include "core/Hitbox.hpp"
 
-#define EPS 0.5f
+#define EPS 0.50f
 
 Sprite::Sprite(void) {
 	cell = 0;
@@ -227,16 +227,18 @@ bool Entity::solveCollision(const Entity& other) {
 	other_top = other.position.y + other.size.y;
 
 	if(left < other_right && right > other_right) {
-		dir.x = other_right - left + EPS;
+		dir.x = other_right - left;
 	} else if(right > other_left && left < other_left) {
-		dir.x = other_left - right - EPS;
+		dir.x = other_left - right;
 	}
 
 	if(bottom < other_top && top > other_top) {
-		dir.y = other_top - bottom + EPS;
+		dir.y = other_top - bottom;
 	} else if(top > other_bottom && bottom < other_bottom) {
-		dir.y = other_bottom - top - EPS;
+		dir.y = other_bottom - top;
 	}
+	
+	dir *= 1.10f;
 
 	if(fabsf(dir.x) < fabsf(dir.y)) {
 		position.x += dir.x;

@@ -16,6 +16,7 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
 	setKeyInput(INPUT_UP, SDL_SCANCODE_W);
+	setKeyInput(INPUT_FIRE, SDL_SCANCODE_J);
 
 	screen_dimensions = Vec2(internal_width, internal_height);
 
@@ -31,10 +32,6 @@ void Game::run(void) {
 
 Context * Game::getContext(void) {
 	return &context;
-}
-
-EntityList * Game::getEntityList(void) {
-	return &entity_list;
 }
 
 World * Game::getWorld(void) {
@@ -87,6 +84,18 @@ void Game::setKeyInput(InputType input_type, int scancode) {
 
 Tick Game::getCurrentTick(void) {
 	return current_tick;
+}
+
+void Game::addHandlerToType(EntityType type, const EntityHandler& handler) {
+	entity_list.addHandlerToType(type, handler);
+}
+
+EntityId Game::addEntity(EntityType type) {
+	return entity_list.addEntity(this, type);
+}
+
+Entity * Game::getEntityFromId(EntityId id) {
+	return entity_list.getEntityFromId(id);
 }
 
 void Game::quit(void) {

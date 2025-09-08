@@ -24,11 +24,6 @@ namespace Walker {
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
-		if(entity->flags[CHANGE_STATE_FLAG]) {
-			changeState(entity);
-			entity->flags[CHANGE_STATE_FLAG] = 0;
-		}
-
 		switch(entity->state) {
 			case STATE_LEFT:
 				entity->velocity.x = DEFAULT_VELOCITY;
@@ -48,8 +43,6 @@ namespace Walker {
 		if(entity->velocity.x == 0.0f) {
 			changeState(entity);
 
-			if(other != NULL && other->type == ENTITY_WALKER)
-				other->flags[CHANGE_STATE_FLAG] = 1;
 		}
 	}
 }

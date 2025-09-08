@@ -20,6 +20,7 @@ class Game {
 			INPUT_RIGHT,
 			INPUT_DOWN,
 			INPUT_UP,
+			INPUT_FIRE,
 			NUM_INPUTS
 		};
 
@@ -27,7 +28,6 @@ class Game {
 		void init(const std::string& title, int internal_width, int internal_height);
 		void run(void);
 		Context * getContext(void);
-		EntityList * getEntityList(void);
 		World * getWorld(void);
 
 		void loadRes(const std::string& filename);
@@ -48,6 +48,11 @@ class Game {
 		void setKeyInput(InputType input_type, int scancode);
 
 		Tick getCurrentTick(void);
+
+		void addHandlerToType(EntityType type, const EntityHandler& handler);
+		EntityId addEntity(EntityType type);
+		Entity * getEntityFromId(EntityId id);
+
 
 		void quit(void);
 
