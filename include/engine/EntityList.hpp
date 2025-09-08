@@ -4,6 +4,9 @@
 #include "engine/Entity.hpp"
 #include "engine/EntityHandler.hpp"
 #include "engine/World.hpp"
+
+#include "engine/SpriteRenderer.hpp"
+
 #include <array>
 #include <unordered_map>
 
@@ -16,7 +19,7 @@ class EntityList {
 	public:
 		EntityList(void);
 		void update(Game *game, float dt);
-		void render(Game *game);
+		void setSpriteRenderList(Game *game, SpriteRenderer* sprite_renderer);
 		void clearEntities(void);
 		Entity * getEntityFromId(EntityId id);
 		EntityId addEntity(Game *game, EntityType type);
@@ -29,6 +32,7 @@ class EntityList {
 		std::array<Entity, MAX_ENTITIES> entities;
 		std::unordered_map<EntityId, Entity *> id_to_entity;
 		std::array<EntityHandler, MAX_ENTITY_TYPES> type_to_handler;
+
 		size_t num_entities;
 		EntityId next_id;
 };

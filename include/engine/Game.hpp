@@ -6,6 +6,7 @@
 #include "engine/EntityList.hpp"
 #include "core/ResourceManager.hpp"
 #include "engine/World.hpp"
+#include "engine/SpriteRenderer.hpp"
 
 #include <array>
 #include <unordered_map>
@@ -57,6 +58,7 @@ class Game {
 		Context context;
 		EntityList entity_list;
 		ResourceManager resource_manager;
+		SpriteRenderer sprite_renderer;
 		World world;
 
 		Vec2 camera_position;

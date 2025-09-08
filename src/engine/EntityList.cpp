@@ -16,18 +16,18 @@ void EntityList::update(Game *game, float dt) {
 		entity.position.y += entity.velocity.y * dt;
 		findAndSolveEntityCollisions(game, game->getWorld(), entity, Entity::AXIS_Y);
 
-		if(handler.update == NULL)
-			continue;
+		if(handler.update != NULL)
+			handler.update(game, &entity, dt);
 
-		handler.update(game, &entity, dt);
+		entity.updateSprite();
 	}
 }
 
-void EntityList::render(Game *game) {
-	for(size_t i = 0; i < num_entities; i++) {
-		Entity& entity = entities[i];
+void EntityList::setSpriteRenderList(Game *game, SpriteRenderer* sprite_renderer) {
+	sprite_renderer->reset();
 
-		entity.render(game);
+	for(Entity& entity : entities) {
+		sprite_renderer->addSpriteToRenderList(game, entity.sprite);
 	}
 }
 

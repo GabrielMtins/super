@@ -4,16 +4,69 @@
 
 #define EPS 0.01f
 
+Sprite::Sprite(void) {
+	cell = 0;
+	texture = NULL;
+	flip_x = false;
+	flip_y = false;
+	hud_element = false;
+	layer = 0;
+}
+
+void Sprite::setTexture(Texture *texture) {
+	this->texture = texture;
+
+	size = Vec2(
+			texture->getCellWidth(),
+			texture->getCellHeight()
+			);
+}
+
+bool Sprite::isOnCamera(const Game *game) const {
+	Vec2 render_position;
+
+	if(texture == NULL)
+		return false;
+
+	render_position = position + offset;
+
+	if(!hud_element) {
+		render_position -= game->getCameraPosition();
+	}
+
+	return Hitbox::checkCollision(
+			render_position,
+			size,
+			Vec2::zero,
+			game->getScreenDimensions()
+			);
+}
+
+void Sprite::render(Game *game) const {
+	Vec2 render_position;
+
+	if(texture == NULL)
+		return;
+
+	render_position = position;
+	
+	if(!hud_element) {
+		render_position -= game->getCameraPosition();
+	}
+
+	texture->renderCell(
+			game->getContext(),
+			(int) roundf(render_position.x),
+			(int) roundf(render_position.y),
+			cell,
+			flip_x,
+			flip_y
+			);
+}
+
 Entity::Entity(void) {
 	id = -1;
 	alive = false;
-	hud_element = false;
-	texture = NULL;
-
-	texture_cell = 0;
-
-	flip_x = false;
-	flip_y = false;
 
 	target_id = -1;
 	child_id = -1;
@@ -24,28 +77,6 @@ Entity::Entity(void) {
 	collision_trigger = 0;
 }
 
-void Entity::render(Game *game) const {
-	if(texture == NULL)
-		return;
-
-	Vec2 render_position;
-
-	render_position = position + texture_offset;
-	
-	if(!hud_element) {
-		render_position -= game->getCameraPosition();
-	}
-
-	texture->renderCell(
-			game->getContext(),
-			(int) roundf(render_position.x),
-			(int) roundf(render_position.y),
-			texture_cell,
-			flip_x,
-			flip_y
-			);
-}
-
 bool Entity::checkCollision(const Vec2& other_pos, const Vec2& other_size) const {
 	return Hitbox::checkCollision(
 			position,
@@ -53,6 +84,10 @@ bool Entity::checkCollision(const Vec2& other_pos, const Vec2& other_size) const
 			other_pos,
 			other_size
 			);
+}
+
+void Entity::updateSprite(void) {
+	sprite.position = position - sprite.offset;
 }
 
 bool Entity::checkCollision(const Entity& other) const {

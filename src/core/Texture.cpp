@@ -70,6 +70,14 @@ void Texture::unload(void) {
 	}
 }
 
+int Texture::getCellWidth(void) const {
+	return cell_width;
+}
+
+int Texture::getCellHeight(void) const {
+	return cell_height;
+}
+
 SDL_Rect Texture::getCell(int cell) {
 	int cell_x, cell_y;
 	SDL_Rect rect = {0, 0, 0, 0};

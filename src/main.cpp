@@ -7,7 +7,6 @@
  * TODO:
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
- * Adicionar handler de colisão e de trigger
  *
  * DONE:
  * Adicionar interface de input no game
@@ -18,6 +17,20 @@
  * Adicionar interfaces no Game para obter recursos
  * Adicionar sistema de câmera no game
  * Terminar renderização de mundo
+ * Adicionar handler de colisão e de trigger
+ * Adicionar sistemas de sprites (renderização)
+ * Adicionar sprite renderer a parte
+ *
+ * Divisão de pastas explicadas:
+ * - core: pasta utilizada para o core da engine, que pode ser reutilizado
+ *   para outros projetos, como interfaces para as estruturas básicas do SDL2,
+ *   interfaces para carregamento de arquivos etc.
+ * - engine: pasta utilizada para a engine de fato, onde deverão estar mais
+ *   ou menos as partes generalizadas, sistemas de colisão, update, renderização
+ *   etc.
+ * - game: pasta onde está o código do jogo de fato. Por exemplo, código de
+ *   inimigos, player, cenas customizadas, leitura de arquivos, definição
+ *   de tamanho da tela etc.
  */
 
 int main(int argc, char **argv) {
@@ -42,8 +55,9 @@ int main(int argc, char **argv) {
 	entity_list->addEntity(game, 0);
 
 	Entity *entity = entity_list->getEntityFromId(entity_list->addEntity(game, 1));
-	entity->texture = game->getTexture("character");
-	//entity->hud_element = true;
+	entity->sprite.setTexture(game->getTexture("character"));
+	entity->position = Vec2(50.0f, 100.0f);
+	entity->sprite.layer = 0;
 
 	game->run();
 

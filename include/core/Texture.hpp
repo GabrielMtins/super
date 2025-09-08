@@ -10,6 +10,8 @@ class Texture {
 		void setCellSize(int cell_width, int cell_height);
 		void renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y);
 		void unload(void);
+		int getCellWidth(void) const;
+		int getCellHeight(void) const;
 
 	private:
 		SDL_Texture *texture;

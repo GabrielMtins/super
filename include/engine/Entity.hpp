@@ -11,6 +11,25 @@ class Game;
 using EntityId = int;
 using EntityType = int;
 
+struct Sprite {
+	Sprite(void);
+	void setTexture(Texture *texture);
+	bool isOnCamera(const Game *game) const;
+	void render(Game *game) const;
+
+	Vec2 position;
+	Vec2 size;
+	Vec2 offset;
+	int cell;
+	Texture *texture;
+	bool hud_element;
+
+	bool flip_x;
+	bool flip_y;
+
+	int layer;
+};
+
 struct Entity {
 	enum Axis {
 		AXIS_X,
@@ -18,7 +37,7 @@ struct Entity {
 	};
 
 	Entity(void);
-	void render(Game *game) const;
+	void updateSprite(void);
 	bool checkCollision(const Vec2& other_pos, const Vec2& other_size) const;
 	bool checkCollision(const Entity& other) const;
 	bool solveCollision(const Entity& other, Axis axis);
@@ -27,19 +46,15 @@ struct Entity {
 
 	Vec2 position;
 	Vec2 size;
-	Vec2 texture_offset;
 	Vec2 velocity;
+
+	Sprite sprite;
 
 	EntityId id;
 	EntityType type;
 
 	bool alive;
 	bool hud_element;
-
-	Texture *texture;
-	int texture_cell;
-	bool flip_x;
-	bool flip_y;
 
 	EntityId target_id;
 	EntityId child_id;

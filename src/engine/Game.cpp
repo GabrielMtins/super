@@ -103,7 +103,10 @@ void Game::loop(void) {
 	entity_list.update(this, dt);
 
 	context.renderClear(0x00, 0x00, 0x00, 0xff);
-	entity_list.render(this);
+
+	entity_list.setSpriteRenderList(this, &sprite_renderer);
+	sprite_renderer.render(this);
+
 	world.render(this, 0);
 	context.renderPresent();
 

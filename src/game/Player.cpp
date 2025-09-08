@@ -2,7 +2,7 @@
 
 namespace Player {
 	static void create(Game *game, Entity *entity) {
-		entity->texture = game->getTexture("character");
+		entity->sprite.setTexture(game->getTexture("character"));
 		entity->collision_mask = 1;
 		entity->size = Vec2(24.0f, 24.0f);
 	}
@@ -18,6 +18,7 @@ namespace Player {
 
 		game->setCameraPosition(camera_pos);
 		entity->velocity.x = 0.0f;
+		entity->velocity.y = 0.0f;
 
 		if(game->getKey(Game::INPUT_LEFT)) {
 			entity->velocity.x += -150.0f;
@@ -28,20 +29,20 @@ namespace Player {
 		}
 
 		if(game->getKey(Game::INPUT_DOWN)) {
-			entity->velocity.y += 40.0f;
+			entity->velocity.y = 150.0f;
 		}
 
-		if(game->getKey(Game::INPUT_UP) && entity->velocity.y == 0.0f) {
-			entity->velocity.y = -240.0f;
+		if(game->getKey(Game::INPUT_UP)) {
+			entity->velocity.y = -150.0f;
 		}
 
-		entity->velocity.y += 300.0f * dt;
+		//entity->velocity.y += 200.0f * dt;
 
 		//entity->texture_cell = 0;
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
-		entity->texture_cell = 2;
+		entity->sprite.cell = 2;
 	}
 };
 

@@ -79,6 +79,8 @@ struct Vec2 {
 	inline float dot(const Vec2 &other) const {
 		return x * other.x + y * other.y;
 	}
+
+	static const Vec2 zero;
 };
 
 #endif
