@@ -2,6 +2,7 @@
 #define VEC2_HPP
 
 #include <cmath>
+#include <cstdio>
 
 struct Vec2 {
 	float x, y;
@@ -78,6 +79,10 @@ struct Vec2 {
 
 	inline float dot(const Vec2 &other) const {
 		return x * other.x + y * other.y;
+	}
+
+	inline void print(void) const {
+		printf("%f %f", x, y);
 	}
 
 	static const Vec2 zero;

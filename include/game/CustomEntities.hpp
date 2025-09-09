@@ -11,6 +11,11 @@ enum EntityHandlerTypes {
 	NUM_ENTITY_TYPE
 };
 
+enum CollisionLayers {
+	COLLISIONLAYER_STATIC = 1 << 0,
+	COLLISIONLAYER_PLAYER = 1 << 1,
+};
+
 EntityHandler Player_GetHandler(void);
 
 EntityHandler Walker_GetHandler(void);

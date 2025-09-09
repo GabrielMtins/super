@@ -37,8 +37,6 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	for(bool& press : pressed) {
 		press = false;
 	}
-
-	pause();
 }
 
 void Game::run(void) {
@@ -133,6 +131,7 @@ Entity * Game::getEntityFromId(EntityId id) {
 
 void Game::quit(void) {
 	resource_manager.quit();
+	text_generator.quit();
 	context.quit();
 }
 

@@ -10,6 +10,7 @@
 
 #define ENTITY_MAX_TIMERS 4
 #define ENTITY_MAX_FLAGS 4
+#define ENTITY_MAX_CHILDREN 4
 
 class Game;
 
@@ -24,6 +25,8 @@ struct Sprite {
 
 	Vec2 position;
 	Vec2 size;
+	Vec2 center;
+	float angle;
 	Vec2 offset;
 	int cell;
 	Texture *texture;
@@ -71,7 +74,7 @@ struct Entity {
 	bool hud_element;
 
 	EntityId target_id;
-	EntityId child_id;
+	std::array<EntityId, ENTITY_MAX_CHILDREN> children;
 	EntityId parent_id;
 	
 	int state;

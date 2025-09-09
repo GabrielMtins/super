@@ -1,70 +1,102 @@
 #include "game/CustomEntities.hpp"
 
 namespace Player {
+	static const float max_speed = 160.0f;
+	static const float acceleration = 800.0f;
+	static const float friction = 1000.0f;
+	static const float min_speed = 10.0f;
+
 	static void create(Game *game, Entity *entity) {
+		(void) game;
+		(void) entity;
+
 		entity->sprite.setTexture(game->getTexture("character"));
-		entity->collision_mask = 0;
+
+		entity->position = Vec2(32.0f, 32.0f);
 		entity->size = Vec2(20.0f, 20.0f);
-		entity->collision_layer = 1;
-		entity->collision_mask = 1;
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
 
-		entity->pause_mode = Entity::PAUSEMODE_WHENPAUSED;
+		entity->collision_layer |= COLLISIONLAYER_PLAYER;
+		entity->collision_mask |= COLLISIONLAYER_STATIC;
+
+		printf("%u\n", entity->collision_mask);
 	}
 
-	static void update(Game *game, Entity *entity, float dt) {
-		Vec2 camera_pos(
-				entity->position.x - game->getScreenDimensions().x / 2,
-				-32.0f
-			   );
-
-		if(camera_pos.x < 0.0f)
-			camera_pos.x = 0.0f;
-
-		game->setCameraPosition(camera_pos);
-		entity->velocity.x = 0.0f;
+	static Vec2 handleInput(Game *game, Entity *entity) {
+		Vec2 direction;
 
 		if(game->getKey(Game::INPUT_LEFT)) {
-			entity->velocity.x += -150.0f;
-			entity->sprite.flip_x = true;
+			direction.x -= 1.0f;
 		}
 
 		if(game->getKey(Game::INPUT_RIGHT)) {
-			entity->velocity.x += 150.0f;
-			entity->sprite.flip_x = false;
+			direction.x += 1.0f;
+		}
+
+		if(game->getKey(Game::INPUT_UP)) {
+			direction.y -= 1.0f;
 		}
 
 		if(game->getKey(Game::INPUT_DOWN)) {
-			entity->velocity.y = 150.0f;
+			direction.y += 1.0f;
 		}
 
-		if(game->getKey(Game::INPUT_UP) && entity->velocity.y == 0.0f) {
-			entity->velocity.y = -200.0f;
-			entity->sprite.cell = 2;
+		if(direction.lengthSqr() > 1.0f) {
+			direction = direction.normalized();
 		}
 
+		return direction;
 
-		if(game->getKeyDown(Game::INPUT_FIRE)) {
-			game->pause();
+		(void) entity;
+	}
+
+	static void handlePhysics(Game *game, Entity *entity, float dt, const Vec2& new_direction) {
+		Vec2 current_direction;
+
+		if(new_direction.lengthSqr() == 0.0f) {
+			if(entity->velocity.lengthSqr() < min_speed * min_speed) {
+				entity->velocity = Vec2::zero;
+			} else {
+				current_direction = entity->velocity.normalized();
+				entity->velocity += current_direction * (-friction) * dt;
+			}
 		}
 
-		entity->velocity.y += 200.0f * dt;
+		entity->velocity += new_direction * acceleration * dt;
 
+		if(entity->velocity.lengthSqr() > max_speed * max_speed) {
+			entity->velocity = entity->velocity.normalized() * max_speed;
+		}
+
+		//entity->velocity = direction * speed;
+		(void) game;
+	}
+
+	static void update(Game *game, Entity *entity, float dt) {
+		handlePhysics(
+				game,
+				entity,
+				dt,
+				handleInput(game, entity)
+				);
+
+		game->setCameraPosition(
+				entity->position - game->getScreenDimensions() * 0.5f
+				);
+
+		(void) game;
+		(void) entity;
+		(void) dt;
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
-		if(entity->velocity.y == 0.0f)
-			entity->sprite.cell = 0;
-
-		if(other == NULL)
-			return;
-
-		if(other->type == ENTITY_WALKER) {
-			other->alive = false;
-		}
+		(void) game;
+		(void) entity;
+		(void) other;
 	}
-};
+}
 
 EntityHandler Player_GetHandler(void) {
-	return EntityHandler(Player::create, Player::update, Player::collision);
+	using namespace Player;
+	return EntityHandler(create, update, collision);
 }

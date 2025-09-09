@@ -1,6 +1,8 @@
 #include "core/Texture.hpp"
 #include "core/Console.hpp"
 
+#define PI 3.141592f
+
 Texture::Texture(void) {
 	texture = NULL;
 	path = "";
@@ -53,6 +55,8 @@ bool Texture::generateText(Context *context, TTF_Font *font, const std::string& 
 	path = "GENERATED TEXT - " + text;
 	width = surface->w;
 	height = surface->h;
+	cell_width = surface->w;
+	cell_height = surface->h;
 
 	SDL_FreeSurface(surface);
 
@@ -67,7 +71,23 @@ void Texture::setCellSize(int cell_width, int cell_height) {
 }
 
 void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y) {
+	renderCell(
+			context,
+			x,
+			y,
+			cell,
+			flip_x,
+			flip_y,
+			cell_width / 2,
+			cell_height / 2,
+			0.0f
+			);
+}
+
+void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y, int center_x, int center_y, float angle) {
 	SDL_Rect src_rect, dst_rect;
+	SDL_Point center;
+	const SDL_Point *used_center = NULL;
 	const SDL_Rect *used_src_rect = NULL;
 
 	dst_rect.x = x;
@@ -83,13 +103,20 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 		dst_rect.h = height;
 	}
 
+	center.x = center_x;
+	center.y = center_y;
+
+	if(center_x >= 0 && center_y >= 0) {
+		used_center = &center;
+	}
+
 	SDL_RenderCopyEx(
 			context->getRenderer(),
 			texture,
 			used_src_rect,
 			&dst_rect,
-			0,
-			NULL,
+			angle * 180.0f / PI,
+			used_center,
 			(SDL_RendererFlip) ((flip_x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (flip_y ?	SDL_FLIP_VERTICAL : SDL_FLIP_NONE))
 			);
 }

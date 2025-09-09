@@ -11,6 +11,7 @@ Sprite::Sprite(void) {
 	flip_y = false;
 	hud_element = false;
 	layer = 0;
+	angle = 0.0f;
 }
 
 void Sprite::setTexture(Texture *texture) {
@@ -20,6 +21,8 @@ void Sprite::setTexture(Texture *texture) {
 			texture->getCellWidth(),
 			texture->getCellHeight()
 			);
+
+	center = size / 2;
 }
 
 bool Sprite::isOnCamera(const Game *game) const {
@@ -56,11 +59,14 @@ void Sprite::render(Game *game) const {
 
 	texture->renderCell(
 			game->getContext(),
-			(int) roundf(render_position.x),
-			(int) roundf(render_position.y),
+			(int) floorf(render_position.x),
+			(int) floorf(render_position.y),
 			cell,
 			flip_x,
-			flip_y
+			flip_y,
+			center.x,
+			center.y,
+			angle
 			);
 }
 
@@ -69,8 +75,10 @@ Entity::Entity(void) {
 	alive = false;
 
 	target_id = -1;
-	child_id = -1;
 	parent_id = -1;
+
+	for(EntityId& i : children)
+		i = -1;
 
 	collision_layer = 0;
 	collision_mask = 0;

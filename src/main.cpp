@@ -55,14 +55,10 @@ int main(int argc, char **argv) {
 
 	world->load(game->getContext(), "res/map01.tmj");
 	world->setTexture(game->getTexture("world_tilemap"));
-	world->setCollisionLayer(1);
+	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
 	game->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
-	game->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
 	game->addEntity(ENTITY_PLAYER);
-	game->addEntity(ENTITY_WALKER);
-
-	printf("%lu\n", sizeof(Game) / 1024);
 
 	game->run();
 
