@@ -5,11 +5,17 @@ Context::Context(void) {
 	window = NULL;
 	renderer = NULL;
 	running = false;
+
+	mouse_x = 0;
+	mouse_y = 0;
 }
 
 void Context::init(const std::string& title, int internal_width, int internal_height) {
 	this->internal_width = internal_width;
 	this->internal_height = internal_height;
+
+	this->window_width = internal_width * 3;
+	this->window_height = internal_height * 3;
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
 		console.error((std::string) "[Context] Failed to initialize SDL2: " + SDL_GetError());
@@ -48,9 +54,9 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 			title.c_str(),
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
-			internal_width * 3,
-			internal_height * 3,
-			SDL_WINDOW_SHOWN
+			window_width,
+			window_height,
+			SDL_WINDOW_RESIZABLE
 			);
 
 	if(window == NULL) {
@@ -74,6 +80,11 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
+	//window_width = 1920;
+	//window_height = 1080;
+	SDL_ShowCursor(0);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	running = true;
 }
 
@@ -82,6 +93,18 @@ void Context::pollEvents(void) {
 		switch(event.type) {
 			case SDL_QUIT:
 				running = false;
+				break;
+			
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+			case SDL_WINDOWEVENT_RESIZED:
+				window_width = event.window.data1;
+				window_height = event.window.data2;
+				printf("\n\n?\n\n");
+				break;
+
+			case SDL_MOUSEMOTION:
+				mouse_x = event.motion.x;
+				mouse_y = event.motion.y;
 				break;
 		}
 	}
@@ -123,4 +146,19 @@ int Context::getInternalWidth(void) const {
 
 int Context::getInternalHeight(void) const {
 	return internal_height;
+}
+
+int Context::getWindowWidth(void) const {
+	return window_width;
+}
+
+int Context::getWindowHeight(void) const {
+	return window_height;
+}
+
+int Context::getMouseX(void) const {
+	return mouse_x;
+}
+int Context::getMouseY(void) const {
+	return mouse_y;
 }

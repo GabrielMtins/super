@@ -8,6 +8,8 @@
 enum EntityHandlerTypes {
 	ENTITY_PLAYER,
 	ENTITY_WALKER,
+	ENTITY_CROSSHAIR,
+	ENTITY_BULLET,
 	NUM_ENTITY_TYPE
 };
 
@@ -19,5 +21,9 @@ enum CollisionLayers {
 EntityHandler Player_GetHandler(void);
 
 EntityHandler Walker_GetHandler(void);
+
+EntityHandler Bullet_GetHandler(void);
+
+EntityHandler Crosshair_GetHandler(void);
 
 #endif

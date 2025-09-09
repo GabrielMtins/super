@@ -6,24 +6,31 @@ namespace Player {
 	static const float friction = 1000.0f;
 	static const float min_speed = 10.0f;
 
+	static const int CROSSHAIR_CHILD = 0;
+
 	static void create(Game *game, Entity *entity) {
 		(void) game;
 		(void) entity;
 
 		entity->sprite.setTexture(game->getTexture("character"));
+		entity->sprite.hud_element;
 
-		entity->position = Vec2(32.0f, 32.0f);
 		entity->size = Vec2(20.0f, 20.0f);
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
+		entity->position = Vec2(200.0f, 100.0f);
 
 		entity->collision_layer |= COLLISIONLAYER_PLAYER;
 		entity->collision_mask |= COLLISIONLAYER_STATIC;
 
-		printf("%u\n", entity->collision_mask);
+		//printf("%u\n", entity->collision_mask);
 	}
 
 	static Vec2 handleInput(Game *game, Entity *entity) {
 		Vec2 direction;
+
+		if(entity->children[CROSSHAIR_CHILD] == -1) {
+			entity->children[CROSSHAIR_CHILD] = game->addEntity(ENTITY_CROSSHAIR);
+		}
 
 		if(game->getKey(Game::INPUT_LEFT)) {
 			direction.x -= 1.0f;
@@ -39,6 +46,15 @@ namespace Player {
 
 		if(game->getKey(Game::INPUT_DOWN)) {
 			direction.y += 1.0f;
+		}
+
+		if(game->getKeyDown(Game::INPUT_FIRE)) {
+			Entity *bullet = game->getEntityFromId(game->addEntity(3));
+			Entity *crosshair = game->getEntityFromId(entity->children[CROSSHAIR_CHILD]);
+
+			bullet->position = entity->position + entity->size / 2;
+
+			bullet->velocity = (crosshair->position - bullet->position).normalized() * 400.0f;
 		}
 
 		if(direction.lengthSqr() > 1.0f) {
@@ -83,6 +99,9 @@ namespace Player {
 		game->setCameraPosition(
 				entity->position - game->getScreenDimensions() * 0.5f
 				);
+
+		//entity->velocity = game->getMouseMotion() * 1000 / dt;
+		//entity->position += game->getMouseMotion() * 800;
 
 		(void) game;
 		(void) entity;

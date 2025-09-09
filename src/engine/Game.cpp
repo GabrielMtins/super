@@ -1,7 +1,7 @@
 #include "engine/Game.hpp"
 
 Game::Game(void) {
-	dt = 0.0f;
+	dt = 0.01f;
 	current_tick = 0;
 }
 
@@ -97,6 +97,10 @@ const Vec2& Game::getScreenDimensions(void) const {
 	return screen_dimensions;
 }
 
+const Vec2& Game::getMousePosition(void) const {
+	return mouse_position;
+}
+
 bool Game::getKey(InputType input_type) const {
 	return pressed[input_type];
 }
@@ -140,6 +144,7 @@ void Game::loop(void) {
 
 	context.pollEvents();
 	updateKeyState();
+	updateMouseState();
 
 	entity_list.update(this, dt);
 
@@ -176,4 +181,11 @@ void Game::updateKeyState(void) {
 
 		pressed[i] = new_state;
 	}
+}
+
+void Game::updateMouseState(void) {
+	mouse_position = Vec2(
+			(float) context.getMouseX(),
+			(float) context.getMouseY()
+			);
 }

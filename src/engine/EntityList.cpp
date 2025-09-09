@@ -81,6 +81,50 @@ void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler)
 	type_to_handler[type] = handler;
 }
 
+const EntityFoundList& EntityList::findEntitiesByType(EntityType type) {
+	found_entities.clear();
+
+	for(size_t i = 0; i < num_entities; i++) {
+		const Entity& entity = entities[i];
+
+		if(entity.type == type)
+			found_entities.push_back(entity.getId());
+	}
+
+	return found_entities;
+}
+
+const EntityFoundList& EntityList::findEntitiesByRadius(const Vec2& position, float radius) {
+	found_entities.clear();
+
+	for(size_t i = 0; i < num_entities; i++) {
+		const Entity& entity = entities[i];
+
+		if((entity.position - position).lengthSqr() < radius * radius)
+			found_entities.push_back(entity.getId());
+	}
+
+	return found_entities;
+}
+
+const EntityFoundList& EntityList::findEntitiesByRadiusAndType(EntityType type, const Vec2& position, float radius) {
+	found_entities.clear();
+
+	for(size_t i = 0; i < num_entities; i++) {
+		const Entity& entity = entities[i];
+
+		if(entity.type != type)
+			continue;
+
+		if((entity.position - position).lengthSqr() > radius * radius)
+			continue;
+
+		found_entities.push_back(entity.getId());
+	}
+
+	return found_entities;
+}
+
 void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {
 	EntityHandler& handler = type_to_handler[entity.type];
 

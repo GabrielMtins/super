@@ -25,6 +25,12 @@ class Context {
 		int getInternalWidth(void) const;
 		int getInternalHeight(void) const;
 
+		int getWindowWidth(void) const;
+		int getWindowHeight(void) const;
+
+		int getMouseX(void) const;
+		int getMouseY(void) const;
+
 	private:
 		SDL_Window *window;
 		SDL_Renderer* renderer;
@@ -32,6 +38,9 @@ class Context {
 		SDL_Event event;
 		bool running;
 		int internal_width, internal_height;
+		int window_width, window_height;
+
+		int mouse_x, mouse_y;
 };
 
 #endif

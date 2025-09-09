@@ -82,7 +82,7 @@ struct Vec2 {
 	}
 
 	inline void print(void) const {
-		printf("%f %f", x, y);
+		printf("%f %f\n", x, y);
 	}
 
 	static const Vec2 zero;

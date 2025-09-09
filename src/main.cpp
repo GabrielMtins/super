@@ -9,6 +9,7 @@
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
  * Adicionar leitor de inimigos para as fases
+ * Fazer input de mouse e suas coordenadas no game
  *
  * DONE:
  * Adicionar interface de input no game
@@ -58,7 +59,11 @@ int main(int argc, char **argv) {
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
 	game->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
+	game->addHandlerToType(ENTITY_CROSSHAIR, Crosshair_GetHandler());
+	game->addHandlerToType(ENTITY_BULLET, Bullet_GetHandler());
+
 	game->addEntity(ENTITY_PLAYER);
+	//game->addEntity(ENTITY_CROSSHAIR);
 
 	game->run();
 

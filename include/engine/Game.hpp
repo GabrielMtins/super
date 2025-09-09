@@ -46,6 +46,7 @@ class Game {
 		bool isPaused(void);
 
 		const Vec2& getScreenDimensions(void) const;
+		const Vec2& getMousePosition(void) const;
 
 		bool getKey(InputType input_type) const;
 		bool getKeyDown(InputType input_type) const;
@@ -59,12 +60,12 @@ class Game {
 		EntityId addEntity(EntityType type);
 		Entity * getEntityFromId(EntityId id);
 
-
 		void quit(void);
 
 	private:
 		void loop(void);
 		void updateKeyState(void);
+		void updateMouseState(void);
 
 		Context context;
 		EntityList entity_list;
@@ -75,6 +76,7 @@ class Game {
 
 		Vec2 camera_position;
 		Vec2 screen_dimensions;
+		Vec2 mouse_position;
 
 		std::array<bool, MAX_INPUT> pressed;
 		std::array<Tick, MAX_INPUT> input_tick_down;
