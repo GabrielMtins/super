@@ -20,5 +20,10 @@ rm -f $custom_entities_modified
 
 sed "s/ExampleEntity/$1/g; s/ENTITY_EXAMPLEENTITY/ENTITY_$allcaps/g" $default_file > $file
 
-sed -i -e "/NUM_ENTITY_TYPE/i\ \tENTITY_$allcaps," -e "/#endif/i\\EntityHandler $1_GetHandler(void);\n" $custom_entities_header
+found_already=$(grep "$allcaps" $custom_entities_header)
+
+if [ -z $found_already ]; then
+	sed -i -e "/NUM_ENTITY_TYPE/i\ \tENTITY_$allcaps," -e "/#endif/i\\EntityHandler $1_GetHandler(void);\n" $custom_entities_header
+fi
+
 ./generate_customentities.sh > $custom_entities_modified
