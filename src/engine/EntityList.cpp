@@ -81,7 +81,7 @@ void EntityList::addHandlerToType(EntityType type, const EntityHandler& handler)
 	type_to_handler[type] = handler;
 }
 
-const EntityFoundList& EntityList::findEntitiesByType(EntityType type) {
+EntityFoundList EntityList::findEntity(EntityType type) {
 	found_entities.clear();
 
 	for(size_t i = 0; i < num_entities; i++) {
@@ -94,7 +94,7 @@ const EntityFoundList& EntityList::findEntitiesByType(EntityType type) {
 	return found_entities;
 }
 
-const EntityFoundList& EntityList::findEntitiesByRadius(const Vec2& position, float radius) {
+EntityFoundList EntityList::findEntity(const Vec2& position, float radius) {
 	found_entities.clear();
 
 	for(size_t i = 0; i < num_entities; i++) {
@@ -107,7 +107,7 @@ const EntityFoundList& EntityList::findEntitiesByRadius(const Vec2& position, fl
 	return found_entities;
 }
 
-const EntityFoundList& EntityList::findEntitiesByRadiusAndType(EntityType type, const Vec2& position, float radius) {
+EntityFoundList EntityList::findEntity(EntityType type, const Vec2& position, float radius) {
 	found_entities.clear();
 
 	for(size_t i = 0; i < num_entities; i++) {

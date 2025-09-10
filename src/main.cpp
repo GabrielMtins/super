@@ -58,12 +58,10 @@ int main(int argc, char **argv) {
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
-	game->addHandlerToType(ENTITY_PLAYER, Player_GetHandler());
-	game->addHandlerToType(ENTITY_CROSSHAIR, Crosshair_GetHandler());
-	game->addHandlerToType(ENTITY_BULLET, Bullet_GetHandler());
+	Custom_AddEntityTypes(game);
 
 	game->addEntity(ENTITY_PLAYER);
-	//game->addEntity(ENTITY_CROSSHAIR);
+	game->addEntity(ENTITY_ZOMBIE);
 
 	game->run();
 

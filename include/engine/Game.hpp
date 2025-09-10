@@ -25,6 +25,12 @@ class Game {
 			NUM_INPUTS
 		};
 
+		enum MouseButton {
+			MOUSEBUTTON_LEFT = 1,
+			MOUSEBUTTON_MIDDLE,
+			MOUSEBUTTON_RIGHT,
+		};
+
 		Game(void);
 		void init(const std::string& title, int internal_width, int internal_height);
 		void run(void);
@@ -52,6 +58,10 @@ class Game {
 		bool getKeyDown(InputType input_type) const;
 		bool getKeyUp(InputType input_type) const;
 
+		bool getMouseButton(MouseButton mouse_button) const;
+		bool getMouseButtonDown(MouseButton mouse_button) const;
+		bool getMouseButtonUp(MouseButton mouse_button) const;
+
 		void setKeyInput(InputType input_type, int scancode);
 
 		Tick getCurrentTick(void);
@@ -59,6 +69,10 @@ class Game {
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 		EntityId addEntity(EntityType type);
 		Entity * getEntityFromId(EntityId id);
+
+		EntityFoundList findEntity(const Vec2& position, float radius);
+		EntityFoundList findEntity(EntityType type);
+		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 
 		void quit(void);
 
@@ -87,6 +101,8 @@ class Game {
 		float dt;
 
 		bool paused;
+		uint32_t old_mouse_state;
+		uint32_t mouse_state;
 };
 
 #endif

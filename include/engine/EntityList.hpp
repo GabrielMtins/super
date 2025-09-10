@@ -16,7 +16,7 @@ class Game;
 #define MAX_ENTITIES 1024
 #define MAX_ENTITY_TYPES 64
 
-using EntityFoundList = std::vector<EntityId>;
+using EntityFoundList = const std::vector<EntityId>&;
 
 class EntityList {
 	public:
@@ -27,9 +27,9 @@ class EntityList {
 		Entity * getEntityFromId(EntityId id);
 		EntityId addEntity(Game *game, EntityType type);
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
-		const EntityFoundList& findEntitiesByType(EntityType type);
-		const EntityFoundList& findEntitiesByRadius(const Vec2& position, float radius);
-		const EntityFoundList& findEntitiesByRadiusAndType(EntityType type, const Vec2& position, float radius);
+		EntityFoundList findEntity(EntityType type);
+		EntityFoundList findEntity(const Vec2& position, float radius);
+		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 
 	private:
 		void findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity);
@@ -41,7 +41,7 @@ class EntityList {
 		std::array<Entity, MAX_ENTITIES> entities;
 		std::unordered_map<EntityId, Entity *> id_to_entity;
 		std::array<EntityHandler, MAX_ENTITY_TYPES> type_to_handler;
-		EntityFoundList found_entities;
+		std::vector<EntityId> found_entities;
 
 		size_t num_entities;
 		EntityId next_id;

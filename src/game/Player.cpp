@@ -2,8 +2,8 @@
 
 namespace Player {
 	static const float max_speed = 160.0f;
-	static const float acceleration = 800.0f;
-	static const float friction = 1000.0f;
+	static const float acceleration = 1600.0f;
+	static const float friction = 800.0f;
 	static const float min_speed = 10.0f;
 
 	static const int CROSSHAIR_CHILD = 0;
@@ -48,8 +48,8 @@ namespace Player {
 			direction.y += 1.0f;
 		}
 
-		if(game->getKeyDown(Game::INPUT_FIRE)) {
-			Entity *bullet = game->getEntityFromId(game->addEntity(3));
+		if(game->getMouseButtonDown(Game::MOUSEBUTTON_LEFT)) {
+			Entity *bullet = game->getEntityFromId(game->addEntity(ENTITY_BULLET));
 			Entity *crosshair = game->getEntityFromId(entity->children[CROSSHAIR_CHILD]);
 
 			bullet->position = entity->position + entity->size / 2;

@@ -37,6 +37,9 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	for(bool& press : pressed) {
 		press = false;
 	}
+
+	mouse_state = 0;
+	old_mouse_state = 0;
 }
 
 void Game::run(void) {
@@ -113,6 +116,18 @@ bool Game::getKeyUp(InputType input_type) const {
 	return input_tick_up[input_type] == current_tick;
 }
 
+bool Game::getMouseButton(MouseButton mouse_button) const {
+	return mouse_state & SDL_BUTTON(mouse_button);
+}
+bool Game::getMouseButtonDown(MouseButton mouse_button) const {
+	return (mouse_state & SDL_BUTTON(mouse_button)) && 
+		!(old_mouse_state & SDL_BUTTON(mouse_button));
+}
+bool Game::getMouseButtonUp(MouseButton mouse_button) const {
+	return !(mouse_state & SDL_BUTTON(mouse_button)) && 
+		(old_mouse_state & SDL_BUTTON(mouse_button));
+}
+
 void Game::setKeyInput(InputType input_type, int scancode) {
 	input_to_keys[input_type] = scancode;
 }
@@ -131,6 +146,18 @@ EntityId Game::addEntity(EntityType type) {
 
 Entity * Game::getEntityFromId(EntityId id) {
 	return entity_list.getEntityFromId(id);
+}
+
+EntityFoundList Game::findEntity(const Vec2& position, float radius) {
+	return entity_list.findEntity(position, radius);
+}
+
+EntityFoundList Game::findEntity(EntityType type) {
+	return entity_list.findEntity(type);
+}
+
+EntityFoundList Game::findEntity(EntityType type, const Vec2& position, float radius) {
+	return entity_list.findEntity(type, position, radius);
 }
 
 void Game::quit(void) {
@@ -188,4 +215,7 @@ void Game::updateMouseState(void) {
 			(float) context.getMouseX(),
 			(float) context.getMouseY()
 			);
+
+	old_mouse_state = mouse_state;
+	mouse_state = SDL_GetMouseState(NULL, NULL);
 }
