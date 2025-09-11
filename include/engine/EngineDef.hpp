@@ -12,6 +12,8 @@
 #define MAX_SPRITES 64
 
 #define MAX_LAYERS 3
+#define WORLD_LAYER_BG 0
+#define WORLD_LAYER_FG 1
 #define MAX_TILES (256 * 256)
 
 using EntityId = int;

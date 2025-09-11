@@ -10,6 +10,7 @@ Sprite::Sprite(void) {
 	flip_x = false;
 	flip_y = false;
 	hud_element = false;
+	ignore_camera = false;
 	layer = 0;
 	angle = 0.0f;
 }
@@ -33,7 +34,7 @@ bool Sprite::isOnCamera(const Game *game) const {
 
 	render_position = position + offset;
 
-	if(!hud_element) {
+	if(!ignore_camera) {
 		render_position -= game->getCameraPosition();
 	}
 
@@ -53,7 +54,7 @@ void Sprite::render(Game *game) const {
 
 	render_position = position;
 	
-	if(!hud_element) {
+	if(!ignore_camera) {
 		render_position -= game->getCameraPosition();
 	}
 
@@ -166,7 +167,7 @@ bool Entity::checkCollision(const World* world) const {
 
 	for(int j = min_y; j < max_y; j++) {
 		for(int i = min_x; i < max_x; i++) {
-			if(!world->getTile(i, j, 0)) {
+			if(!world->getTile(i, j, WORLD_LAYER_FG)) {
 				continue;
 			}
 

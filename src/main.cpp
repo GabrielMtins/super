@@ -9,8 +9,6 @@
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
  * Adicionar leitor de inimigos para as fases
- * Ajeitar configurações de renderização
- * Mover as definições para um único hpp
  *
  * DONE:
  * Adicionar interface de input no game
@@ -27,6 +25,8 @@
  * Adicionar gerador de textos para chaves dadas
  * Adicionar modo de pause
  * Fazer input de mouse e suas coordenadas no game
+ * Ajeitar configurações de renderização
+ * Mover as definições para um único hpp
  *
  * Divisão de pastas explicadas:
  * - core: pasta utilizada para o core da engine, que pode ser reutilizado

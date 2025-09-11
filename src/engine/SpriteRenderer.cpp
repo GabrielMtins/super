@@ -4,20 +4,26 @@
 #include <algorithm>
 
 SpriteRenderer::SpriteRenderer(void) {
-	num_sprites = 0;
+	reset();
 }
 
 void SpriteRenderer::reset(void) {
 	num_sprites = 0;
+	num_hud = 0;
 }
 
 void SpriteRenderer::addSpriteToRenderList(const Game *game, const Sprite& sprite) {
-	if(sprite.isOnCamera(game) && num_sprites < MAX_SPRITES) {
+	if(!sprite.isOnCamera(game))
+		return;
+
+	if(!sprite.hud_element && num_sprites < MAX_SPRITES) {
 		sprites[num_sprites++] = sprite;
+	} else if(sprite.hud_element && num_hud < MAX_SPRITES){
+		hud[num_hud++] = sprite;
 	}
 }
 
-void SpriteRenderer::render(Game *game) {
+void SpriteRenderer::renderSprites(Game *game) {
 	std::sort(
 			sprites.begin(),
 			sprites.begin() + num_sprites,
@@ -27,8 +33,18 @@ void SpriteRenderer::render(Game *game) {
 	for(size_t i = 0; i < num_sprites; i++) {
 		sprites[i].render(game);
 	}
+}
 
-	reset();
+void SpriteRenderer::renderHud(Game *game) {
+	std::sort(
+			hud.begin(),
+			hud.begin() + num_hud,
+			spriteComparison
+			);
+
+	for(size_t i = 0; i < num_hud; i++) {
+		hud[i].render(game);
+	}
 }
 
 bool SpriteRenderer::spriteComparison(const Sprite& a, const Sprite& b) {

@@ -13,7 +13,6 @@ namespace Player {
 		(void) entity;
 
 		entity->sprite.setTexture(game->getTexture("character"));
-		entity->sprite.hud_element;
 
 		entity->size = Vec2(20.0f, 20.0f);
 		entity->sprite.offset = Vec2(2.0f, 4.0f);

@@ -25,6 +25,7 @@ struct Sprite {
 	int cell;
 	Texture *texture;
 	bool hud_element;
+	bool ignore_camera;
 
 	bool flip_x;
 	bool flip_y;
@@ -65,7 +66,6 @@ struct Entity {
 	EntityType type;
 
 	bool alive;
-	bool hud_element;
 
 	EntityId target_id;
 	std::array<EntityId, ENTITY_MAX_CHILDREN> children;

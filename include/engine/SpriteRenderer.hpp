@@ -11,13 +11,16 @@ class SpriteRenderer {
 		SpriteRenderer(void);
 		void reset(void);
 		void addSpriteToRenderList(const Game *game, const Sprite& sprite);
-		void render(Game *game);
+		void renderSprites(Game *game);
+		void renderHud(Game *game);
 
 	private:
 		static bool spriteComparison(const Sprite& a, const Sprite& b);
 
 		std::array<Sprite, MAX_SPRITES> sprites;
+		std::array<Sprite, MAX_SPRITES> hud;
 		size_t num_sprites;
+		size_t num_hud;
 };
 
 #endif

@@ -7,7 +7,7 @@ namespace Crosshair {
 
 		entity->sprite.setTexture(game->getTexture("crosshair"));
 		entity->sprite.offset = entity->sprite.size / 2;
-		entity->sprite.hud_element = false;
+		entity->sprite.hud_element = true;
 
 		entity->type = ENTITY_CROSSHAIR;
 	}

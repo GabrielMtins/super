@@ -177,12 +177,17 @@ void Game::loop(void) {
 
 	context.renderClear(0x00, 0x00, 0x00, 0xff);
 
+	for(int i = WORLD_LAYER_BG; i < WORLD_LAYER_FG; i++) {
+		world.render(this, i);
+	}
+
 	entity_list.setSpriteRenderList(this, &sprite_renderer);
-	sprite_renderer.render(this);
+	sprite_renderer.renderSprites(this);
 
-	world.render(this, 0);
+	world.render(this, WORLD_LAYER_FG);
 
-	text_generator.getTexture("NAME_LANGUAGE")->render(&context, 0, 0);
+	sprite_renderer.renderHud(this);
+	sprite_renderer.reset();
 
 	context.renderPresent();
 
