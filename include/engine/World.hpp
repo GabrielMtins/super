@@ -8,8 +8,7 @@
 #include "core/Vec2.hpp"
 #include "core/Context.hpp"
 
-#define MAX_LAYERS 3
-#define MAX_TILES (256 * 256)
+#include "engine/EngineDef.hpp"
 
 class Game;
 

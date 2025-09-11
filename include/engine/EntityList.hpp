@@ -7,14 +7,13 @@
 
 #include "engine/SpriteRenderer.hpp"
 
+#include "engine/EngineDef.hpp"
+
 #include <array>
 #include <vector>
 #include <unordered_map>
 
 class Game;
-
-#define MAX_ENTITIES 1024
-#define MAX_ENTITY_TYPES 64
 
 using EntityFoundList = const std::vector<EntityId>&;
 

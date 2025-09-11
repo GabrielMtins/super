@@ -9,10 +9,10 @@
 #include "engine/World.hpp"
 #include "engine/SpriteRenderer.hpp"
 
+#include "engine/EngineDef.hpp"
+
 #include <array>
 #include <unordered_map>
-
-#define MAX_INPUT 64
 
 class Game {
 	public:

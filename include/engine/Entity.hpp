@@ -5,17 +5,11 @@
 #include "core/Texture.hpp"
 
 #include "engine/World.hpp"
+#include "engine/EngineDef.hpp"
 
 #include <array>
 
-#define ENTITY_MAX_TIMERS 4
-#define ENTITY_MAX_FLAGS 4
-#define ENTITY_MAX_CHILDREN 4
-
 class Game;
-
-using EntityId = int;
-using EntityType = int;
 
 struct Sprite {
 	Sprite(void);

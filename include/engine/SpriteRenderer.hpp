@@ -2,7 +2,7 @@
 #define SPRITERENDERER_HPP
 
 #include "engine/Entity.hpp"
-#define MAX_SPRITES 64
+#include "engine/EngineDef.hpp"
 
 class Game;
 

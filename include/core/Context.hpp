@@ -8,7 +8,7 @@
 #include <string>
 #include <cstdio>
 
-using Tick = uint32_t;
+#include "core/CoreDef.hpp"
 
 class Context {
 	public:

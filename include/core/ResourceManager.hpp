@@ -9,10 +9,9 @@
 #include "core/Texture.hpp"
 #include "core/Sfx.hpp"
 #include "core/Music.hpp"
+#include "core/CoreDef.hpp"
 
 #include "nlohmann/json_fwd.hpp"
-
-#define MAX_LEVEL_PATHS 16
 
 /**
  * Classe que lê um arquivo json com os materiais utilizados no jogo,

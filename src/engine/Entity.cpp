@@ -251,10 +251,10 @@ bool Entity::solveCollision(const Entity& other) {
 
 	if(fabsf(dir.x) < fabsf(dir.y)) {
 		position.x += dir.x;
-		velocity.x = 0.0f;
+		//velocity.x = 0.0f;
 	} else {
 		position.y += dir.y;
-		velocity.y = 0.0f;
+		//velocity.y = 0.0f;
 	}
 
 	return true;
