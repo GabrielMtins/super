@@ -11,6 +11,7 @@ namespace Zombie {
 
 		entity->size = Vec2(16.0f, 16.0f);
 
+		entity->collision_layer |= COLLISIONLAYER_STATIC;
 		entity->collision_mask |= COLLISIONLAYER_STATIC;
 	}
 

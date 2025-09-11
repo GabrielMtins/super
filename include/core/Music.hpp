@@ -3,6 +3,9 @@
 
 #include "core/Context.hpp"
 
+/**
+ * Wrapper para o Mix_Music.
+ */
 class Music {
 	public:
 		Music(void);

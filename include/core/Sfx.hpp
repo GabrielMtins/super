@@ -3,6 +3,9 @@
 
 #include "core/Context.hpp"
 
+/**
+ * Wrapper para o Mix_Chunk do SDL2.
+ */
 class Sfx {
 	public:
 		Sfx(void);

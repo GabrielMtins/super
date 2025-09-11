@@ -61,7 +61,12 @@ int main(int argc, char **argv) {
 	Custom_AddEntityTypes(game);
 
 	game->addEntity(ENTITY_PLAYER);
-	game->addEntity(ENTITY_ZOMBIE);
+
+	for(int i = 0; i < 3; i++) {
+		Entity *zombie = game->getEntityFromId(game->addEntity(ENTITY_ZOMBIE));
+
+		zombie->position.x += i * 20.0f;
+	}
 
 	game->run();
 

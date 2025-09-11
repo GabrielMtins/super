@@ -12,6 +12,11 @@ class Console {
 		void exit(int status);
 };
 
+/**
+ * Console utilizado para fazer logs. Prefira utilizá-lo no lugar do
+ * printf(), pois por ele é mais fácil mudar a stream, como redirecionar
+ * para um arquivo, por exemplo.
+ */
 extern Console console;
 
 #endif
