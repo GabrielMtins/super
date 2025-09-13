@@ -1,4 +1,5 @@
 #include "engine/Game.hpp"
+#include <iterator>
 
 Game::Game(void) {
 	dt = 0.01f;
@@ -66,6 +67,14 @@ void Game::loadFont(const std::string& filename, int size) {
 
 void Game::loadLocale(const std::string& filename, const std::string& locale_name) {
 	text_generator.loadLocale(&context, filename, locale_name);
+}
+
+void Game::loadWorld(const std::string& filename) {
+	world.load(
+			&context,
+			filename,
+			this
+			);
 }
 
 Texture * Game::getTexture(const std::string& name) {

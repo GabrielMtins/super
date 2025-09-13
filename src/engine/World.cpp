@@ -2,6 +2,7 @@
 
 #include "core/Console.hpp"
 #include "engine/Game.hpp"
+#include "engine/EntityList.hpp"
 
 #include <vector>
 #include <fstream>
@@ -15,7 +16,7 @@ World::World(void) {
 	texture = NULL;
 }
 
-bool World::load(const Context *context, const std::string& filename) {
+bool World::load(const Context *context, const std::string& filename, Game *game) {
 	std::ifstream file;
 	json data;
 
@@ -74,8 +75,14 @@ bool World::load(const Context *context, const std::string& filename) {
 		}
 
 		for(json& layer : layers) {
-			std::vector<TileId> vector_tiles = layer["data"];
-			std::copy_n(vector_tiles.begin(), vector_tiles.size(), tiles[count++].begin());
+			const std::string& type = layer["type"];
+
+			if(type == "tilelayer") {
+				std::vector<TileId> vector_tiles = layer["data"];
+				std::copy_n(vector_tiles.begin(), vector_tiles.size(), tiles[count++].begin());
+			} else if(type == "objectgroup") {
+				loadObjects(game, layer["objects"]);
+			}
 		}
 	} catch (const json::exception& ex) {
 		console.error((std::string) "[World] " + ex.what());
@@ -145,6 +152,10 @@ const Vec2& World::getTileSize(void) const {
 	return tile_size;
 }
 
+void World::setEntityTypeGid(int gid, EntityType entity_type) {
+	gid_to_id[gid] = entity_type;
+}
+
 void World::setTile(int i, int j, int layer, TileId id) {
 	if(outOfBounds(i, j, layer))
 		return;
@@ -154,4 +165,26 @@ void World::setTile(int i, int j, int layer, TileId id) {
 
 bool World::outOfBounds(int i, int j, int layer) const {
 	return (i < 0) || (j < 0) || (i >= width) || (j >= height) || (layer < 0) || (layer > MAX_LAYERS); 
+}
+
+bool World::loadObjects(Game *game, const json& j) {
+	for(const auto& object : j) {
+		if(!object.contains("gid"))
+			continue;
+
+		const EntityType type = gid_to_id[object.at("gid")];
+		Entity *entity = game->getEntityFromId(game->addEntity(type));
+
+		printf("%i\n", type);
+
+		if(object.contains("x")) {
+			entity->position.x = object["x"];
+		}
+
+		if(object.contains("y")) {
+			entity->position.y = object["y"];
+		}
+	}
+
+	return true;
 }

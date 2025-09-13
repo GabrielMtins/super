@@ -4,12 +4,12 @@
 #include "core/Vec2.hpp"
 #include "core/Texture.hpp"
 
-#include "engine/World.hpp"
 #include "engine/EngineDef.hpp"
 
 #include <array>
 
 class Game;
+class World;
 
 struct Sprite {
 	Sprite(void);

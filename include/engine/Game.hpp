@@ -40,6 +40,7 @@ class Game {
 		void loadRes(const std::string& filename);
 		void loadFont(const std::string& filename, int size);
 		void loadLocale(const std::string& filename, const std::string& locale_name);
+		void loadWorld(const std::string& filename);
 
 		Texture * getTexture(const std::string& name);
 		Sfx * getSfx(const std::string& name);

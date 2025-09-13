@@ -8,7 +8,7 @@
  * TODO:
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
- * Adicionar leitor de inimigos para as fases
+ * Refazer o sistema de geração de textura de textos
  *
  * DONE:
  * Adicionar interface de input no game
@@ -27,6 +27,7 @@
  * Fazer input de mouse e suas coordenadas no game
  * Ajeitar configurações de renderização
  * Mover as definições para um único hpp
+ * Adicionar leitor de inimigos para as fases
  *
  * Divisão de pastas explicadas:
  * - core: pasta utilizada para o core da engine, que pode ser reutilizado
@@ -54,21 +55,16 @@ int main(int argc, char **argv) {
 	game->loadFont("res/PublicPixel.ttf", 8);
 	game->loadLocale("res/locale.json", "pt-br");
 
-	World *world = game->getWorld();
+	Custom_AddEntityTypes(game);
 
-	world->load(game->getContext(), "res/map01.tmj");
+	World *world = game->getWorld();
+	world->setEntityTypeGid(257, ENTITY_ZOMBIE);
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
-	Custom_AddEntityTypes(game);
+	game->loadWorld("res/levels/map01.tmj");
 
 	game->addEntity(ENTITY_PLAYER);
-
-	for(int i = 0; i < 20; i++) {
-		Entity *zombie = game->getEntityFromId(game->addEntity(ENTITY_ZOMBIE));
-
-		zombie->position.x += i * 20.0f;
-	}
 
 	game->run();
 

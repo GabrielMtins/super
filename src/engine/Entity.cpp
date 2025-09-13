@@ -1,8 +1,10 @@
 #include "engine/Entity.hpp"
 #include "engine/Game.hpp"
 #include "core/Hitbox.hpp"
+#include "engine/World.hpp"
 
 #define EPS 0.50f
+#define MAX_DELTA 999.0f
 
 Sprite::Sprite(void) {
 	cell = 0;
@@ -219,7 +221,7 @@ bool Entity::solveCollision(const World* world, Axis axis) {
 }
 
 bool Entity::solveCollision(const Entity& other) {
-	Vec2 dir(999.0f, 999.0f);
+	Vec2 dir(MAX_DELTA, MAX_DELTA);
 	float left, right, top, bottom;
 	float other_left, other_right, other_top, other_bottom;
 
@@ -250,12 +252,10 @@ bool Entity::solveCollision(const Entity& other) {
 	
 	dir *= 1.10f;
 
-	if(fabsf(dir.x) < fabsf(dir.y)) {
+	if(fabsf(dir.x) < fabsf(dir.y) && fabsf(dir.x) < MAX_DELTA) {
 		position.x += dir.x;
-		//velocity.x = 0.0f;
-	} else {
+	} else if(fabsf(dir.y) < MAX_DELTA){
 		position.y += dir.y;
-		//velocity.y = 0.0f;
 	}
 
 	return true;
