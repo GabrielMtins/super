@@ -5,33 +5,13 @@
 #include "core/Texture.hpp"
 
 #include "engine/EngineDef.hpp"
+#include "engine/Sprite.hpp"
+#include "engine/Animator.hpp"
 
 #include <array>
 
 class Game;
 class World;
-
-struct Sprite {
-	Sprite(void);
-	void setTexture(Texture *texture);
-	bool isOnCamera(const Game *game) const;
-	void render(Game *game) const;
-
-	Vec2 position;
-	Vec2 size;
-	Vec2 center;
-	float angle;
-	Vec2 offset;
-	int cell;
-	Texture *texture;
-	bool hud_element;
-	bool ignore_camera;
-
-	bool flip_x;
-	bool flip_y;
-
-	int layer;
-};
 
 struct Entity {
 	enum Axis {
@@ -49,6 +29,8 @@ struct Entity {
 	Entity(EntityId id);
 	EntityId getId(void) const;
 	void updateSprite(void);
+	void updateAnimator(const Game *game);
+	bool getDamage(const Game *game, int damage);
 	bool checkCollision(const Vec2& other_pos, const Vec2& other_size) const;
 	bool checkCollision(const Entity& other) const;
 	bool solveCollision(const Entity& other, Axis axis);
@@ -66,6 +48,10 @@ struct Entity {
 	EntityType type;
 
 	bool alive;
+	int health;
+
+	Tick invicibility_end_tick;
+	Tick damage_cooldown;
 
 	EntityId target_id;
 	std::array<EntityId, ENTITY_MAX_CHILDREN> children;
@@ -81,6 +67,8 @@ struct Entity {
 
 	std::array<Tick, ENTITY_MAX_TIMERS> timers;
 	std::array<int, ENTITY_MAX_FLAGS> flags;
+
+	Animator animator;
 
 	private:
 		EntityId id;

@@ -141,7 +141,7 @@ void Game::setKeyInput(InputType input_type, int scancode) {
 	input_to_keys[input_type] = scancode;
 }
 
-Tick Game::getCurrentTick(void) {
+Tick Game::getCurrentTick(void) const {
 	return current_tick;
 }
 

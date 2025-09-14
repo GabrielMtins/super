@@ -28,6 +28,7 @@
  * Ajeitar configurações de renderização
  * Mover as definições para um único hpp
  * Adicionar leitor de inimigos para as fases
+ * Fazer sistema de animações
  *
  * Divisão de pastas explicadas:
  * - core: pasta utilizada para o core da engine, que pode ser reutilizado

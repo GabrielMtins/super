@@ -29,6 +29,7 @@ void EntityList::update(Game *game, float dt) {
 		if(handler.update != NULL)
 			handler.update(game, &entity, dt);
 
+		entity.updateAnimator(game);
 		entity.updateSprite();
 	}
 
@@ -134,6 +135,7 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
 		Vec2 old_position, old_velocity;
+		EntityHandler& other_handler = type_to_handler[other.type];
 
 		old_position = entity.position;
 		old_velocity = entity.velocity;
@@ -163,6 +165,10 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 
 		if(handler.collision != NULL) {
 			handler.collision(game, &entity, &other);
+		}
+
+		if(other_handler.collision != NULL) {
+			other_handler.collision(game, &other, &entity);
 		}
 	}
 }

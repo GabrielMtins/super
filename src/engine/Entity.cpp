@@ -6,73 +6,6 @@
 #define EPS 0.50f
 #define MAX_DELTA 999.0f
 
-Sprite::Sprite(void) {
-	cell = 0;
-	texture = NULL;
-	flip_x = false;
-	flip_y = false;
-	hud_element = false;
-	ignore_camera = false;
-	layer = 0;
-	angle = 0.0f;
-}
-
-void Sprite::setTexture(Texture *texture) {
-	this->texture = texture;
-
-	size = Vec2(
-			texture->getCellWidth(),
-			texture->getCellHeight()
-			);
-
-	center = size / 2;
-}
-
-bool Sprite::isOnCamera(const Game *game) const {
-	Vec2 render_position;
-
-	if(texture == NULL)
-		return false;
-
-	render_position = position + offset;
-
-	if(!ignore_camera) {
-		render_position -= game->getCameraPosition();
-	}
-
-	return Hitbox::checkCollision(
-			render_position,
-			size,
-			Vec2::zero,
-			game->getScreenDimensions()
-			);
-}
-
-void Sprite::render(Game *game) const {
-	Vec2 render_position;
-
-	if(texture == NULL)
-		return;
-
-	render_position = position;
-	
-	if(!ignore_camera) {
-		render_position -= game->getCameraPosition();
-	}
-
-	texture->renderCell(
-			game->getContext(),
-			(int) roundf(render_position.x),
-			(int) roundf(render_position.y),
-			cell,
-			flip_x,
-			flip_y,
-			center.x,
-			center.y,
-			angle
-			);
-}
-
 Entity::Entity(void) {
 	id = -1;
 	alive = false;
@@ -87,6 +20,10 @@ Entity::Entity(void) {
 	collision_mask = 0;
 	collision_trigger = 0;
 	pause_mode = PAUSEMODE_PAUSABLE;
+
+	damage_cooldown = 0;
+	invicibility_end_tick = 0;
+	health = 100;
 }
 
 Entity::Entity(EntityId id) : Entity() {
@@ -108,6 +45,31 @@ bool Entity::checkCollision(const Vec2& other_pos, const Vec2& other_size) const
 
 void Entity::updateSprite(void) {
 	sprite.position = position - sprite.offset;
+	sprite.cell = animator.getCurrentCell();
+}
+
+void Entity::updateAnimator(const Game *game) {
+	animator.update(game);
+}
+
+bool Entity::getDamage(const Game *game, int damage) {
+	bool success;
+	const Tick current_tick = game->getCurrentTick();
+
+	success = false;
+
+	if(current_tick > invicibility_end_tick) {
+		health -= damage;
+
+		invicibility_end_tick = current_tick + damage_cooldown;
+		success = true;
+	}
+
+	if(health <= 0) {
+		alive = false;
+	}
+
+	return success;
 }
 
 bool Entity::checkCollision(const Entity& other) const {

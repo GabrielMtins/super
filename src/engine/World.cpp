@@ -175,8 +175,6 @@ bool World::loadObjects(Game *game, const json& j) {
 		const EntityType type = gid_to_id[object.at("gid")];
 		Entity *entity = game->getEntityFromId(game->addEntity(type));
 
-		printf("%i\n", type);
-
 		if(object.contains("x")) {
 			entity->position.x = object["x"];
 		}

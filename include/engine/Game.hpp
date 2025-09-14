@@ -65,7 +65,7 @@ class Game {
 
 		void setKeyInput(InputType input_type, int scancode);
 
-		Tick getCurrentTick(void);
+		Tick getCurrentTick(void) const;
 
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 		EntityId addEntity(EntityType type);

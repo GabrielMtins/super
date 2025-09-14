@@ -20,6 +20,7 @@ namespace Player {
 
 		entity->collision_layer |= COLLISIONLAYER_PLAYER;
 		entity->collision_mask |= COLLISIONLAYER_STATIC;
+		entity->damage_cooldown = 200;
 
 		//printf("%u\n", entity->collision_mask);
 	}

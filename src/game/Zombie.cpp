@@ -1,6 +1,8 @@
 #include "game/CustomEntities.hpp"
 
 namespace Zombie {
+	static const int frames[] = {0, 1, -1};
+
 	static void create(Game *game, Entity *entity) {
 		(void) game;
 		(void) entity;
@@ -22,16 +24,19 @@ namespace Zombie {
 		Vec2 direction;
 		Entity *player;
 
+		entity->animator.setAnimation(frames, 200);
+
 		if(entity->target_id < 0) {
 			EntityFoundList found_list = game->findEntity(ENTITY_PLAYER);
 
 			if(found_list.size() > 0)
 				entity->target_id = found_list.at(0);
-			
-			return;
 		}
 
 		player = game->getEntityFromId(entity->target_id);
+
+		if(!player)
+			return;
 
 		direction = player->position - entity->position;
 
@@ -42,6 +47,12 @@ namespace Zombie {
 		(void) game;
 		(void) entity;
 		(void) other;
+
+		if(other != NULL && other->type == ENTITY_PLAYER) {
+			if(other->getDamage(game, 20)) {
+				printf("ouch\n");
+			}
+		}
 	}
 }
 
