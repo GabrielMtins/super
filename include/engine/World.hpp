@@ -17,10 +17,12 @@ class Game;
 class EntityList;
 
 using TileId = uint16_t;
+using LoadObjectCallback = bool (*)(Game *, const nlohmann::json&);
 
 class World {
 	public:
 		World(void);
+		void setLoadObjectCallback(LoadObjectCallback callback);
 		bool load(const Context *context, const std::string& filename, Game *game);
 		TileId getTile(int i, int j, int layer) const;
 		void setTexture(Texture *texture);
@@ -28,12 +30,12 @@ class World {
 		uint32_t getCollisionLayer(void) const;
 		void setCollisionLayer(uint32_t collision_layer);
 		const Vec2& getTileSize(void) const;
-		void setEntityTypeGid(int gid, EntityType entity_type);
 
 	private:
 		void setTile(int i, int j, int layer, TileId value);
 		bool outOfBounds(int i, int j, int layer) const;
-		bool loadObjects(Game *game, const nlohmann::json& j);
+
+		LoadObjectCallback load_object_callback;
 
 		int width, height;
 		int tile_width, tile_height;
@@ -43,7 +45,6 @@ class World {
 		uint32_t collision_layer;
 		Texture *texture;
 		std::array<TileId, MAX_TILES> tiles[MAX_LAYERS];
-		std::unordered_map<int, EntityType> gid_to_id;
 };
 
 #endif

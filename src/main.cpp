@@ -4,6 +4,8 @@
 #include "game/CustomEntities.hpp"
 #include "core/TextGenerator.hpp"
 
+#include "nlohmann/json.hpp"
+
 /*
  * TODO:
  * Adicionar leitor de configuração via json
@@ -42,6 +44,8 @@
  *   de tamanho da tela etc.
  */
 
+static bool loadObject(Game *game, const nlohmann::json& object);
+
 int main(int argc, char **argv) {
 	Game *game;
 
@@ -59,7 +63,7 @@ int main(int argc, char **argv) {
 	Custom_AddEntityTypes(game);
 
 	World *world = game->getWorld();
-	world->setEntityTypeGid(257, ENTITY_ZOMBIE);
+	world->setLoadObjectCallback(loadObject);
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
@@ -74,4 +78,34 @@ int main(int argc, char **argv) {
 	delete game;
 
 	return 0;
+}
+
+static bool loadObject(Game *game, const nlohmann::json& object) {
+	EntityType type;
+
+	if(object.contains("type")) {
+		std::string str = object.at("type");
+		printf("%s\n", str.c_str());
+	}
+
+	if(!object.contains("gid"))
+		return false;
+
+	switch((int) object["gid"]) {
+		case 257:
+			type = ENTITY_ZOMBIE;
+			break;
+	}
+
+	Entity *entity = game->getEntityFromId(game->addEntity(type));
+
+	if(object.contains("x")) {
+		entity->position.x = object["x"];
+	}
+
+	if(object.contains("y")) {
+		entity->position.y = object["y"];
+	}
+
+	return true;
 }

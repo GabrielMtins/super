@@ -16,6 +16,9 @@ Entity::Entity(void) {
 	for(EntityId& i : children)
 		i = -1;
 
+	for(Tick& i : timers)
+		i = 0;
+
 	collision_layer = 0;
 	collision_mask = 0;
 	collision_trigger = 0;
