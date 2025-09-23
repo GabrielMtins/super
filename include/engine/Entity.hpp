@@ -27,6 +27,8 @@ struct Entity {
 		EntityId getId(void) const;
 		void updateSprite(void);
 		void updateAnimator(const Game *game);
+		void updateCenter(void);
+
 		bool getDamage(const Game *game, int damage);
 	
 		Hitbox hitbox;

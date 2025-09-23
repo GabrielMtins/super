@@ -62,9 +62,6 @@ bool Hitbox::checkCollisionSolid(const Hitbox& other) const {
 }
 
 bool Hitbox::checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) const {
-	if(velocity.y < 0.0f)
-		return false;
-
 	if(position.x + size.x < other.position.x)
 		return false;
 
@@ -74,10 +71,10 @@ bool Hitbox::checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) c
 	if(position.y + size.y < other.position.y)
 		return false;
 
-	if(position.y + size.y > other.position.y + ONEWAY_EPS)
-		return false;
+	if(position.y + size.y < other.position.y + ONEWAY_EPS && velocity.y > 0.0f)
+		return true;
 
-	return true;
+	return false;
 }
 
 void Hitbox::solveCollisionSolid(const Hitbox& other) {

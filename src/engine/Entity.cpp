@@ -43,6 +43,10 @@ void Entity::updateAnimator(const Game *game) {
 	animator.update(game);
 }
 
+void Entity::updateCenter(void) {
+	center = hitbox.position + hitbox.size * 0.5f;
+}
+
 bool Entity::getDamage(const Game *game, int damage) {
 	bool success;
 	const Tick current_tick = game->getCurrentTick();

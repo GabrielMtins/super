@@ -70,7 +70,12 @@ int main(int argc, char **argv) {
 	game->loadWorld("res/levels/map01.tmj");
 
 	game->addEntity(ENTITY_PLAYER);
-	game->addEntity(ENTITY_ZOMBIE);
+
+	for(int i = 0; i < 16; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_ZOMBIE));
+
+		entity->hitbox.position.x += i * 16;
+	}
 
 	game->run();
 

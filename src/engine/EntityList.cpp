@@ -26,6 +26,8 @@ void EntityList::update(Game *game, float dt) {
 
 		findAndSolveEntityCollisions(game, game->getWorld(), entity);
 
+		entity.updateCenter();
+
 		if(handler.update != NULL)
 			handler.update(game, &entity, dt);
 
