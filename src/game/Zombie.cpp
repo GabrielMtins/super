@@ -22,9 +22,11 @@ namespace Zombie {
 		entity->sprite.setTexture(game->getTexture("walker"));
 		entity->sprite.offset = Vec2(4.0f, 8.0f);
 
-		entity->size = Vec2(16.0f, 16.0f);
+		entity->hitbox.size = Vec2(16.0f, 16.0f);
+		entity->hitbox.type = Hitbox::COLLISION_ONEWAY_UP;
 
-		entity->collision_mask |= COLLISIONLAYER_STATIC;
+		entity->hitbox.layer |= COLLISIONLAYER_STATIC;
+		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 
 		entity->state = ROAMING;
 	}
@@ -53,23 +55,7 @@ namespace Zombie {
 		(void) game;
 		(void) entity;
 		(void) dt;
-		Vec2 direction;
-		Entity *player;
-
-		if(entity->target_id < 0) {
-			EntityFoundList found_list = game->findEntity(ENTITY_PLAYER);
-
-			if(found_list.size() > 0)
-				entity->target_id = found_list.at(0);
-		}
-
-		player = game->getEntityFromId(entity->target_id);
-
-		if(!player)
-			return;
-
-		direction = player->position - entity->position;
-
+		return;
 		roaming(game, entity, dt);
 	}
 
@@ -78,11 +64,13 @@ namespace Zombie {
 		(void) entity;
 		(void) other;
 
+		/*
 		if(other != NULL && other->type == ENTITY_PLAYER) {
 			if(other->getDamage(game, 20)) {
 				printf("ouch\n");
 			}
 		}
+		*/
 	}
 }
 

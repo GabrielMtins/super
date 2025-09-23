@@ -196,7 +196,7 @@ bool World::checkCollision(const Hitbox& hitbox) const {
 	return false;
 }
 
-void World::solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis) const {
+void World::solveCollision(Hitbox& hitbox, Vec2& velocity, Axis::Type axis) const {
 	int min_x, max_x, min_y, max_y;
 
 	min_x = ceilf(hitbox.position.x / tile_size.x);
@@ -211,6 +211,8 @@ void World::solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis
 		else {
 			hitbox.position.x = min_x * tile_size.x + EPS;
 		}
+
+		velocity.x = 0.0f;
 	}
 	else {
 		if(velocity.y > 0.0f) {
@@ -219,6 +221,8 @@ void World::solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis
 		else {
 			hitbox.position.y = min_y * tile_size.y + EPS;
 		}
+
+		velocity.y = 0.0f;
 	}
 }
 

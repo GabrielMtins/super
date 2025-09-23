@@ -17,6 +17,9 @@ bool Hitbox::checkCollision(const Hitbox& other, const Vec2& velocity) const {
 	if((mask & other.layer) == 0)
 		return false;
 
+	if(type != COLLISION_SOLID)
+		return false;
+
 	switch(other.type) {
 		case COLLISION_SOLID:
 			return checkCollisionSolid(other);
@@ -60,6 +63,15 @@ bool Hitbox::checkCollisionSolid(const Hitbox& other) const {
 
 bool Hitbox::checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) const {
 	if(velocity.y < 0.0f)
+		return false;
+
+	if(position.x + size.x < other.position.x)
+		return false;
+
+	if(position.x > other.position.x + other.size.x)
+		return false;
+
+	if(position.y + size.y < other.position.y)
 		return false;
 
 	if(position.y + size.y > other.position.y + ONEWAY_EPS)

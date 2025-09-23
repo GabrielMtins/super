@@ -35,7 +35,7 @@ EntityId Entity::getId(void) const {
 }
 
 void Entity::updateSprite(void) {
-	sprite.position = position - sprite.offset;
+	sprite.position = hitbox.position - sprite.offset;
 	sprite.cell = animator.getCurrentCell();
 }
 

@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
 	game->loadWorld("res/levels/map01.tmj");
 
 	game->addEntity(ENTITY_PLAYER);
+	game->addEntity(ENTITY_ZOMBIE);
 
 	game->run();
 
@@ -94,17 +95,18 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 	switch((int) object["gid"]) {
 		case 257:
 			type = ENTITY_ZOMBIE;
+			return false;
 			break;
 	}
 
 	Entity *entity = game->getEntityFromId(game->addEntity(type));
 
 	if(object.contains("x")) {
-		entity->position.x = object["x"];
+		entity->hitbox.position.x = object["x"];
 	}
 
 	if(object.contains("y")) {
-		entity->position.y = object["y"];
+		entity->hitbox.position.y = object["y"];
 	}
 
 	return true;

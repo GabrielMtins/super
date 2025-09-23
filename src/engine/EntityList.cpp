@@ -18,11 +18,11 @@ void EntityList::update(Game *game, float dt) {
 				continue;
 		}
 
-		entity.position.y += entity.velocity.y * dt;
-		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Entity::AXIS_Y);
+		entity.hitbox.position.y += entity.velocity.y * dt;
+		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Axis::Y);
 
-		entity.position.x += entity.velocity.x * dt;
-		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Entity::AXIS_X);
+		entity.hitbox.position.x += entity.velocity.x * dt;
+		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Axis::X);
 
 		findAndSolveEntityCollisions(game, game->getWorld(), entity);
 
@@ -101,7 +101,7 @@ EntityFoundList EntityList::findEntity(const Vec2& position, float radius) {
 	for(size_t i = 0; i < num_entities; i++) {
 		const Entity& entity = entities[i];
 
-		if((entity.position - position).lengthSqr() < radius * radius)
+		if((entity.center - position).lengthSqr() < radius * radius)
 			found_entities.push_back(entity.getId());
 	}
 
@@ -117,7 +117,7 @@ EntityFoundList EntityList::findEntity(EntityType type, const Vec2& position, fl
 		if(entity.type != type)
 			continue;
 
-		if((entity.position - position).lengthSqr() > radius * radius)
+		if((entity.center - position).lengthSqr() > radius * radius)
 			continue;
 
 		found_entities.push_back(entity.getId());
@@ -129,37 +129,33 @@ EntityFoundList EntityList::findEntity(EntityType type, const Vec2& position, fl
 void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {
 	EntityHandler& handler = type_to_handler[entity.type];
 
-	if(!(entity.collision_trigger || entity.collision_mask))
-		return;
-
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
-		Vec2 old_position, old_velocity;
+		Vec2 old_position;
 		EntityHandler& other_handler = type_to_handler[other.type];
 
-		old_position = entity.position;
-		old_velocity = entity.velocity;
+		old_position = entity.hitbox.position;
 
 		if(entity.getId() == other.getId())
 			continue;
 
-		if(!entity.checkCollision(other))
+		if(!entity.hitbox.checkCollision(other.hitbox, entity.velocity))
 			continue;
 
-		entity.solveCollision(other);
+		entity.hitbox.solveCollision(other.hitbox);
 
-		if(entity.checkCollision(world)) {
-			entity.position = old_position;
-			entity.velocity = old_velocity;
+		if(world->checkCollision(entity.hitbox)) {
+			entity.hitbox.position = old_position;
 
-			old_position = other.position;
-			old_velocity = other.velocity;
+			if(!other.hitbox.checkCollision(entity.hitbox, other.velocity))
+				continue;
 
-			other.solveCollision(entity);
+			old_position = other.hitbox.position;
 
-			if(other.checkCollision(world)) {
-				other.position = old_position;
-				other.velocity = old_velocity;
+			other.hitbox.solveCollision(entity.hitbox);
+
+			if(world->checkCollision(other.hitbox)) {
+				other.hitbox.position = old_position;
 			}
 		}
 
@@ -173,16 +169,16 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 	}
 }
 
-void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Entity::Axis axis) {
+void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Axis::Type axis) {
 	EntityHandler& handler = type_to_handler[entity.type];
 
-	if(entity.checkCollision(world)) {
-		entity.solveCollision(world, axis);
+	if(!world->checkCollision(entity.hitbox))
+		return;
 
-		if(handler.collision != NULL) {
-			handler.collision(game, &entity, NULL);
-		}
-	}
+	world->solveCollision(entity.hitbox, entity.velocity, axis);
+
+	if(handler.collision != NULL)
+		handler.collision(game, &entity, NULL);
 }
 
 void EntityList::cleanUp(void) {

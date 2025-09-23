@@ -35,7 +35,7 @@ class World {
 		const Vec2& getTileSize(void) const;
 
 		bool checkCollision(const Hitbox& hitbox) const;
-		void solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis) const;
+		void solveCollision(Hitbox& hitbox, Vec2& velocity, Axis::Type axis) const;
 
 	private:
 		void setTile(int i, int j, int layer, TileId value);

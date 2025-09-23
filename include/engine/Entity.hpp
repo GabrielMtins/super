@@ -29,8 +29,8 @@ struct Entity {
 		void updateAnimator(const Game *game);
 		bool getDamage(const Game *game, int damage);
 	
-		Vec2 position;
 		Hitbox hitbox;
+		Vec2 center;
 		Vec2 velocity;
 	
 		Sprite sprite;

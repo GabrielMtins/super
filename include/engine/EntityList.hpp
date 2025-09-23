@@ -7,6 +7,7 @@
 
 #include "engine/SpriteRenderer.hpp"
 
+#include "engine/Axis.hpp"
 #include "engine/EngineDef.hpp"
 
 #include <array>
@@ -32,7 +33,7 @@ class EntityList {
 
 	private:
 		void findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity);
-		void solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Entity::Axis axis);
+		void solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Axis::Type axis);
 
 		void cleanUp(void);
 		void removeEntity(int position);

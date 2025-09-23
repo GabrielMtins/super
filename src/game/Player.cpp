@@ -14,12 +14,12 @@ namespace Player {
 
 		entity->sprite.setTexture(game->getTexture("character"));
 
-		entity->size = Vec2(20.0f, 20.0f);
+		entity->hitbox.size = Vec2(20.0f, 20.0f);
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
-		entity->position = Vec2(200.0f, 100.0f);
+		entity->hitbox.position = Vec2(200.0f, 100.0f);
 
-		entity->collision_layer |= COLLISIONLAYER_PLAYER;
-		entity->collision_mask |= COLLISIONLAYER_STATIC;
+		entity->hitbox.layer |= COLLISIONLAYER_PLAYER;
+		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->damage_cooldown = 200;
 
 		//printf("%u\n", entity->collision_mask);
@@ -27,10 +27,6 @@ namespace Player {
 
 	static Vec2 handleInput(Game *game, Entity *entity) {
 		Vec2 direction;
-
-		if(entity->children[CROSSHAIR_CHILD] == -1) {
-			entity->children[CROSSHAIR_CHILD] = game->addEntity(ENTITY_CROSSHAIR);
-		}
 
 		if(game->getKey(Game::INPUT_LEFT)) {
 			direction.x -= 1.0f;
@@ -46,15 +42,6 @@ namespace Player {
 
 		if(game->getKey(Game::INPUT_DOWN)) {
 			direction.y += 1.0f;
-		}
-
-		if(game->getMouseButtonDown(Game::MOUSEBUTTON_LEFT)) {
-			Entity *bullet = game->getEntityFromId(game->addEntity(ENTITY_BULLET));
-			Entity *crosshair = game->getEntityFromId(entity->children[CROSSHAIR_CHILD]);
-
-			bullet->position = entity->position + entity->size / 2;
-
-			bullet->velocity = (crosshair->position - bullet->position).normalized() * 400.0f;
 		}
 
 		if(direction.lengthSqr() > 1.0f) {
@@ -97,7 +84,7 @@ namespace Player {
 				);
 
 		game->setCameraPosition(
-				entity->position - game->getScreenDimensions() * 0.5f
+				entity->hitbox.position - game->getScreenDimensions() * 0.5f
 				);
 
 		//entity->velocity = game->getMouseMotion() * 1000 / dt;
