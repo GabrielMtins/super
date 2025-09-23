@@ -5,6 +5,9 @@
 #include <array>
 #include <unordered_map>
 
+#include "engine/Axis.hpp"
+#include "core/Hitbox.hpp"
+
 #include "core/Texture.hpp"
 #include "core/Vec2.hpp"
 #include "core/Context.hpp"
@@ -30,6 +33,9 @@ class World {
 		uint32_t getCollisionLayer(void) const;
 		void setCollisionLayer(uint32_t collision_layer);
 		const Vec2& getTileSize(void) const;
+
+		bool checkCollision(const Hitbox& hitbox) const;
+		void solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis) const;
 
 	private:
 		void setTile(int i, int j, int layer, TileId value);

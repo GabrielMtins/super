@@ -8,6 +8,8 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
+#define EPS 0.0f
+
 using json = nlohmann::json;
 
 World::World(void) {
@@ -160,6 +162,64 @@ void World::setCollisionLayer(uint32_t collision_layer) {
 
 const Vec2& World::getTileSize(void) const {
 	return tile_size;
+}
+
+bool World::checkCollision(const Hitbox& hitbox) const {
+	int min_x, max_x, min_y, max_y;
+	Hitbox tile_hitbox;
+	tile_hitbox.size = tile_size;
+	tile_hitbox.layer = collision_layer;
+
+	if(!(hitbox.mask & collision_layer)) {
+		return false;
+	}
+
+	min_x = floorf(hitbox.position.x / tile_size.x);
+	min_y = floorf(hitbox.position.y / tile_size.y);
+	max_x = ceilf((hitbox.position.x + hitbox.size.x) / tile_size.x);
+	max_y = ceilf((hitbox.position.y + hitbox.size.y) / tile_size.y);
+
+	for(int j = min_y; j < max_y; j++) {
+		for(int i = min_x; i < max_x; i++) {
+			if(!getTile(i, j, WORLD_LAYER_FG)) {
+				continue;
+			}
+
+			tile_hitbox.position = Vec2(i, j) * tile_size;
+
+			if(hitbox.checkCollision(tile_hitbox)){
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void World::solveCollision(Hitbox& hitbox, const Vec2& velocity, Axis::Type axis) const {
+	int min_x, max_x, min_y, max_y;
+
+	min_x = ceilf(hitbox.position.x / tile_size.x);
+	min_y = ceilf(hitbox.position.y / tile_size.y);
+	max_x = floorf((hitbox.position.x + hitbox.size.x) / tile_size.x);
+	max_y = floorf((hitbox.position.y + hitbox.size.y) / tile_size.y);
+
+	if(axis == Axis::X) {
+		if(velocity.x > 0.0f) {
+			hitbox.position.x = (max_x) * tile_size.x - hitbox.size.x - EPS;  
+		}
+		else {
+			hitbox.position.x = min_x * tile_size.x + EPS;
+		}
+	}
+	else {
+		if(velocity.y > 0.0f) {
+			hitbox.position.y = (max_y) * tile_size.y - hitbox.size.y - EPS;  
+		}
+		else {
+			hitbox.position.y = min_y * tile_size.y + EPS;
+		}
+	}
 }
 
 void World::setTile(int i, int j, int layer, TileId id) {

@@ -3,8 +3,36 @@
 
 #include "core/Vec2.hpp"
 
-namespace Hitbox {
-	bool checkCollision(const Vec2& a_pos, const Vec2& a_size, const Vec2& b_pos, const Vec2& b_size);
+#include <cstdint>
+
+struct Hitbox {
+	public:
+		enum CollisionType {
+			COLLISION_SOLID,
+			COLLISION_ONEWAY_UP,
+		};
+	
+		Hitbox(void);
+	
+		bool checkCollision(const Hitbox& other) const;
+		bool checkCollision(const Hitbox& other, const Vec2& velocity) const;
+
+		void solveCollision(const Hitbox& other);
+	
+		CollisionType type;
+	
+		Vec2 position;
+		Vec2 size;
+	
+		uint32_t layer;
+		uint32_t mask;
+
+	private:
+		bool checkCollisionSolid(const Hitbox& other) const;
+		bool checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) const;
+		
+		void solveCollisionSolid(const Hitbox& other);
+		void solveCollisionOneWayUp(const Hitbox& other);
 };
 
 #endif

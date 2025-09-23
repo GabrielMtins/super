@@ -36,12 +36,19 @@ bool Sprite::isOnCamera(const Game *game) const {
 		render_position -= game->getCameraPosition();
 	}
 
-	return Hitbox::checkCollision(
-			render_position,
-			size,
-			Vec2::zero,
-			game->getScreenDimensions()
-			);
+	if(render_position.x + size.x < 0.0f)
+		return false;
+
+	if(render_position.x >= game->getScreenDimensions().x)
+		return false;
+
+	if(render_position.y + size.y < 0.0f)
+		return false;
+
+	if(render_position.y >= game->getScreenDimensions().y)
+		return false;
+
+	return true;
 }
 
 void Sprite::render(Game *game) const {
