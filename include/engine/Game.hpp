@@ -75,6 +75,8 @@ class Game {
 		EntityFoundList findEntity(EntityType type);
 		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 
+		bool checkCollision(const Hitbox& hitbox) const;
+
 		void quit(void);
 
 	private:

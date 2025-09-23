@@ -128,6 +128,20 @@ EntityFoundList EntityList::findEntity(EntityType type, const Vec2& position, fl
 	return found_entities;
 }
 
+bool EntityList::checkCollision(const World *world, const Hitbox& hitbox) const {
+	if(world->checkCollision(hitbox))
+		return true;
+
+	for(size_t i = 0; i < num_entities; i++) {
+		const Entity& entity = entities[i];
+
+		if(hitbox.checkCollision(entity.hitbox))
+			return true;
+	}
+
+	return false;
+}
+
 void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {
 	EntityHandler& handler = type_to_handler[entity.type];
 

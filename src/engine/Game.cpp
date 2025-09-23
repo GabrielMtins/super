@@ -169,6 +169,10 @@ EntityFoundList Game::findEntity(EntityType type, const Vec2& position, float ra
 	return entity_list.findEntity(type, position, radius);
 }
 
+bool Game::checkCollision(const Hitbox& hitbox) const {
+	return entity_list.checkCollision(&world, hitbox);
+}
+
 void Game::quit(void) {
 	resource_manager.quit();
 	text_generator.quit();

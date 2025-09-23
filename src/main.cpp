@@ -89,11 +89,6 @@ int main(int argc, char **argv) {
 static bool loadObject(Game *game, const nlohmann::json& object) {
 	EntityType type;
 
-	if(object.contains("type")) {
-		std::string str = object.at("type");
-		printf("%s\n", str.c_str());
-	}
-
 	if(!object.contains("gid"))
 		return false;
 
