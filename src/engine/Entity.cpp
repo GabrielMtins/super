@@ -10,13 +10,16 @@ Entity::Entity(void) {
 	id = -1;
 	alive = false;
 
-	target_id = -1;
-	parent_id = -1;
+	target_id = 0;
+	parent_id = 0;
 
 	for(EntityId& i : children)
-		i = -1;
+		i = 0;
 
 	for(Tick& i : timers)
+		i = 0;
+
+	for(int& i : counters)
 		i = 0;
 
 	pause_mode = PAUSEMODE_PAUSABLE;

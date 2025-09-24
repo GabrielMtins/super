@@ -18,10 +18,10 @@ void EntityList::update(Game *game, float dt) {
 				continue;
 		}
 
-		entity.hitbox.position.y += entity.velocity.y * dt;
+		entity.hitbox.position.y += (entity.velocity.y + entity.contact_velocity.y) * dt;
 		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Axis::Y);
 
-		entity.hitbox.position.x += entity.velocity.x * dt;
+		entity.hitbox.position.x += (entity.velocity.x + entity.contact_velocity.x) * dt;
 		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Axis::X);
 
 		findAndSolveEntityCollisions(game, game->getWorld(), entity);
@@ -46,7 +46,7 @@ void EntityList::setSpriteRenderList(Game *game, SpriteRenderer* sprite_renderer
 
 void EntityList::clearEntities(void) {
 	num_entities = 0;
-	next_id = 0;
+	next_id = 1;
 	id_to_entity.clear();
 }
 
@@ -191,7 +191,15 @@ void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, E
 	if(!world->checkCollision(entity.hitbox))
 		return;
 
-	world->solveCollision(entity.hitbox, entity.velocity, axis);
+	world->solveCollision(entity.hitbox, entity.velocity + entity.contact_velocity, axis);
+
+	if(axis == Axis::X) {
+		entity.velocity.x = 0.0f;
+		entity.contact_velocity.x = 0.0f;
+	} else {
+		entity.velocity.y = 0.0f;
+		entity.contact_velocity.y = 0.0f;
+	}
 
 	if(handler.collision != NULL)
 		handler.collision(game, &entity, NULL);

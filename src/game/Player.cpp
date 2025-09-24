@@ -12,7 +12,6 @@ namespace Player {
 	static const float min_speed = 10.0f;
 	static const float jump_velocity = -150.0f;
 
-	static const int last_on_ground_timer_id = 0;
 	static const int start_jump_timer_id = 1;
 
 	static const Tick coyote_time = 100;
@@ -21,6 +20,35 @@ namespace Player {
 	static const int idle_animation[] = {0, -1};
 	static const int running_animation[] = {1, 2, -1};
 	static const int jumping_animation[] = {3, -1};
+	static const int throwing_animation[] = {10, -1};
+
+	static const int item_idle_animation[] = {6, -1};
+	static const int item_running_animation[] = {7, 8, -1};
+	static const int item_jumping_animation[] = {9, -1};
+
+	static const int picking_animation[] = {4, 5, -1};
+
+	enum PlayerFlags {
+		FLAG_RUNNING = 0,
+		FLAG_ONGROUD,
+	};
+
+	enum PlayerTimers {
+		TIMER_LAST_ON_GROUND = 0,
+		TIMER_START_JUMP,
+		TIMER_STATE
+	};
+
+	enum PlayerChildren {
+		CHILD_ENEMY_UNDER = 0,
+	};
+
+	enum PlayerStates {
+		STATE_MOVEMENT,
+		STATE_PICKING_ITEM,
+		STATE_HOLDING_ITEM,
+		STATE_THROWING_ITEM,
+	};
 
 	static void create(Game *game, Entity *entity) {
 		(void) game;
@@ -33,13 +61,17 @@ namespace Player {
 
 		entity->hitbox.layer |= COLLISIONLAYER_PLAYER;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
+		entity->hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
 		entity->damage_cooldown = 200;
+
+		entity->state = STATE_MOVEMENT;
 	}
 
 	static bool isOnGround(Game *game, Entity *entity) {
 		Hitbox jump_hitbox;
 
 		jump_hitbox.mask |= COLLISIONLAYER_STATIC;
+		jump_hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
 
 		jump_hitbox.position = entity->hitbox.position;
 		jump_hitbox.position.y += entity->hitbox.size.y - 0.1f;
@@ -50,16 +82,25 @@ namespace Player {
 	}
 
 	static void updateTimers(Game *game, Entity *entity) {
-		Tick& last_on_ground_timer = entity->timers[last_on_ground_timer_id];
+		Tick& last_on_ground_timer = entity->timers[TIMER_LAST_ON_GROUND];
 
-		if(isOnGround(game, entity)) {
+		if(entity->flags[FLAG_ONGROUD]) {
 			last_on_ground_timer = game->getCurrentTick();
 		}
 	}
 
+	static void updateFlags(Game *game, Entity *entity) {
+		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
+		entity->flags[FLAG_RUNNING] = game->getKey(Game::INPUT_FIRE);
+
+		if(entity->flags[FLAG_ONGROUD]) {
+			entity->velocity.y = 0.0f;
+		}
+	}
+
 	static bool checkJumpCondition(Game *game, Entity *entity) {
-		Tick& last_on_ground_timer = entity->timers[last_on_ground_timer_id];
-		Tick& start_jumper_timer = entity->timers[start_jump_timer_id];
+		Tick& last_on_ground_timer = entity->timers[TIMER_LAST_ON_GROUND];
+		Tick& start_jumper_timer = entity->timers[TIMER_START_JUMP];
 
 		if(entity->velocity.y >= 0.0f) {
 			return game->getCurrentTick() < last_on_ground_timer + coyote_time;
@@ -69,7 +110,7 @@ namespace Player {
 	}
 
 	static void applyPhysics(Game *game, Entity *entity, float dt, const Vec2& wish_dir) {
-		bool is_on_ground = isOnGround(game, entity);
+		bool is_on_ground = entity->flags[FLAG_ONGROUD];
 		entity->velocity += gravity * dt;
 
 		if(fabsf(wish_dir.x) < EPS && is_on_ground) {
@@ -81,7 +122,7 @@ namespace Player {
 		}
 
 		if(fabsf(wish_dir.x) > EPS) {
-			bool is_running = game->getKey(Game::INPUT_FIRE);
+			bool is_running = entity->flags[FLAG_RUNNING];
 			float max_speed = is_running ? max_speed_running : max_speed_walking;
 			bool below_max_speed = fabsf(entity->velocity.x) < max_speed;
 
@@ -92,15 +133,16 @@ namespace Player {
 			if(!below_max_speed && is_on_ground) {
 				entity->velocity.x -= copysign(friction * dt, entity->velocity.x);
 			}
+		}
 
-			if(is_on_ground)
-				entity->direction.x = wish_dir.x;
+		if(is_on_ground && fabsf(entity->velocity.x) > 0.0f) {
+			entity->direction.x = entity->velocity.x;
 		}
 
 		if(fabsf(wish_dir.y) > EPS) {
 			if(checkJumpCondition(game, entity)) {
 				if(entity->velocity.y >= 0.0f) {
-					entity->timers[start_jump_timer_id] = game->getCurrentTick();
+					entity->timers[TIMER_START_JUMP] = game->getCurrentTick();
 				}
 
 				entity->velocity.y = jump_velocity;
@@ -123,10 +165,34 @@ namespace Player {
 			wish_dir.x += 1.0f;
 		}
 
+		if(game->getKeyDown(Game::INPUT_FIRE)) {
+			switch(entity->state) {
+				case STATE_MOVEMENT:
+					if(entity->children[CHILD_ENEMY_UNDER]) {
+						Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
+
+						entity->state = STATE_PICKING_ITEM;
+						entity->timers[TIMER_STATE] = game->getCurrentTick();
+
+						child->alive = false;
+					}
+					break;
+
+				case STATE_HOLDING_ITEM:
+					entity->state = STATE_THROWING_ITEM;
+					entity->timers[TIMER_STATE] = game->getCurrentTick();
+
+					break;
+
+				default:
+					break;
+			}
+		}
+
 		return wish_dir;
 	}
 
-	static void handleAnimations(Entity *entity) {
+	static void handleAnimationsDefault(Entity *entity) {
 		entity->sprite.flip_x = entity->direction.x < 0.0f;
 
 		if(fabsf(entity->velocity.x) > 0.01f) {
@@ -140,15 +206,68 @@ namespace Player {
 		}
 	}
 
+	static void handleAnimationsItem(Entity *entity) {
+		entity->sprite.flip_x = entity->direction.x < 0.0f;
+
+		if(fabsf(entity->velocity.x) > 0.01f) {
+			entity->animator.setAnimation(item_running_animation, 100);
+		} else {
+			entity->animator.setAnimation(item_idle_animation, 100);
+		}
+
+		if(fabsf(entity->velocity.y) > 0.00f) {
+			entity->animator.setAnimation(item_jumping_animation, 100);
+		}
+	}
+
 	static void update(Game *game, Entity *entity, float dt) {
-		handleAnimations(entity);
+		updateFlags(game, entity);
 		updateTimers(game, entity);
-		applyPhysics(
-				game,
-				entity,
-				dt,
-				handleInput(game, entity)
-				);
+
+		switch(entity->state) {
+			case STATE_MOVEMENT:
+				handleAnimationsDefault(entity);
+				applyPhysics(
+						game,
+						entity,
+						dt,
+						handleInput(game, entity)
+						);
+				break;
+
+			case STATE_HOLDING_ITEM:
+				handleAnimationsItem(entity);
+				applyPhysics(
+						game,
+						entity,
+						dt,
+						handleInput(game, entity)
+						);
+				break;
+
+			case STATE_THROWING_ITEM:
+				entity->animator.setAnimation(throwing_animation, 200);
+				applyPhysics(
+						game,
+						entity,
+						dt,
+						handleInput(game, entity)
+						);
+
+				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 200) {
+					entity->state = STATE_MOVEMENT;
+				}
+				break;
+
+			case STATE_PICKING_ITEM:
+				entity->animator.setAnimation(picking_animation, 200);
+				entity->velocity = Vec2::zero;
+
+				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 400) {
+					entity->state = STATE_HOLDING_ITEM;
+				}
+				break;
+		}
 
 		game->setCameraPosition(
 				Vec2(
@@ -156,17 +275,25 @@ namespace Player {
 					-16.0f
 					)
 				);
-		/*
-		game->setCameraPosition(
-				entity->hitbox.position - game->getScreenDimensions() * 0.5f
-				);
-				*/
+
+		if(entity->children[CHILD_ENEMY_UNDER]) {
+			Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
+			entity->contact_velocity = child->velocity;
+		} else {
+			entity->contact_velocity = Vec2::zero;
+		}
+
+		entity->children[CHILD_ENEMY_UNDER] = 0;
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
 		(void) game;
 		(void) entity;
 		(void) other;
+
+		if(other != NULL) {
+			entity->children[CHILD_ENEMY_UNDER] = other->getId();
+		}
 	}
 }
 

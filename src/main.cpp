@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
 	game = new Game();
 
 	game->init("super", 240, 135);
+	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);
@@ -69,15 +70,13 @@ int main(int argc, char **argv) {
 
 	game->loadWorld("res/levels/map01.tmj");
 
-	game->addEntity(ENTITY_PLAYER);
+	for(int i = 0; i < 1; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
-	/*
-	for(int i = 0; i < 16; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_ZOMBIE));
-
-		entity->hitbox.position.x += i * 16;
+		entity->hitbox.position.x += 2 * 16;
 	}
-	*/
+
+	game->addEntity(ENTITY_PLAYER);
 
 	game->run();
 
@@ -96,7 +95,6 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 
 	switch((int) object["gid"]) {
 		case 257:
-			type = ENTITY_ZOMBIE;
 			return false;
 			break;
 	}

@@ -10,6 +10,7 @@
 #include "engine/Animator.hpp"
 
 #include <array>
+#include <bitset>
 
 class Game;
 class World;
@@ -34,6 +35,7 @@ struct Entity {
 		Hitbox hitbox;
 		Vec2 center;
 		Vec2 velocity;
+		Vec2 contact_velocity;
 		Vec2 direction;
 	
 		Sprite sprite;
@@ -55,7 +57,8 @@ struct Entity {
 		PauseMode pause_mode;
 	
 		std::array<Tick, ENTITY_MAX_TIMERS> timers;
-		std::array<int, ENTITY_MAX_FLAGS> flags;
+		std::array<int, ENTITY_MAX_COUNTERS> counters;
+		std::bitset<ENTITY_MAX_FLAGS> flags;
 	
 		Animator animator;
 

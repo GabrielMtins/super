@@ -7,19 +7,20 @@
 
 enum EntityHandlerTypes {
 	ENTITY_PLAYER,
-	ENTITY_ZOMBIE,
+ 	ENTITY_WALKER,
 	NUM_ENTITY_TYPE
 };
 
 enum CollisionLayers {
 	COLLISIONLAYER_STATIC = 1 << 0,
 	COLLISIONLAYER_PLAYER = 1 << 1,
+	COLLISIONLAYER_ENEMY_THROWABLE = 1 << 2,
 };
 
 void Custom_AddEntityTypes(Game *game);
 
 EntityHandler Player_GetHandler(void);
 
-EntityHandler Zombie_GetHandler(void);
+EntityHandler Walker_GetHandler(void);
 
 #endif

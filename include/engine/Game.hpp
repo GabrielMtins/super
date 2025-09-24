@@ -77,6 +77,7 @@ class Game {
 		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 
 		bool checkCollision(const Hitbox& hitbox) const;
+		void setBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
 
 		void quit(void);
 
@@ -107,6 +108,8 @@ class Game {
 		bool paused;
 		uint32_t old_mouse_state;
 		uint32_t mouse_state;
+
+		SDL_Color bg;
 };
 
 #endif

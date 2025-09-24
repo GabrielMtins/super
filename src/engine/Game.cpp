@@ -17,6 +17,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 		input_to_keys[i] = SDL_SCANCODE_UNKNOWN;
 	}
 
+	setBackgroundColor(0xff, 0xff, 0xff);
+
 	setKeyInput(INPUT_LEFT, SDL_SCANCODE_A);
 	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
@@ -174,6 +176,13 @@ bool Game::checkCollision(const Hitbox& hitbox) const {
 	return entity_list.checkCollision(&world, hitbox);
 }
 
+void Game::setBackgroundColor(uint8_t r, uint8_t g, uint8_t b) {
+	bg.r = r;
+	bg.g = g;
+	bg.b = b;
+	bg.a = 0xff;
+}
+
 void Game::quit(void) {
 	resource_manager.quit();
 	text_generator.quit();
@@ -189,7 +198,7 @@ void Game::loop(void) {
 
 	entity_list.update(this, dt);
 
-	context.renderClear(0xff, 0xf6, 0xd3, 0xff);
+	context.renderClear(bg.r, bg.g, bg.b, bg.a);
 
 	for(int i = WORLD_LAYER_BG; i < WORLD_LAYER_FG; i++) {
 		world.render(this, i);
