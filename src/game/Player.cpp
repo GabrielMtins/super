@@ -4,18 +4,19 @@
 #define EPS 0.01f
 
 namespace Player {
-	static const float max_speed_walking = 80.0f;
-	static const float max_speed_running = 200.0f;
-	static const float acceleration = 800.0f;
-	static const float friction = 400.0f;
+	static const float max_speed_walking = 40.0f;
+	static const float max_speed_running = 120.0f;
+	static const float acceleration = 500.0f;
+	static const float air_acceleration = 250.0f;
+	static const float friction = 200.0f;
 	static const float min_speed = 10.0f;
-	static const float jump_velocity = -200.0f;
+	static const float jump_velocity = -150.0f;
 
 	static const int last_on_ground_timer_id = 0;
 	static const int start_jump_timer_id = 1;
 
 	static const Tick coyote_time = 100;
-	static const Tick jump_time = 200;
+	static const Tick jump_time = 250;
 
 	static const int idle_animation[] = {0, -1};
 	static const int running_animation[] = {1, 2, -1};
@@ -28,14 +29,11 @@ namespace Player {
 		entity->sprite.setTexture(game->getTexture("character"));
 
 		entity->hitbox.size = Vec2(8.0f, 16.0f);
-		entity->hitbox.position = Vec2(200.0f, 100.0f);
 		entity->sprite.offset = Vec2(4.0f, 0.0f);
 
 		entity->hitbox.layer |= COLLISIONLAYER_PLAYER;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->damage_cooldown = 200;
-
-		//printf("%u\n", entity->collision_mask);
 	}
 
 	static bool isOnGround(Game *game, Entity *entity) {
@@ -84,19 +82,19 @@ namespace Player {
 
 		if(fabsf(wish_dir.x) > EPS) {
 			bool is_running = game->getKey(Game::INPUT_FIRE);
-			entity->velocity.x += wish_dir.x * acceleration * dt;
+			float max_speed = is_running ? max_speed_running : max_speed_walking;
+			bool below_max_speed = fabsf(entity->velocity.x) < max_speed;
 
-			if(is_running) {
-				if(fabsf(entity->velocity.x) > max_speed_running) {
-					entity->velocity.x = copysignf(max_speed_running, entity->velocity.x);
-				}
-			} else {
-				if(fabsf(entity->velocity.x) > max_speed_walking) {
-					entity->velocity.x = copysignf(max_speed_walking, entity->velocity.x);
-				}
+			if(wish_dir.x * entity->velocity.x <= 0.0f || below_max_speed) {
+				entity->velocity.x += wish_dir.x * (is_on_ground ? acceleration : air_acceleration) * dt;
 			}
 
-			entity->direction.x = wish_dir.x;
+			if(!below_max_speed && is_on_ground) {
+				entity->velocity.x -= copysign(friction * dt, entity->velocity.x);
+			}
+
+			if(is_on_ground)
+				entity->direction.x = wish_dir.x;
 		}
 
 		if(fabsf(wish_dir.y) > EPS) {
@@ -137,7 +135,7 @@ namespace Player {
 			entity->animator.setAnimation(idle_animation, 100);
 		}
 
-		if(fabsf(entity->velocity.y) > 0.01f) {
+		if(fabsf(entity->velocity.y) > 0.00f) {
 			entity->animator.setAnimation(jumping_animation, 100);
 		}
 	}
@@ -153,8 +151,16 @@ namespace Player {
 				);
 
 		game->setCameraPosition(
+				Vec2(
+					entity->hitbox.position.x - 100,
+					-16.0f
+					)
+				);
+		/*
+		game->setCameraPosition(
 				entity->hitbox.position - game->getScreenDimensions() * 0.5f
 				);
+				*/
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {

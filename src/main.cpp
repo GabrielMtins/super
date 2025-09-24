@@ -71,11 +71,13 @@ int main(int argc, char **argv) {
 
 	game->addEntity(ENTITY_PLAYER);
 
+	/*
 	for(int i = 0; i < 16; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_ZOMBIE));
 
 		entity->hitbox.position.x += i * 16;
 	}
+	*/
 
 	game->run();
 

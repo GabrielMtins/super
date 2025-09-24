@@ -10,12 +10,14 @@ Animator::Animator(void) {
 }
 
 void Animator::setAnimation(const int *frames, int delay) {
-	if(this->frames == frames)
+	this->delay = delay;
+
+	if(this->frames == frames){
 		return;
+	}
 
 	current_frame = -1;
 	this->frames = frames;
-	this->delay = delay;
 	this->next_tick = 0;
 }
 
