@@ -104,7 +104,7 @@ void Game::pause(void) {
 	paused = !paused;
 }
 
-bool Game::isPaused(void) {
+bool Game::isPaused(void) const {
 	return paused;
 }
 

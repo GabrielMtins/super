@@ -51,7 +51,7 @@ class Game {
 		void setCameraPosition(const Vec2& camera_position);
 
 		void pause(void);
-		bool isPaused(void);
+		bool isPaused(void) const;
 
 		const Vec2& getScreenDimensions(void) const;
 		const Vec2& getMousePosition(void) const;

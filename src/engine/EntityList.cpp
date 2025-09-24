@@ -10,13 +10,8 @@ void EntityList::update(Game *game, float dt) {
 		Entity& entity = entities[i];
 		EntityHandler& handler = type_to_handler[entity.type];
 
-		if(game->isPaused()){
-			if(entity.pause_mode == Entity::PAUSEMODE_PAUSABLE)
-				continue;
-		} else {
-			if(entity.pause_mode == Entity::PAUSEMODE_WHENPAUSED)
-				continue;
-		}
+		if(!shouldProcessEntity(game, entity))
+			continue;
 
 		entity.hitbox.position.y += (entity.velocity.y + entity.contact_velocity.y) * dt;
 		solveEntityCollisionWithWorld(game, game->getWorld(), entity, Axis::Y);
@@ -27,6 +22,11 @@ void EntityList::update(Game *game, float dt) {
 		findAndSolveEntityCollisions(game, game->getWorld(), entity);
 
 		entity.updateCenter();
+	}
+
+	for(size_t i = 0; i < num_entities; i++) {
+		Entity& entity = entities[i];
+		EntityHandler& handler = type_to_handler[entity.type];
 
 		if(handler.update != NULL)
 			handler.update(game, &entity, dt);
@@ -203,6 +203,18 @@ void EntityList::solveEntityCollisionWithWorld(Game *game, const World *world, E
 
 	if(handler.collision != NULL)
 		handler.collision(game, &entity, NULL);
+}
+
+bool EntityList::shouldProcessEntity(const Game *game, const Entity& entity) {
+	if(game->isPaused()){
+		if(entity.pause_mode == Entity::PAUSEMODE_PAUSABLE)
+			return false;
+	} else {
+		if(entity.pause_mode == Entity::PAUSEMODE_WHENPAUSED)
+			return false;
+	}
+
+	return true;
 }
 
 void EntityList::cleanUp(void) {

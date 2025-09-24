@@ -70,6 +70,19 @@ namespace Player {
 		entity->state = STATE_MOVEMENT;
 	}
 
+	static bool isChildUnderPlayer(Game *game, Entity *entity, Entity *other) {
+		Hitbox jump_hitbox;
+
+		jump_hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+
+		jump_hitbox.position = entity->hitbox.position;
+		jump_hitbox.position.y += entity->hitbox.size.y - 0.1f;
+		jump_hitbox.size = entity->hitbox.size;
+		jump_hitbox.size.y = 0.4f;
+
+		return jump_hitbox.checkCollision(other->hitbox);
+	}
+
 	static bool isOnGround(Game *game, Entity *entity) {
 		Hitbox jump_hitbox;
 
@@ -192,7 +205,7 @@ namespace Player {
 
 					{
 						Entity *item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
-						Thrown_Throw(item, entity->velocity.x * 0.25f, entity->direction.x);
+						Thrown_Throw(item, entity->velocity * Vec2(0.5f, 1.00f), entity->direction.x);
 					}
 
 					break;
@@ -344,7 +357,7 @@ namespace Player {
 		(void) entity;
 		(void) other;
 
-		if(other != NULL) {
+		if(other != NULL && isChildUnderPlayer(game, entity, other)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
 		}
 	}

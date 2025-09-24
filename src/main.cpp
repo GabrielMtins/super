@@ -70,10 +70,10 @@ int main(int argc, char **argv) {
 
 	game->loadWorld("res/levels/map01.tmj");
 
-	for(int i = 0; i < 1; i++) {
+	for(int i = 0; i < 2; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
-		entity->hitbox.position.x += 2 * 16;
+		entity->hitbox.position.x += 16 * i + 16;
 	}
 
 	game->addEntity(ENTITY_PLAYER);

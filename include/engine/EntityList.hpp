@@ -35,6 +35,7 @@ class EntityList {
 	private:
 		void findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity);
 		void solveEntityCollisionWithWorld(Game *game, const World *world, Entity& entity, Axis::Type axis);
+		bool shouldProcessEntity(const Game *game, const Entity& entity);
 
 		void cleanUp(void);
 		void removeEntity(int position);
