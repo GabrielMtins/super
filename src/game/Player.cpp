@@ -1,6 +1,8 @@
 #include "game/CustomEntities.hpp"
 #include "game/Constants.hpp"
 
+#include "game/Thrown.hpp"
+
 #define EPS 0.01f
 
 namespace Player {
@@ -41,6 +43,7 @@ namespace Player {
 
 	enum PlayerChildren {
 		CHILD_ENEMY_UNDER = 0,
+		CHILD_ITEM_HOLDING,
 	};
 
 	enum PlayerStates {
@@ -170,17 +173,27 @@ namespace Player {
 				case STATE_MOVEMENT:
 					if(entity->children[CHILD_ENEMY_UNDER]) {
 						Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
+						Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
 
 						entity->state = STATE_PICKING_ITEM;
 						entity->timers[TIMER_STATE] = game->getCurrentTick();
 
 						child->alive = false;
+
+						Thrown_CopyEntity(new_throw, child);
+
+						entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
 					}
 					break;
 
 				case STATE_HOLDING_ITEM:
 					entity->state = STATE_THROWING_ITEM;
 					entity->timers[TIMER_STATE] = game->getCurrentTick();
+
+					{
+						Entity *item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
+						Thrown_Throw(item, entity->velocity.x * 0.25f, entity->direction.x);
+					}
 
 					break;
 
@@ -203,6 +216,42 @@ namespace Player {
 
 		if(fabsf(entity->velocity.y) > 0.00f) {
 			entity->animator.setAnimation(jumping_animation, 100);
+		}
+	}
+
+	static void updateItemHolding(Game *game, Entity *entity) {
+		Entity *item_holding;
+
+		item_holding = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
+
+		item_holding->sprite.flip_x = entity->direction.x < 0.0f;
+		item_holding->sprite.flip_y = true;
+
+		item_holding->hitbox.position = Vec2(
+				entity->hitbox.position.x,
+				entity->hitbox.position.y - item_holding->hitbox.size.y - entity->sprite.offset.y
+				);
+	}
+
+	static void updateItemPicking(Game *game, Entity *entity) {
+		Entity *item_holding;
+
+		item_holding = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
+
+		item_holding->sprite.flip_x = entity->direction.x < 0.0f;
+		item_holding->sprite.flip_y = true;
+
+		item_holding->hitbox.position = Vec2(
+				entity->hitbox.position.x,
+				entity->hitbox.position.y + entity->hitbox.size.y
+				);
+
+		if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 100) {
+			item_holding->hitbox.position.y -= 0;
+		} else if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 200) {
+			item_holding->hitbox.position.y -= 16;
+		} else if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 400) {
+			item_holding->hitbox.position.y -= 20;
 		}
 	}
 
@@ -243,6 +292,7 @@ namespace Player {
 						dt,
 						handleInput(game, entity)
 						);
+				updateItemHolding(game, entity);
 				break;
 
 			case STATE_THROWING_ITEM:
@@ -254,6 +304,7 @@ namespace Player {
 						handleInput(game, entity)
 						);
 
+
 				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 200) {
 					entity->state = STATE_MOVEMENT;
 				}
@@ -262,6 +313,7 @@ namespace Player {
 			case STATE_PICKING_ITEM:
 				entity->animator.setAnimation(picking_animation, 200);
 				entity->velocity = Vec2::zero;
+				updateItemPicking(game, entity);
 
 				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 400) {
 					entity->state = STATE_HOLDING_ITEM;
@@ -278,6 +330,7 @@ namespace Player {
 
 		if(entity->children[CHILD_ENEMY_UNDER]) {
 			Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
+
 			entity->contact_velocity = child->velocity;
 		} else {
 			entity->contact_velocity = Vec2::zero;

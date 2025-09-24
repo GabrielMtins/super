@@ -7,7 +7,7 @@ namespace Walker {
 		STATE_RIGHT
 	};
 
-	static const float walker_speed = 48.0f;
+	static const float walker_speed = 16.0f;
 
 	static const int walking_animation[] = {0, 1, -1};
 
@@ -19,7 +19,6 @@ namespace Walker {
 
 		entity->hitbox.layer |= COLLISIONLAYER_ENEMY_THROWABLE;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
-
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
@@ -70,3 +69,4 @@ EntityHandler Walker_GetHandler(void) {
 	using namespace Walker;
 	return EntityHandler(create, update, collision);
 }
+

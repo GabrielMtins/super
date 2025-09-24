@@ -8,6 +8,7 @@
 enum EntityHandlerTypes {
 	ENTITY_PLAYER,
  	ENTITY_WALKER,
+ 	ENTITY_THROWN,
 	NUM_ENTITY_TYPE
 };
 
@@ -22,5 +23,7 @@ void Custom_AddEntityTypes(Game *game);
 EntityHandler Player_GetHandler(void);
 
 EntityHandler Walker_GetHandler(void);
+
+EntityHandler Thrown_GetHandler(void);
 
 #endif
