@@ -109,9 +109,11 @@ namespace Player {
 		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
 		entity->flags[FLAG_RUNNING] = game->getKey(Game::INPUT_FIRE);
 
+		/*
 		if(entity->flags[FLAG_ONGROUD]) {
 			entity->velocity.y = 0.0f;
 		}
+		*/
 	}
 
 	static bool checkJumpCondition(Game *game, Entity *entity) {
@@ -127,9 +129,11 @@ namespace Player {
 
 	static void applyPhysics(Game *game, Entity *entity, float dt, const Vec2& wish_dir) {
 		bool is_on_ground = entity->flags[FLAG_ONGROUD];
+		bool has_movement_x = fabsf(wish_dir.x) > EPS;
+
 		entity->velocity += gravity * dt;
 
-		if(fabsf(wish_dir.x) < EPS && is_on_ground) {
+		if(!has_movement_x && is_on_ground) {
 			if(fabsf(entity->velocity.x) < min_speed) {
 				entity->velocity.x = 0.0f;
 			} else {
@@ -137,12 +141,13 @@ namespace Player {
 			}
 		}
 
-		if(fabsf(wish_dir.x) > EPS) {
+		if(has_movement_x) {
 			bool is_running = entity->flags[FLAG_RUNNING];
 			float max_speed = is_running ? max_speed_running : max_speed_walking;
 			bool below_max_speed = fabsf(entity->velocity.x) < max_speed;
+			bool move_opposite = wish_dir.x * entity->velocity.x <= 0.0f;
 
-			if(wish_dir.x * entity->velocity.x <= 0.0f || below_max_speed) {
+			if(move_opposite || below_max_speed) {
 				entity->velocity.x += wish_dir.x * (is_on_ground ? acceleration : air_acceleration) * dt;
 			}
 
@@ -166,6 +171,36 @@ namespace Player {
 		}
 	}
 
+	static void handleFire(Game *game, Entity *entity) {
+		Entity *item;
+
+		switch(entity->state) {
+			case STATE_MOVEMENT:
+				if(entity->children[CHILD_ENEMY_UNDER]) {
+					Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
+					Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
+
+					entity->state = STATE_PICKING_ITEM;
+					entity->timers[TIMER_STATE] = game->getCurrentTick();
+
+					child->alive = false;
+
+					Thrown_CopyEntity(new_throw, child);
+
+					entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
+				}
+				break;
+
+			case STATE_HOLDING_ITEM:
+				entity->state = STATE_THROWING_ITEM;
+				entity->timers[TIMER_STATE] = game->getCurrentTick();
+
+				item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
+				Thrown_Throw(item, entity->velocity * Vec2(0.5f, 1.00f), entity->direction.x);
+				break;
+		}
+	}
+
 	static Vec2 handleInput(Game *game, Entity *entity) {
 		Vec2 wish_dir;
 
@@ -182,37 +217,7 @@ namespace Player {
 		}
 
 		if(game->getKeyDown(Game::INPUT_FIRE)) {
-			switch(entity->state) {
-				case STATE_MOVEMENT:
-					if(entity->children[CHILD_ENEMY_UNDER]) {
-						Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
-						Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
-
-						entity->state = STATE_PICKING_ITEM;
-						entity->timers[TIMER_STATE] = game->getCurrentTick();
-
-						child->alive = false;
-
-						Thrown_CopyEntity(new_throw, child);
-
-						entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
-					}
-					break;
-
-				case STATE_HOLDING_ITEM:
-					entity->state = STATE_THROWING_ITEM;
-					entity->timers[TIMER_STATE] = game->getCurrentTick();
-
-					{
-						Entity *item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
-						Thrown_Throw(item, entity->velocity * Vec2(0.5f, 1.00f), entity->direction.x);
-					}
-
-					break;
-
-				default:
-					break;
-			}
+			handleFire(game, entity);
 		}
 
 		return wish_dir;
@@ -310,13 +315,13 @@ namespace Player {
 
 			case STATE_THROWING_ITEM:
 				entity->animator.setAnimation(throwing_animation, 200);
+
 				applyPhysics(
 						game,
 						entity,
 						dt,
 						handleInput(game, entity)
 						);
-
 
 				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 200) {
 					entity->state = STATE_MOVEMENT;
@@ -349,6 +354,8 @@ namespace Player {
 			entity->contact_velocity = Vec2::zero;
 		}
 
+		printf("%f\n", 1.0f / dt);
+
 		entity->children[CHILD_ENEMY_UNDER] = 0;
 	}
 
@@ -357,7 +364,10 @@ namespace Player {
 		(void) entity;
 		(void) other;
 
-		if(other != NULL && isChildUnderPlayer(game, entity, other)) {
+		if(other == NULL)
+			return;
+
+		if(isChildUnderPlayer(game, entity, other)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
 		}
 	}

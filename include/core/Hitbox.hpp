@@ -17,7 +17,7 @@ struct Hitbox {
 		bool checkCollision(const Hitbox& other) const;
 		bool checkCollision(const Hitbox& other, const Vec2& velocity) const;
 
-		void solveCollision(const Hitbox& other);
+		void solveCollision(const Hitbox& other, Vec2& velocity);
 	
 		CollisionType type;
 	
@@ -31,8 +31,8 @@ struct Hitbox {
 		bool checkCollisionSolid(const Hitbox& other) const;
 		bool checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) const;
 		
-		void solveCollisionSolid(const Hitbox& other);
-		void solveCollisionOneWayUp(const Hitbox& other);
+		void solveCollisionSolid(const Hitbox& other, Vec2& velocity);
+		void solveCollisionOneWayUp(const Hitbox& other, Vec2& velocity);
 };
 
 #endif

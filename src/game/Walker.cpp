@@ -35,15 +35,32 @@ namespace Walker {
 		(void) entity;
 		(void) dt;
 
+		Hitbox hitbox = entity->hitbox;
+		hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+		hitbox.size.y /= 2;
+
 		switch(entity->state) {
 			case STATE_LEFT:
+				hitbox.position.x -= 2.0f;
+				hitbox.size.x = 1.0f;
 				entity->velocity.x = -walker_speed;
 				entity->sprite.flip_x = true;
+
+				if(game->checkCollision(hitbox)) {
+					entity->state = STATE_RIGHT;
+				}
 				break;
 
 			case STATE_RIGHT:
+				hitbox.position.x += hitbox.size.x + 1.0f;
+				hitbox.size.x = 1.0f;
 				entity->velocity.x = walker_speed;
 				entity->sprite.flip_x = false;
+
+				if(game->checkCollision(hitbox)) {
+					entity->state = STATE_LEFT;
+				}
+
 				break;
 		}
 
@@ -54,14 +71,6 @@ namespace Walker {
 		(void) game;
 		(void) entity;
 		(void) other;
-
-		if(entity->velocity.x == 0.0f) {
-			if(entity->state == STATE_LEFT) {
-				entity->state = STATE_RIGHT;
-			} else {
-				entity->state = STATE_LEFT;
-			}
-		}
 	}
 }
 

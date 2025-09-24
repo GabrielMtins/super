@@ -2,6 +2,8 @@
 #include "game/Constants.hpp"
 #include "game/Thrown.hpp"
 
+#include <unordered_set>
+
 namespace Thrown {
 	enum ThrownFlags {
 		FLAG_CARRIED = 0,
@@ -14,6 +16,9 @@ namespace Thrown {
 
 	static const float speed = 100.0f;
 	static const float jump = -100.0f;
+
+	static const std::unordered_set<EntityType> imortal_types = {
+	};
 
 	static const Vec2 hit_velocity = Vec2(20.0f, -150.0f);
 
@@ -45,14 +50,33 @@ namespace Thrown {
 		}
 	}
 
+	static bool isImortal(Entity *entity) {
+		return imortal_types.find(entity->counters[COUNTER_TYPE]) != imortal_types.end();
+	}
+
 	static void collision(Game *game, Entity *entity, Entity *other) {
 		(void) game;
 		(void) entity;
 		(void) other;
 
-		if(other == NULL && entity->velocity.y == 0.0f) {
-			entity->velocity.y = jump;
-			entity->counters[COUNTER_BOUNCE]++;
+		bool is_static;
+
+		if(entity->flags[FLAG_CARRIED])
+			return;
+
+		is_static = other == NULL;
+
+		if(other != NULL) {
+			is_static = is_static || (other->hitbox.layer & COLLISIONLAYER_STATIC);
+		}
+
+		if(is_static) {
+			if(entity->velocity.y == 0.0f) {
+				entity->velocity.y = jump;
+				entity->counters[COUNTER_BOUNCE]++;
+			}
+
+			return;
 		}
 
 		if(other != NULL) {
@@ -64,7 +88,10 @@ namespace Thrown {
 			new_throw->flags[FLAG_CARRIED] = false;
 			new_throw->velocity = hit_velocity;
 			entity->velocity.y = jump;
-			entity->hitbox.mask = 0;
+
+			if(!isImortal(entity)) {
+				entity->hitbox.mask = COLLISIONLAYER_ENEMY_THROWABLE;
+			}
 		}
 	}
 }

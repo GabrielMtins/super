@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
 	game->loadWorld("res/levels/map01.tmj");
 
-	for(int i = 0; i < 2; i++) {
+	for(int i = 0; i < 10; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
 		entity->hitbox.position.x += 16 * i + 16;
@@ -89,6 +89,20 @@ int main(int argc, char **argv) {
 
 static bool loadObject(Game *game, const nlohmann::json& object) {
 	EntityType type;
+
+	if(object.contains("type")) {
+		std::string str = object.at("type");
+		printf("%s\n", str.c_str());
+
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_PLATFORM));
+		entity->hitbox.position.x = object.at("x");
+		entity->hitbox.position.y = object.at("y");
+		entity->hitbox.size.x = object.at("width");
+		entity->hitbox.size.y = object.at("height");
+
+		entity->hitbox.position.print();
+		entity->hitbox.size.print();
+	}
 
 	if(!object.contains("gid"))
 		return false;

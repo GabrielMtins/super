@@ -8,7 +8,6 @@ EntityList::EntityList(void) {
 void EntityList::update(Game *game, float dt) {
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& entity = entities[i];
-		EntityHandler& handler = type_to_handler[entity.type];
 
 		if(!shouldProcessEntity(game, entity))
 			continue;
@@ -148,9 +147,11 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 	for(size_t i = 0; i < num_entities; i++) {
 		Entity& other = entities[i];
 		Vec2 old_position;
+		Vec2 old_velocity;
 		EntityHandler& other_handler = type_to_handler[other.type];
 
 		old_position = entity.hitbox.position;
+		old_velocity = entity.velocity;
 
 		if(entity.getId() == other.getId())
 			continue;
@@ -158,20 +159,23 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 		if(!entity.hitbox.checkCollision(other.hitbox, entity.velocity))
 			continue;
 
-		entity.hitbox.solveCollision(other.hitbox);
+		entity.hitbox.solveCollision(other.hitbox, entity.velocity);
 
 		if(world->checkCollision(entity.hitbox)) {
 			entity.hitbox.position = old_position;
+			entity.velocity = old_velocity;
 
 			if(!other.hitbox.checkCollision(entity.hitbox, other.velocity))
 				continue;
 
 			old_position = other.hitbox.position;
+			old_velocity = other.velocity;
 
-			other.hitbox.solveCollision(entity.hitbox);
+			other.hitbox.solveCollision(entity.hitbox, other.velocity);
 
 			if(world->checkCollision(other.hitbox)) {
 				other.hitbox.position = old_position;
+				other.velocity = old_velocity;
 			}
 		}
 

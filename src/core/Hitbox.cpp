@@ -33,14 +33,14 @@ bool Hitbox::checkCollision(const Hitbox& other, const Vec2& velocity) const {
 	return false;
 }
 
-void Hitbox::solveCollision(const Hitbox& other) {
+void Hitbox::solveCollision(const Hitbox& other, Vec2& velocity) {
 	switch(other.type) {
 		case COLLISION_SOLID:
-			solveCollisionSolid(other);
+			solveCollisionSolid(other, velocity);
 			break;
 
 		case COLLISION_ONEWAY_UP:
-			solveCollisionOneWayUp(other);
+			solveCollisionOneWayUp(other, velocity);
 			break;
 	}
 }
@@ -71,13 +71,13 @@ bool Hitbox::checkCollisionOneWayUp(const Hitbox& other, const Vec2& velocity) c
 	if(position.y + size.y < other.position.y)
 		return false;
 
-	if(position.y + size.y < other.position.y + ONEWAY_EPS && velocity.y > 0.0f)
+	if(position.y + size.y < other.position.y + ONEWAY_EPS && velocity.y >= 0.0f)
 		return true;
 
 	return false;
 }
 
-void Hitbox::solveCollisionSolid(const Hitbox& other) {
+void Hitbox::solveCollisionSolid(const Hitbox& other, Vec2& velocity) {
 	Vec2 dir(MAX_DELTA, MAX_DELTA);
 	float left, right, top, bottom;
 	float other_left, other_right, other_top, other_bottom;
@@ -108,11 +108,14 @@ void Hitbox::solveCollisionSolid(const Hitbox& other) {
 
 	if(fabsf(dir.x) < fabsf(dir.y) && fabsf(dir.x) < MAX_DELTA) {
 		position.x += dir.x;
+		velocity.x = 0.0f;
 	} else if(fabsf(dir.y) < MAX_DELTA){
 		position.y += dir.y;
+		velocity.y = 0.0f;
 	}
 }
 
-void Hitbox::solveCollisionOneWayUp(const Hitbox& other) {
+void Hitbox::solveCollisionOneWayUp(const Hitbox& other, Vec2& velocity) {
 	position.y = other.position.y - size.y;
+	velocity.y = 0.0f;
 }
