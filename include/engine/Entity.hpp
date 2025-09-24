@@ -34,6 +34,7 @@ struct Entity {
 		Hitbox hitbox;
 		Vec2 center;
 		Vec2 velocity;
+		Vec2 direction;
 	
 		Sprite sprite;
 	

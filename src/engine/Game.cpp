@@ -22,6 +22,7 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
 	setKeyInput(INPUT_UP, SDL_SCANCODE_W);
 	setKeyInput(INPUT_FIRE, SDL_SCANCODE_J);
+	setKeyInput(INPUT_JUMP, SDL_SCANCODE_K);
 
 	screen_dimensions = Vec2(internal_width, internal_height);
 
@@ -188,7 +189,7 @@ void Game::loop(void) {
 
 	entity_list.update(this, dt);
 
-	context.renderClear(0x00, 0x00, 0x00, 0xff);
+	context.renderClear(0xff, 0xf6, 0xd3, 0xff);
 
 	for(int i = WORLD_LAYER_BG; i < WORLD_LAYER_FG; i++) {
 		world.render(this, i);

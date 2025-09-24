@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
 	game = new Game();
 
-	game->init("super", 480, 270);
+	game->init("super", 240, 135);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);

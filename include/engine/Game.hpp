@@ -21,6 +21,7 @@ class Game {
 			INPUT_RIGHT,
 			INPUT_DOWN,
 			INPUT_UP,
+			INPUT_JUMP,
 			INPUT_FIRE,
 			NUM_INPUTS
 		};
