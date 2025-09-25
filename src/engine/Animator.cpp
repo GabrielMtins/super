@@ -45,3 +45,7 @@ int Animator::getCurrentCell(void) const {
 
 	return frames[current_frame];
 }
+
+bool Animator::active(void) const {
+	return frames != NULL;
+}

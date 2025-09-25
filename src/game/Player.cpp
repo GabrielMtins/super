@@ -78,7 +78,7 @@ namespace Player {
 
 		entity->direction.x = 1.0f;
 
-		entity->health = 10;
+		entity->health = 3;
 		entity->damage_cooldown = 1000;
 	}
 

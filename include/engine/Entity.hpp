@@ -11,6 +11,7 @@
 
 #include <array>
 #include <bitset>
+#include <string>
 
 class Game;
 class World;
@@ -31,6 +32,8 @@ struct Entity {
 		void updateCenter(void);
 
 		bool getDamage(const Game *game, int damage);
+
+		std::string name;
 	
 		Hitbox hitbox;
 		Vec2 center;

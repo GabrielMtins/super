@@ -15,6 +15,11 @@ Sprite::Sprite(void) {
 }
 
 void Sprite::setTexture(Texture *texture) {
+	if(texture == NULL) {
+		this->texture = NULL;
+		return;
+	}
+
 	this->texture = texture;
 
 	size = Vec2(

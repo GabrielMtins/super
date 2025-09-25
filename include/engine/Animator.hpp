@@ -11,6 +11,7 @@ class Animator {
 		void setAnimation(const int *frames, int delay);
 		void update(const Game *game);
 		int getCurrentCell(void) const;
+		bool active(void) const;
 
 	private:
 		const int *frames;

@@ -43,7 +43,10 @@ void Entity::updateSprite(const Game *game) {
 	Tick current_tick;
 
 	sprite.position = hitbox.position - sprite.offset;
-	sprite.cell = animator.getCurrentCell();
+
+	if(animator.active()) {
+		sprite.cell = animator.getCurrentCell();
+	}
 
 	current_tick = game->getCurrentTick();
 

@@ -74,6 +74,7 @@ int main(int argc, char **argv) {
 
 	game->addEntity(ENTITY_PLAYER);
 	game->addEntity(ENTITY_CAMERA);
+	game->addEntity(ENTITY_LIFEBAR);
 
 	for(int i = 0; i < 2; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
