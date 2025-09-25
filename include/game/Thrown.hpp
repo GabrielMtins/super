@@ -3,8 +3,9 @@
 
 #include "game/CustomEntities.hpp"
 
-void Thrown_CopyEntity(Entity *entity, const Entity *other);
-
-void Thrown_Throw(Entity *entity, const Vec2& velocity, float direction);
+namespace Thrown {
+	void copyEntity(Entity *entity, const Entity *other);
+	void throwEntity(Entity *entity, const Vec2& velocity, float direction);
+};
 
 #endif

@@ -175,6 +175,14 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 
 		entity.hitbox.solveCollision(other.hitbox, entity.velocity);
 
+		if(handler.collision != NULL) {
+			handler.collision(game, &entity, &other);
+		}
+
+		if(other_handler.collision != NULL) {
+			other_handler.collision(game, &other, &entity);
+		}
+
 		if(world->checkCollision(entity.hitbox)) {
 			entity.hitbox.position = old_position;
 			entity.velocity = old_velocity;
@@ -191,14 +199,6 @@ void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, En
 				other.hitbox.position = old_position;
 				other.velocity = old_velocity;
 			}
-		}
-
-		if(handler.collision != NULL) {
-			handler.collision(game, &entity, &other);
-		}
-
-		if(other_handler.collision != NULL) {
-			other_handler.collision(game, &other, &entity);
 		}
 	}
 }

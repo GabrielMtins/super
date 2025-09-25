@@ -10,8 +10,7 @@ namespace Thrown {
 	};
 
 	enum ThrownCounters {
-		COUNTER_TYPE = 0,
-		COUNTER_BOUNCE
+		COUNTER_BOUNCE = 0,
 	};
 
 	static const float speed = 80.0f;
@@ -28,8 +27,8 @@ namespace Thrown {
 
 		entity->type = ENTITY_THROWN;
 
-		entity->hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
-		entity->flags[Thrown::FLAG_CARRIED] = true;
+		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
+		entity->flags[FLAG_CARRIED] = true;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
@@ -45,13 +44,13 @@ namespace Thrown {
 		if(entity->counters[COUNTER_BOUNCE] >= 2 && entity->velocity.y < 0.0f) {
 			entity->alive = false;
 
-			Entity *actual = game->getEntityFromId(game->addEntity(entity->counters[COUNTER_TYPE]));
+			Entity *actual = game->getEntityFromId(game->addEntity(entity->alt_type));
 			actual->hitbox.position = entity->hitbox.position;
 		}
 	}
 
 	static bool isImortal(Entity *entity) {
-		return imortal_types.find(entity->counters[COUNTER_TYPE]) != imortal_types.end();
+		return imortal_types.find(entity->alt_type) != imortal_types.end();
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
@@ -83,42 +82,43 @@ namespace Thrown {
 			Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
 			other->alive = false;
 
-			Thrown_CopyEntity(new_throw, other);
+			copyEntity(new_throw, other);
 			new_throw->hitbox.mask = 0;
 			new_throw->flags[FLAG_CARRIED] = false;
 			new_throw->velocity = hit_velocity;
 			entity->velocity.y = jump;
 
 			if(!isImortal(entity)) {
-				entity->hitbox.mask = COLLISIONLAYER_ENEMY_THROWABLE;
+				entity->hitbox.mask = COLLISIONLAYER_ENEMY;
 			}
 		}
+	}
+
+	void copyEntity(Entity *entity, const Entity *other) {
+		entity->hitbox = other->hitbox;
+
+		entity->hitbox.mask = COLLISIONLAYER_ENEMY;
+		entity->hitbox.layer = 0;
+	
+		entity->sprite = other->sprite;
+		entity->sprite.flip_y = true;
+		entity->sprite.hud_element = true;
+	
+		entity->sprite.offset.y = 0.0f;
+	
+		entity->alt_type = other->type;
+	}
+	
+	void throwEntity(Entity *entity, const Vec2& velocity, float direction) {
+		entity->velocity = Vec2(copysignf(Thrown::speed, direction), 0.0f) + velocity;
+	
+		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
+		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
+		entity->flags[Thrown::FLAG_CARRIED] = false;
 	}
 }
 
 EntityHandler Thrown_GetHandler(void) {
 	using namespace Thrown;
 	return EntityHandler(create, update, collision);
-}
-
-void Thrown_CopyEntity(Entity *entity, const Entity *other) {
-	entity->hitbox = other->hitbox;
-
-	entity->hitbox.mask = COLLISIONLAYER_ENEMY_THROWABLE;
-	entity->hitbox.layer = 0;
-
-	entity->sprite = other->sprite;
-	entity->sprite.flip_y = true;
-	entity->sprite.hud_element = true;
-
-	entity->sprite.offset.y = 0.0f;
-
-	entity->counters[Thrown::COUNTER_TYPE] = other->type;
-}
-
-void Thrown_Throw(Entity *entity, const Vec2& velocity, float direction) {
-	entity->velocity = Vec2(copysignf(Thrown::speed, direction), 0.0f) + velocity;
-
-	entity->hitbox.mask |= COLLISIONLAYER_STATIC;
-	entity->flags[Thrown::FLAG_CARRIED] = false;
 }

@@ -17,7 +17,9 @@ namespace Walker {
 
 		entity->type = ENTITY_WALKER;
 
-		entity->hitbox.layer |= COLLISIONLAYER_ENEMY_THROWABLE;
+		entity->hitbox.layer |= COLLISIONLAYER_ENEMY;
+		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
+		//entity->hitbox.layer |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
@@ -36,7 +38,7 @@ namespace Walker {
 		(void) dt;
 
 		Hitbox hitbox = entity->hitbox;
-		hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+		hitbox.mask |= COLLISIONLAYER_ENEMY;
 		hitbox.size.y /= 2;
 
 		switch(entity->state) {

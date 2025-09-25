@@ -17,7 +17,8 @@ enum EntityHandlerTypes {
 enum CollisionLayers {
 	COLLISIONLAYER_STATIC = 1 << 0,
 	COLLISIONLAYER_PLAYER = 1 << 1,
-	COLLISIONLAYER_ENEMY_THROWABLE = 1 << 2,
+	COLLISIONLAYER_ENEMY = 1 << 2,
+	COLLISIONLAYER_THROWABLE = 1 << 3,
 };
 
 void Custom_AddEntityTypes(Game *game);

@@ -41,6 +41,7 @@ struct Entity {
 		Sprite sprite;
 	
 		EntityType type;
+		EntityType alt_type;
 	
 		bool alive;
 		int health;

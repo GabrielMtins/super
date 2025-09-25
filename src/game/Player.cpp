@@ -35,6 +35,7 @@ namespace Player {
 	enum PlayerFlags {
 		FLAG_RUNNING = 0,
 		FLAG_ONGROUD,
+		FLAG_CANCELJUMP
 	};
 
 	enum PlayerTimers {
@@ -67,7 +68,8 @@ namespace Player {
 
 		entity->hitbox.layer |= COLLISIONLAYER_PLAYER;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
-		entity->hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
+		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
 
 		entity->hitbox.position.x += 128.0f;
 
@@ -81,12 +83,6 @@ namespace Player {
 	}
 
 	static bool isChildUnderPlayer(Game *game, Entity *entity, Entity *other) {
-		if(!(other->hitbox.layer & COLLISIONLAYER_ENEMY_THROWABLE)) {
-			return false;
-		}
-
-		(void) game;
-
 		float tolerance = other->hitbox.size.y * 0.5f;
 		float player_bottom_y = entity->hitbox.position.y + entity->hitbox.size.y;
 		float other_top_y = other->hitbox.position.y;
@@ -101,8 +97,7 @@ namespace Player {
 	static bool isOnGround(Game *game, Entity *entity) {
 		Hitbox jump_hitbox;
 
-		jump_hitbox.mask |= COLLISIONLAYER_STATIC;
-		jump_hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+		jump_hitbox.mask = entity->hitbox.mask;
 
 		jump_hitbox.position = entity->hitbox.position;
 		jump_hitbox.position.y += entity->hitbox.size.y - 0.1f;
@@ -123,6 +118,10 @@ namespace Player {
 	static void updateFlags(Game *game, Entity *entity) {
 		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
 		entity->flags[FLAG_RUNNING] = game->getKey(Game::INPUT_FIRE);
+
+		if(entity->flags[FLAG_ONGROUD]) {
+			entity->flags[FLAG_CANCELJUMP] = false;
+		}
 	}
 
 	static bool checkJumpCondition(Game *game, Entity *entity) {
@@ -132,6 +131,9 @@ namespace Player {
 		if(entity->velocity.y >= 0.0f) {
 			return game->getCurrentTick() < last_on_ground_timer + coyote_time;
 		}
+
+		if(entity->flags[FLAG_CANCELJUMP])
+			return false;
 
 		return game->getCurrentTick() < start_jumper_timer + jump_time;
 	}
@@ -195,7 +197,7 @@ namespace Player {
 
 					child->alive = false;
 
-					Thrown_CopyEntity(new_throw, child);
+					Thrown::copyEntity(new_throw, child);
 
 					entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
 				}
@@ -206,7 +208,7 @@ namespace Player {
 				entity->timers[TIMER_STATE] = game->getCurrentTick();
 
 				item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
-				Thrown_Throw(item, entity->velocity * Vec2(0.8f, 1.00f), entity->direction.x);
+				Thrown::throwEntity(item, entity->velocity * Vec2(0.8f, 1.00f), entity->direction.x);
 				break;
 		}
 	}
@@ -214,8 +216,10 @@ namespace Player {
 	static Vec2 handleInput(Game *game, Entity *entity) {
 		Vec2 wish_dir;
 
-		if(game->getKey(Game::INPUT_JUMP)) {
+		if(game->getKey(Game::INPUT_JUMP) && !entity->flags[FLAG_CANCELJUMP]) {
 			wish_dir.y = -1.0f;
+		} else if(entity->velocity.y < 0.0f) {
+			entity->flags[FLAG_CANCELJUMP] = true;
 		}
 
 		if(game->getKey(Game::INPUT_LEFT)) {
@@ -395,14 +399,20 @@ namespace Player {
 		(void) game;
 		(void) entity;
 		(void) other;
+		
+		bool is_child_under_player;
 
 		if(other == NULL)
 			return;
 
-		if(isChildUnderPlayer(game, entity, other)) {
+		is_child_under_player = isChildUnderPlayer(game, entity, other);
+
+		if(is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_THROWABLE)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
 
-		} else if(other->hitbox.layer & COLLISIONLAYER_ENEMY_THROWABLE) {
+		}
+
+		if(!is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_ENEMY)) {
 			if(entity->getDamage(game, 1)) {
 				applyKnockback(game, entity, other);
 				printf("%u\n", entity->damage_cooldown);
