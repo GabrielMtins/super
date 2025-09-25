@@ -75,9 +75,12 @@ class Game {
 		EntityFoundList findEntity(const Vec2& position, float radius);
 		EntityFoundList findEntity(EntityType type);
 		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
+		EntityFoundList findCollision(const Hitbox& hitbox);
 
 		bool checkCollision(const Hitbox& hitbox) const;
 		void setBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
+
+		void setFps(uint32_t fps);
 
 		void quit(void);
 
@@ -108,6 +111,8 @@ class Game {
 		bool paused;
 		uint32_t old_mouse_state;
 		uint32_t mouse_state;
+
+		uint32_t delay_fps;
 
 		SDL_Color bg;
 };

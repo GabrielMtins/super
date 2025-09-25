@@ -1,6 +1,6 @@
 #include "core/Hitbox.hpp"
 
-#define ONEWAY_EPS 2.0f
+#define ONEWAY_EPS 8.0f
 #define MAX_DELTA 999.0f
 
 Hitbox::Hitbox(void) {
@@ -15,9 +15,6 @@ bool Hitbox::checkCollision(const Hitbox& other) const {
 
 bool Hitbox::checkCollision(const Hitbox& other, const Vec2& velocity) const {
 	if((mask & other.layer) == 0)
-		return false;
-
-	if(type != COLLISION_SOLID)
 		return false;
 
 	switch(other.type) {

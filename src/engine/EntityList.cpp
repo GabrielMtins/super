@@ -31,7 +31,7 @@ void EntityList::update(Game *game, float dt) {
 			handler.update(game, &entity, dt);
 
 		entity.updateAnimator(game);
-		entity.updateSprite();
+		entity.updateSprite(game);
 	}
 
 	cleanUp();
@@ -139,6 +139,20 @@ bool EntityList::checkCollision(const World *world, const Hitbox& hitbox) const 
 	}
 
 	return false;
+}
+
+EntityFoundList EntityList::findCollision(const Hitbox& hitbox) {
+	found_entities.clear();
+
+	for(size_t i = 0; i < num_entities; i++) {
+		const Entity& entity = entities[i];
+
+		if(hitbox.checkCollision(entity.hitbox)) {
+			found_entities.push_back(entity.getId());
+		}
+	}
+
+	return found_entities;
 }
 
 void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {

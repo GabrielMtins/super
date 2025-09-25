@@ -10,6 +10,7 @@ enum EntityHandlerTypes {
  	ENTITY_WALKER,
  	ENTITY_THROWN,
  	ENTITY_PLATFORM,
+ 	ENTITY_CAMERA,
 	NUM_ENTITY_TYPE
 };
 
@@ -28,5 +29,7 @@ EntityHandler Walker_GetHandler(void);
 EntityHandler Thrown_GetHandler(void);
 
 EntityHandler Platform_GetHandler(void);
+
+EntityHandler Camera_GetHandler(void);
 
 #endif

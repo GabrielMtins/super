@@ -27,6 +27,8 @@ Entity::Entity(void) {
 	damage_cooldown = 0;
 	invicibility_end_tick = 0;
 	health = 100;
+
+	blink_when_damaged = false;
 }
 
 Entity::Entity(EntityId id) : Entity() {
@@ -37,9 +39,25 @@ EntityId Entity::getId(void) const {
 	return id;
 }
 
-void Entity::updateSprite(void) {
+void Entity::updateSprite(const Game *game) {
+	Tick current_tick;
+
 	sprite.position = hitbox.position - sprite.offset;
 	sprite.cell = animator.getCurrentCell();
+
+	current_tick = game->getCurrentTick();
+
+	if(!blink_when_damaged)
+		return;
+
+	if(current_tick > invicibility_end_tick) {
+		sprite.visible = true;
+		return;
+	}
+
+	current_tick /= ENTITY_DAMAGE_BLINK_FREQUENCY;
+
+	sprite.visible = current_tick % 2 == 0;
 }
 
 void Entity::updateAnimator(const Game *game) {

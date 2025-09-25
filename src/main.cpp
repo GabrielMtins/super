@@ -11,6 +11,7 @@
  * Adicionar leitor de configuração via json
  * Adicionar one way collisions
  * Refazer o sistema de geração de textura de textos
+ * Programar sistema de knockback no player
  *
  * DONE:
  * Adicionar interface de input no game
@@ -56,6 +57,7 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
+	game->setFps(200);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);
@@ -70,13 +72,14 @@ int main(int argc, char **argv) {
 
 	game->loadWorld("res/levels/map01.tmj");
 
-	for(int i = 0; i < 10; i++) {
+	game->addEntity(ENTITY_PLAYER);
+	game->addEntity(ENTITY_CAMERA);
+
+	for(int i = 0; i < 2; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
-		entity->hitbox.position.x += 16 * i + 16;
+		entity->hitbox.position.x += 16 * i + 80;
 	}
-
-	game->addEntity(ENTITY_PLAYER);
 
 	game->run();
 

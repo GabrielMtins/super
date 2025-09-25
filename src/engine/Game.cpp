@@ -27,6 +27,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	setKeyInput(INPUT_JUMP, SDL_SCANCODE_K);
 
 	screen_dimensions = Vec2(internal_width, internal_height);
+	
+	setFps(200);
 
 	dt = 0.0f;
 	current_tick = 0;
@@ -172,6 +174,10 @@ EntityFoundList Game::findEntity(EntityType type, const Vec2& position, float ra
 	return entity_list.findEntity(type, position, radius);
 }
 
+EntityFoundList Game::findCollision(const Hitbox& hitbox) {
+	return entity_list.findCollision(hitbox);
+}
+
 bool Game::checkCollision(const Hitbox& hitbox) const {
 	return entity_list.checkCollision(&world, hitbox);
 }
@@ -183,6 +189,10 @@ void Game::setBackgroundColor(uint8_t r, uint8_t g, uint8_t b) {
 	bg.a = 0xff;
 }
 
+void Game::setFps(uint32_t fps) {
+	delay_fps = 1000 / fps;
+}
+
 void Game::quit(void) {
 	resource_manager.quit();
 	text_generator.quit();
@@ -191,6 +201,7 @@ void Game::quit(void) {
 
 void Game::loop(void) {
 	uint32_t new_tick;
+	uint32_t delta_tick;
 
 	context.pollEvents();
 	updateKeyState();
@@ -215,7 +226,17 @@ void Game::loop(void) {
 	context.renderPresent();
 
 	new_tick = SDL_GetTicks();
-	dt = (float) (new_tick - current_tick) / 1000.0f;
+
+	delta_tick = new_tick - current_tick;
+
+	if(delta_tick < delay_fps) {
+		SDL_Delay(delay_fps - delta_tick);
+	}
+
+	new_tick = SDL_GetTicks();
+	delta_tick = new_tick - current_tick;
+
+	dt = (float) (delta_tick) / 1000.0f;
 	current_tick = new_tick;
 }
 

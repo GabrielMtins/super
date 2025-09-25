@@ -11,6 +11,7 @@ Sprite::Sprite(void) {
 	ignore_camera = false;
 	layer = 0;
 	angle = 0.0f;
+	visible = true;
 }
 
 void Sprite::setTexture(Texture *texture) {
@@ -28,6 +29,9 @@ bool Sprite::isOnCamera(const Game *game) const {
 	Vec2 render_position;
 
 	if(texture == NULL)
+		return false;
+
+	if(!visible)
 		return false;
 
 	render_position = position + offset;

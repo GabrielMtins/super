@@ -14,7 +14,7 @@ namespace Thrown {
 		COUNTER_BOUNCE
 	};
 
-	static const float speed = 100.0f;
+	static const float speed = 80.0f;
 	static const float jump = -100.0f;
 
 	static const std::unordered_set<EntityType> imortal_types = {

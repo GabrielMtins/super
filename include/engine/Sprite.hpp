@@ -21,6 +21,7 @@ struct Sprite {
 	Texture *texture;
 	bool hud_element;
 	bool ignore_camera;
+	bool visible;
 
 	bool flip_x;
 	bool flip_y;

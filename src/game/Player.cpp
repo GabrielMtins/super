@@ -11,7 +11,7 @@ namespace Player {
 	static const float acceleration = 500.0f;
 	static const float air_acceleration = 250.0f;
 	static const float friction = 200.0f;
-	static const float min_speed = 10.0f;
+	static const float min_speed = 4.0f;
 	static const float jump_velocity = -150.0f;
 
 	static const int start_jump_timer_id = 1;
@@ -29,6 +29,8 @@ namespace Player {
 	static const int item_jumping_animation[] = {9, -1};
 
 	static const int picking_animation[] = {4, 5, -1};
+
+	static const Vec2 velocity_knockback = Vec2(40.0f, -150.0f);
 
 	enum PlayerFlags {
 		FLAG_RUNNING = 0,
@@ -51,6 +53,7 @@ namespace Player {
 		STATE_PICKING_ITEM,
 		STATE_HOLDING_ITEM,
 		STATE_THROWING_ITEM,
+		STATE_KNOCKBACK
 	};
 
 	static void create(Game *game, Entity *entity) {
@@ -65,22 +68,34 @@ namespace Player {
 		entity->hitbox.layer |= COLLISIONLAYER_PLAYER;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
-		entity->damage_cooldown = 200;
+
+		entity->hitbox.position.x += 128.0f;
 
 		entity->state = STATE_MOVEMENT;
+		entity->blink_when_damaged = true;
+
+		entity->direction.x = 1.0f;
+
+		entity->health = 10;
+		entity->damage_cooldown = 1000;
 	}
 
 	static bool isChildUnderPlayer(Game *game, Entity *entity, Entity *other) {
-		Hitbox jump_hitbox;
+		if(!(other->hitbox.layer & COLLISIONLAYER_ENEMY_THROWABLE)) {
+			return false;
+		}
 
-		jump_hitbox.mask |= COLLISIONLAYER_ENEMY_THROWABLE;
+		(void) game;
 
-		jump_hitbox.position = entity->hitbox.position;
-		jump_hitbox.position.y += entity->hitbox.size.y - 0.1f;
-		jump_hitbox.size = entity->hitbox.size;
-		jump_hitbox.size.y = 0.4f;
+		float tolerance = other->hitbox.size.y * 0.5f;
+		float player_bottom_y = entity->hitbox.position.y + entity->hitbox.size.y;
+		float other_top_y = other->hitbox.position.y;
 
-		return jump_hitbox.checkCollision(other->hitbox);
+		if(other_top_y > player_bottom_y - tolerance) {
+			return true;
+		}
+
+		return false;
 	}
 
 	static bool isOnGround(Game *game, Entity *entity) {
@@ -108,12 +123,6 @@ namespace Player {
 	static void updateFlags(Game *game, Entity *entity) {
 		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
 		entity->flags[FLAG_RUNNING] = game->getKey(Game::INPUT_FIRE);
-
-		/*
-		if(entity->flags[FLAG_ONGROUD]) {
-			entity->velocity.y = 0.0f;
-		}
-		*/
 	}
 
 	static bool checkJumpCondition(Game *game, Entity *entity) {
@@ -149,6 +158,7 @@ namespace Player {
 
 			if(move_opposite || below_max_speed) {
 				entity->velocity.x += wish_dir.x * (is_on_ground ? acceleration : air_acceleration) * dt;
+				//printf("%f\n", entity->velocity.x);
 			}
 
 			if(!below_max_speed && is_on_ground) {
@@ -196,7 +206,7 @@ namespace Player {
 				entity->timers[TIMER_STATE] = game->getCurrentTick();
 
 				item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
-				Thrown_Throw(item, entity->velocity * Vec2(0.5f, 1.00f), entity->direction.x);
+				Thrown_Throw(item, entity->velocity * Vec2(0.8f, 1.00f), entity->direction.x);
 				break;
 		}
 	}
@@ -337,14 +347,22 @@ namespace Player {
 					entity->state = STATE_HOLDING_ITEM;
 				}
 				break;
-		}
 
-		game->setCameraPosition(
-				Vec2(
-					entity->hitbox.position.x - 100,
-					-16.0f
-					)
-				);
+			case STATE_KNOCKBACK:
+				entity->animator.setAnimation(jumping_animation, 200);
+
+				applyPhysics(
+						game,
+						entity,
+						dt,
+						Vec2::zero
+						);
+
+				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 400) {
+					entity->state = STATE_MOVEMENT;
+				}
+				break;
+		}
 
 		if(entity->children[CHILD_ENEMY_UNDER]) {
 			Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
@@ -354,9 +372,23 @@ namespace Player {
 			entity->contact_velocity = Vec2::zero;
 		}
 
-		printf("%f\n", 1.0f / dt);
+		// printf("%f\n", 1.0f / dt);
 
 		entity->children[CHILD_ENEMY_UNDER] = 0;
+	}
+
+	static void applyKnockback(Game *game, Entity *entity, Entity *other) {
+		if(entity->state == STATE_KNOCKBACK)
+			return;
+
+		if(entity->state == STATE_HOLDING_ITEM || entity->state == STATE_PICKING_ITEM) {
+			handleFire(game, entity);
+		}
+
+		entity->state = STATE_KNOCKBACK;
+		entity->timers[TIMER_STATE] = game->getCurrentTick();
+		entity->velocity = velocity_knockback;
+		entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
@@ -369,6 +401,13 @@ namespace Player {
 
 		if(isChildUnderPlayer(game, entity, other)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
+
+		} else if(other->hitbox.layer & COLLISIONLAYER_ENEMY_THROWABLE) {
+			if(entity->getDamage(game, 1)) {
+				applyKnockback(game, entity, other);
+				printf("%u\n", entity->damage_cooldown);
+				printf("%i\n", entity->health);
+			} 
 		}
 	}
 }

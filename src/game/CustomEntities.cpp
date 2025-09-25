@@ -5,4 +5,5 @@ void Custom_AddEntityTypes(Game *game) {
 	game->addHandlerToType(ENTITY_WALKER, Walker_GetHandler());
 	game->addHandlerToType(ENTITY_THROWN, Thrown_GetHandler());
 	game->addHandlerToType(ENTITY_PLATFORM, Platform_GetHandler());
+	game->addHandlerToType(ENTITY_CAMERA, Camera_GetHandler());
 }

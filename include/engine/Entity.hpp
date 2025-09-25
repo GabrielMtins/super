@@ -26,7 +26,7 @@ struct Entity {
 		Entity(void);
 		Entity(EntityId id);
 		EntityId getId(void) const;
-		void updateSprite(void);
+		void updateSprite(const Game *game);
 		void updateAnimator(const Game *game);
 		void updateCenter(void);
 
@@ -55,6 +55,7 @@ struct Entity {
 		int state;
 	
 		PauseMode pause_mode;
+		bool blink_when_damaged;
 	
 		std::array<Tick, ENTITY_MAX_TIMERS> timers;
 		std::array<int, ENTITY_MAX_COUNTERS> counters;
