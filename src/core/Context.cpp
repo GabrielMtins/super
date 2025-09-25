@@ -78,7 +78,7 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	console.log("[Context] Created window and renderer.");
 
 	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
-	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//window_width = 1920;
 	//window_height = 1080;
