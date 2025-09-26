@@ -13,36 +13,16 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 			internal_height
 			);
 
-	for(int i = 0; i < NUM_INPUTS; i++) {
-		input_to_keys[i] = SDL_SCANCODE_UNKNOWN;
-	}
-
 	setBackgroundColor(0xff, 0xff, 0xff);
-
-	setKeyInput(INPUT_LEFT, SDL_SCANCODE_A);
-	setKeyInput(INPUT_RIGHT, SDL_SCANCODE_D);
-	setKeyInput(INPUT_DOWN, SDL_SCANCODE_S);
-	setKeyInput(INPUT_UP, SDL_SCANCODE_W);
-	setKeyInput(INPUT_FIRE, SDL_SCANCODE_J);
-	setKeyInput(INPUT_JUMP, SDL_SCANCODE_K);
 
 	screen_dimensions = Vec2(internal_width, internal_height);
 	
 	setFps(200);
+	setMinFps(60);
 
 	dt = 0.0f;
 	current_tick = 0;
 	paused = false;
-
-	for(Tick& tick : input_tick_down) 
-		tick = 999999;
-
-	for(Tick& tick : input_tick_up) 
-		tick = 999999;
-
-	for(bool& press : pressed) {
-		press = false;
-	}
 
 	mouse_state = 0;
 	old_mouse_state = 0;
@@ -118,16 +98,16 @@ const Vec2& Game::getMousePosition(void) const {
 	return mouse_position;
 }
 
-bool Game::getKey(InputType input_type) const {
-	return pressed[input_type];
+bool Game::getInput(int input_type) const {
+	return input.getInput(input_type);
 }
 
-bool Game::getKeyDown(InputType input_type) const {
-	return input_tick_down[input_type] == current_tick;
+bool Game::getInputDown(int input_type) const {
+	return input.getInputDown(input_type, current_tick);
 }
 
-bool Game::getKeyUp(InputType input_type) const {
-	return input_tick_up[input_type] == current_tick;
+bool Game::getInputUp(int input_type) const {
+	return input.getInputUp(input_type, current_tick);
 }
 
 bool Game::getMouseButton(MouseButton mouse_button) const {
@@ -142,8 +122,8 @@ bool Game::getMouseButtonUp(MouseButton mouse_button) const {
 		(old_mouse_state & SDL_BUTTON(mouse_button));
 }
 
-void Game::setKeyInput(InputType input_type, int scancode) {
-	input_to_keys[input_type] = scancode;
+void Game::setInputKey(int input_type, int scancode) {
+	input.setInputKey(input_type, scancode);
 }
 
 Tick Game::getCurrentTick(void) const {
@@ -193,6 +173,10 @@ void Game::setFps(uint32_t fps) {
 	delay_fps = 1000 / fps;
 }
 
+void Game::setMinFps(uint32_t fps) {
+	minimum_dt = 1.0f / fps;
+}
+
 void Game::quit(void) {
 	resource_manager.quit();
 	text_generator.quit();
@@ -204,7 +188,7 @@ void Game::loop(void) {
 	uint32_t delta_tick;
 
 	context.pollEvents();
-	updateKeyState();
+	input.update(current_tick);
 	updateMouseState();
 
 	entity_list.update(this, dt);
@@ -238,24 +222,9 @@ void Game::loop(void) {
 
 	dt = (float) (delta_tick) / 1000.0f;
 	current_tick = new_tick;
-}
 
-void Game::updateKeyState(void) {
-	const uint8_t *keys = SDL_GetKeyboardState(NULL);
-
-	for(int i = 0; i < NUM_INPUTS; i++) {
-		bool new_state;
-
-		new_state = keys[input_to_keys[i]];
-
-		if(new_state == true && pressed[i] == false) {
-			input_tick_down[i] = current_tick;
-		}
-		else if(new_state == false && pressed[i] == true) {
-			input_tick_up[i] = current_tick;
-		}
-
-		pressed[i] = new_state;
+	if(dt > minimum_dt) {
+		dt = minimum_dt;
 	}
 }
 

@@ -79,7 +79,7 @@ namespace Player {
 		entity->direction.x = 1.0f;
 
 		entity->health = 3;
-		entity->damage_cooldown = 1000;
+		entity->damage_cooldown = 1500;
 	}
 
 	static bool isChildUnderPlayer(Game *game, Entity *entity, Entity *other) {
@@ -117,7 +117,7 @@ namespace Player {
 
 	static void updateFlags(Game *game, Entity *entity) {
 		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
-		entity->flags[FLAG_RUNNING] = game->getKey(Game::INPUT_FIRE);
+		entity->flags[FLAG_RUNNING] = game->getInput(InputType::FIRE);
 
 		if(entity->flags[FLAG_ONGROUD]) {
 			entity->flags[FLAG_CANCELJUMP] = false;
@@ -216,21 +216,21 @@ namespace Player {
 	static Vec2 handleInput(Game *game, Entity *entity) {
 		Vec2 wish_dir;
 
-		if(game->getKey(Game::INPUT_JUMP) && !entity->flags[FLAG_CANCELJUMP]) {
+		if(game->getInput(InputType::JUMP) && !entity->flags[FLAG_CANCELJUMP]) {
 			wish_dir.y = -1.0f;
 		} else if(entity->velocity.y < 0.0f) {
 			entity->flags[FLAG_CANCELJUMP] = true;
 		}
 
-		if(game->getKey(Game::INPUT_LEFT)) {
+		if(game->getInput(InputType::LEFT)) {
 			wish_dir.x -= 1.0f;
 		}
 
-		if(game->getKey(Game::INPUT_RIGHT)) {
+		if(game->getInput(InputType::RIGHT)) {
 			wish_dir.x += 1.0f;
 		}
 
-		if(game->getKeyDown(Game::INPUT_FIRE)) {
+		if(game->getInputDown(InputType::FIRE)) {
 			handleFire(game, entity);
 		}
 

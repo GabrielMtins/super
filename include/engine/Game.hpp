@@ -6,6 +6,7 @@
 #include "engine/EntityList.hpp"
 #include "core/ResourceManager.hpp"
 #include "core/TextGenerator.hpp"
+#include "core/Input.hpp"
 #include "engine/World.hpp"
 #include "engine/SpriteRenderer.hpp"
 
@@ -16,16 +17,6 @@
 
 class Game {
 	public:
-		enum InputType {
-			INPUT_LEFT = 0,
-			INPUT_RIGHT,
-			INPUT_DOWN,
-			INPUT_UP,
-			INPUT_JUMP,
-			INPUT_FIRE,
-			NUM_INPUTS
-		};
-
 		enum MouseButton {
 			MOUSEBUTTON_LEFT = 1,
 			MOUSEBUTTON_MIDDLE,
@@ -56,15 +47,15 @@ class Game {
 		const Vec2& getScreenDimensions(void) const;
 		const Vec2& getMousePosition(void) const;
 
-		bool getKey(InputType input_type) const;
-		bool getKeyDown(InputType input_type) const;
-		bool getKeyUp(InputType input_type) const;
+		bool getInput(int input_type) const;
+		bool getInputDown(int input_type) const;
+		bool getInputUp(int input_type) const;
 
 		bool getMouseButton(MouseButton mouse_button) const;
 		bool getMouseButtonDown(MouseButton mouse_button) const;
 		bool getMouseButtonUp(MouseButton mouse_button) const;
 
-		void setKeyInput(InputType input_type, int scancode);
+		void setInputKey(int input_type, int scancode);
 
 		Tick getCurrentTick(void) const;
 
@@ -81,6 +72,7 @@ class Game {
 		void setBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
 
 		void setFps(uint32_t fps);
+		void setMinFps(uint32_t fps);
 
 		void quit(void);
 
@@ -95,16 +87,12 @@ class Game {
 		SpriteRenderer sprite_renderer;
 		TextGenerator text_generator;
 		World world;
+		Input input;
 
 		Vec2 camera_position;
 		Vec2 screen_dimensions;
 		Vec2 mouse_position;
 
-		std::array<bool, MAX_INPUT> pressed;
-		std::array<Tick, MAX_INPUT> input_tick_down;
-		std::array<Tick, MAX_INPUT> input_tick_up;
-
-		std::unordered_map<int, int> input_to_keys;
 		Tick current_tick;
 		float dt;
 
@@ -113,6 +101,7 @@ class Game {
 		uint32_t mouse_state;
 
 		uint32_t delay_fps;
+		float minimum_dt;
 
 		SDL_Color bg;
 };

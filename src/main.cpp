@@ -3,6 +3,7 @@
 #include "engine/Game.hpp"
 #include "game/CustomEntities.hpp"
 #include "core/TextGenerator.hpp"
+#include "game/Constants.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -57,11 +58,17 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(200);
+	game->setFps(60);
+	game->setMinFps(30);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);
 	game->loadLocale("res/locale.json", "pt-br");
+
+	game->setInputKey(InputType::LEFT, SDL_SCANCODE_A);
+	game->setInputKey(InputType::RIGHT, SDL_SCANCODE_D);
+	game->setInputKey(InputType::JUMP, SDL_SCANCODE_K);
+	game->setInputKey(InputType::FIRE, SDL_SCANCODE_J);
 
 	Custom_AddEntityTypes(game);
 
