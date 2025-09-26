@@ -17,6 +17,7 @@ namespace Thrown {
 	static const float jump = -100.0f;
 
 	static const std::unordered_set<EntityType> imortal_types = {
+		ENTITY_BALL
 	};
 
 	static const Vec2 hit_velocity = Vec2(20.0f, -150.0f);

@@ -132,8 +132,8 @@ void World::render(Game *game, int layer) const {
 
 	for(int j = -1; j <= screen_tiles_y; j++) {
 		for(int i = -1; i <= screen_tiles_x; i++) {
-			pos_x = floorf((float) (i + start_x) * tile_width - camera_position.x);
-			pos_y = floorf((float) (j + start_y) * tile_height - camera_position.y);
+			pos_x = roundf((float) (i + start_x) * tile_width - camera_position.x);
+			pos_y = roundf((float) (j + start_y) * tile_height - camera_position.y);
 
 			current_id = getTile(i + start_x, j + start_y, layer);
 

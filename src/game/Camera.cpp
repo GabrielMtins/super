@@ -37,8 +37,8 @@ namespace Camera {
 
 		game->setCameraPosition(
 				Vec2(
-					player->center.x - 100.0f,
-					-16.0f
+					(player->center.x - 100.0f),
+					(-16.0f)
 					)
 				);
 	}

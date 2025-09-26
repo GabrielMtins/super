@@ -4,6 +4,7 @@
 #include "engine/Game.hpp"
 #include "engine/Entity.hpp"
 #include "engine/EntityHandler.hpp"
+#include "game/Constants.hpp"
 
 enum EntityHandlerTypes {
 	ENTITY_PLAYER,
@@ -12,6 +13,7 @@ enum EntityHandlerTypes {
  	ENTITY_PLATFORM,
  	ENTITY_CAMERA,
  	ENTITY_LIFEBAR,
+ 	ENTITY_BALL,
 	NUM_ENTITY_TYPE
 };
 
@@ -35,5 +37,7 @@ EntityHandler Platform_GetHandler(void);
 EntityHandler Camera_GetHandler(void);
 
 EntityHandler Lifebar_GetHandler(void);
+
+EntityHandler Ball_GetHandler(void);
 
 #endif
