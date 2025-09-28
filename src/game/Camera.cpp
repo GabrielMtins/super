@@ -32,7 +32,7 @@ namespace Camera {
 
 		player = game->getEntityFromId(entity->target_id);
 
-		if(!player)
+		if(player->health <= 1)
 			return;
 
 		game->setCameraPosition(

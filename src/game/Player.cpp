@@ -4,7 +4,7 @@
 #include "game/Thrown.hpp"
 
 #define EPS 0.01f
-#define MAX_HEALTH 3
+#define MAX_HEALTH 4
 
 namespace Player {
 	static const float max_speed_walking = 40.0f;
@@ -24,6 +24,7 @@ namespace Player {
 	static const int running_animation[] = {1, 2, -1};
 	static const int jumping_animation[] = {3, -1};
 	static const int throwing_animation[] = {10, -1};
+	static const int death_animation[] = {11, -1};
 
 	static const int item_idle_animation[] = {6, -1};
 	static const int item_running_animation[] = {7, 8, -1};
@@ -55,7 +56,8 @@ namespace Player {
 		STATE_PICKING_ITEM,
 		STATE_HOLDING_ITEM,
 		STATE_THROWING_ITEM,
-		STATE_KNOCKBACK
+		STATE_KNOCKBACK,
+		STATE_DEAD
 	};
 
 	static void create(Game *game, Entity *entity) {
@@ -378,6 +380,17 @@ namespace Player {
 					entity->state = STATE_MOVEMENT;
 				}
 				break;
+
+			case STATE_DEAD:
+				entity->animator.setAnimation(death_animation, 200);
+
+				applyPhysics(
+						game,
+						entity,
+						dt,
+						Vec2::zero
+						);
+				break;
 		}
 
 		if(entity->children[CHILD_ENEMY_UNDER]) {
@@ -410,7 +423,7 @@ namespace Player {
 	static void handleItemCollision(Game *game, Entity *entity, Entity *other) {
 		switch(other->type) {
 			case ENTITY_HEARTITEM:
-				if(entity->health < 3) {
+				if(entity->health < MAX_HEALTH) {
 					entity->health++;
 				}
 
@@ -440,9 +453,17 @@ namespace Player {
 		if(!is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_ENEMY)) {
 			if(entity->getDamage(game, 1)) {
 				applyKnockback(game, entity, other);
-				printf("%u\n", entity->damage_cooldown);
-				printf("%i\n", entity->health);
 			} 
+
+			if(entity->health == 1) {
+				entity->hitbox.mask = 0;
+				entity->hitbox.layer = 0;
+				entity->state = STATE_DEAD;
+				entity->sprite.hud_element = true;
+				entity->blink_when_damaged = false;
+				entity->velocity.x = 0.0f;
+				entity->velocity.y = -200.0f;
+			}
 		}
 	}
 }

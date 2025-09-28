@@ -33,7 +33,7 @@ namespace Lifebar {
 		if(!player)
 			return;
 
-		entity->sprite.cell = player->health;
+		entity->sprite.cell = player->health - 1;
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {

@@ -92,6 +92,8 @@ int main(int argc, char **argv) {
 
 	game->run();
 
+	printf("%lu\n", sizeof(Entity));
+
 	game->quit();
 
 	delete game;
@@ -111,9 +113,6 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 		entity->hitbox.position.y = object.at("y");
 		entity->hitbox.size.x = object.at("width");
 		entity->hitbox.size.y = object.at("height");
-
-		entity->hitbox.position.print();
-		entity->hitbox.size.print();
 	}
 
 	if(!object.contains("gid"))
