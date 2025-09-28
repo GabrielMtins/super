@@ -159,7 +159,7 @@ void EntityList::transformEntityToType(Game *game, EntityId id, EntityType type)
 	Entity *entity = getEntityFromId(id);
 	EntityHandler& handler = type_to_handler[type];
 
-	entity->type = type;
+	entity->old_type = entity->type;
 	entity->alive = true;
 
 	if(handler.create != NULL)

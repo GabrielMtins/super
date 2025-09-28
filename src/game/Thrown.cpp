@@ -36,6 +36,23 @@ namespace Thrown {
 
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 		entity->flags[FLAG_CARRIED] = true;
+		entity->counters[COUNTER_BOUNCE] = 0;
+
+		entity->hitbox.mask = COLLISIONLAYER_ENEMY;
+		entity->hitbox.layer = 0;
+	
+		entity->sprite.flip_y = true;
+		entity->sprite.hud_element = true;
+	
+		entity->sprite.offset.y = 0.0f;
+	}
+
+	static void deathBehavior(Game *game, Entity *entity) {
+		switch(entity->type) {
+			default:
+				game->transformEntityToType(entity->getId(), entity->old_type);
+				break;
+		}
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
@@ -49,25 +66,12 @@ namespace Thrown {
 		entity->velocity += gravity * dt;
 
 		if(entity->counters[COUNTER_BOUNCE] >= 2 && entity->velocity.y < 0.0f) {
-			entity->alive = false;
-
-			Entity *actual = game->getEntityFromId(game->addEntity(entity->alt_type));
-			actual->hitbox.position = entity->hitbox.position;
+			deathBehavior(game, entity);
 		}
 	}
 
 	static bool isImortal(Entity *entity) {
-		return imortal_types.find(entity->alt_type) != imortal_types.end();
-	}
-
-	static void collisionBehavior(Game *game, Entity *entity) {
-		(void) game;
-
-		switch(entity->type) {
-			default:
-				entity->velocity.y = jump;
-				break;
-		}
+		return imortal_types.find(entity->old_type) != imortal_types.end();
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
@@ -111,18 +115,6 @@ namespace Thrown {
 	}
 
 	void copyEntity(Entity *entity, const Entity *other) {
-		entity->hitbox = other->hitbox;
-
-		entity->hitbox.mask = COLLISIONLAYER_ENEMY;
-		entity->hitbox.layer = 0;
-	
-		entity->sprite = other->sprite;
-		entity->sprite.flip_y = true;
-		entity->sprite.hud_element = true;
-	
-		entity->sprite.offset.y = 0.0f;
-	
-		entity->alt_type = other->type;
 	}
 	
 	void throwEntity(Entity *entity, const Vec2& velocity, float direction) {

@@ -191,20 +191,17 @@ namespace Player {
 			case STATE_MOVEMENT:
 				if(entity->children[CHILD_ENEMY_UNDER]) {
 					Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
-					Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
 
 					entity->state = STATE_PICKING_ITEM;
 					entity->timers[TIMER_STATE] = game->getCurrentTick();
 
-					child->alive = false;
+					game->transformEntityToType(child->getId(), ENTITY_THROWN);
 
 					entity->hitbox.size.y += child->hitbox.size.y;
 					entity->hitbox.position.y -= child->hitbox.size.y;
 					entity->sprite.offset.y -= child->hitbox.size.y;
 
-					Thrown::copyEntity(new_throw, child);
-
-					entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
+					entity->children[CHILD_ITEM_HOLDING] = child->getId();
 				}
 				break;
 

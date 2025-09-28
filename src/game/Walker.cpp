@@ -23,6 +23,7 @@ namespace Walker {
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
+		entity->sprite.flip_y = false;
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
 
 		entity->sprite.setTexture(game->getTexture("walker"));

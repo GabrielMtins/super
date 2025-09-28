@@ -17,6 +17,8 @@ namespace Ball {
 		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
 
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
+		entity->velocity = Vec2();
+		entity->sprite.flip_y = false;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

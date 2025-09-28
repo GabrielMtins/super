@@ -44,7 +44,12 @@ struct Entity {
 		Sprite sprite;
 	
 		EntityType type;
-		EntityType alt_type;
+
+		/**
+		 * Essa variável é definida como o tipo anterior de uma entidade,
+		 * quando este tipo é mudado pela função transformEntityToType().
+		 */
+		EntityType old_type;
 	
 		bool alive;
 		int health;
