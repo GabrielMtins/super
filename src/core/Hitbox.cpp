@@ -105,10 +105,16 @@ void Hitbox::solveCollisionSolid(const Hitbox& other, Vec2& velocity) {
 
 	if(fabsf(dir.x) < fabsf(dir.y) && fabsf(dir.x) < MAX_DELTA) {
 		position.x += dir.x;
-		velocity.x = 0.0f;
+
+		if(dir.x * velocity.x < 0.0f) {
+			velocity.x = 0.0f;
+		}
 	} else if(fabsf(dir.y) < MAX_DELTA){
 		position.y += dir.y;
-		velocity.y = 0.0f;
+
+		if(dir.y * velocity.y < 0.0f) {
+			velocity.y = 0.0f;
+		}
 	}
 }
 

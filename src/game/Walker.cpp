@@ -30,6 +30,7 @@ namespace Walker {
 		entity->state = STATE_RIGHT;
 
 		entity->animator.setAnimation(walking_animation, 200);
+		entity->health = 1;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

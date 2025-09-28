@@ -71,7 +71,8 @@ namespace Player {
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
 
-		entity->hitbox.position.x += 128.0f;
+		//entity->hitbox.position.x += 128.0f;
+		entity->hitbox.position.y -= 128.0f;
 
 		entity->state = STATE_MOVEMENT;
 		entity->blink_when_damaged = true;
@@ -197,6 +198,10 @@ namespace Player {
 
 					child->alive = false;
 
+					entity->hitbox.size.y += child->hitbox.size.y;
+					entity->hitbox.position.y -= child->hitbox.size.y;
+					entity->sprite.offset.y -= child->hitbox.size.y;
+
 					Thrown::copyEntity(new_throw, child);
 
 					entity->children[CHILD_ITEM_HOLDING] = new_throw->getId();
@@ -208,7 +213,14 @@ namespace Player {
 				entity->timers[TIMER_STATE] = game->getCurrentTick();
 
 				item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
+
 				Thrown::throwEntity(item, entity->velocity * Vec2(0.8f, 1.00f), entity->direction.x);
+
+				if(item) {
+					entity->hitbox.size.y -= item->hitbox.size.y;
+					entity->hitbox.position.y += item->hitbox.size.y;
+					entity->sprite.offset.y += item->hitbox.size.y;
+				}
 				break;
 		}
 	}
@@ -218,7 +230,8 @@ namespace Player {
 
 		if(game->getInput(InputType::JUMP) && !entity->flags[FLAG_CANCELJUMP]) {
 			wish_dir.y = -1.0f;
-		} else if(entity->velocity.y < 0.0f) {
+		}
+		if(game->getInputUp(InputType::JUMP) && entity->velocity.y < 0.0f) {
 			entity->flags[FLAG_CANCELJUMP] = true;
 		}
 

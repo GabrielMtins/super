@@ -8,7 +8,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-#define EPS 0.0f
+#define EPS 0.01f
 
 using json = nlohmann::json;
 

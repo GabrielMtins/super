@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(60);
-	game->setMinFps(30);
+	game->setFps(165);
+	game->setMinFps(60);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);

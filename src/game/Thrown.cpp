@@ -4,6 +4,12 @@
 
 #include <unordered_set>
 
+/*
+ * Descrição de comportamento:
+ * Quando uma entidade que pode ser jogada (caixa, inimigo etc)
+ * é jogada, ela se transforma numa entidade do tipo throw. 
+ */
+
 namespace Thrown {
 	enum ThrownFlags {
 		FLAG_CARRIED = 0,
@@ -54,6 +60,16 @@ namespace Thrown {
 		return imortal_types.find(entity->alt_type) != imortal_types.end();
 	}
 
+	static void collisionBehavior(Game *game, Entity *entity) {
+		(void) game;
+
+		switch(entity->type) {
+			default:
+				entity->velocity.y = jump;
+				break;
+		}
+	}
+
 	static void collision(Game *game, Entity *entity, Entity *other) {
 		(void) game;
 		(void) entity;
@@ -87,7 +103,6 @@ namespace Thrown {
 			new_throw->hitbox.mask = 0;
 			new_throw->flags[FLAG_CARRIED] = false;
 			new_throw->velocity = hit_velocity;
-			entity->velocity.y = jump;
 
 			if(!isImortal(entity)) {
 				entity->hitbox.mask = COLLISIONLAYER_ENEMY;
