@@ -32,6 +32,7 @@ class EntityList {
 		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 		bool checkCollision(const World *world, const Hitbox& hitbox) const;
 		EntityFoundList findCollision(const Hitbox& hitbox);
+		void transformEntityToType(Game *game, EntityId id, EntityType type);
 
 	private:
 		void findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity);

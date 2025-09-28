@@ -62,6 +62,7 @@ class Game {
 		void addHandlerToType(EntityType type, const EntityHandler& handler);
 		EntityId addEntity(EntityType type);
 		Entity * getEntityFromId(EntityId id);
+		void transformEntityToType(EntityId id, EntityType type);
 
 		EntityFoundList findEntity(const Vec2& position, float radius);
 		EntityFoundList findEntity(EntityType type);

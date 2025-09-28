@@ -142,6 +142,10 @@ Entity * Game::getEntityFromId(EntityId id) {
 	return entity_list.getEntityFromId(id);
 }
 
+void Game::transformEntityToType(EntityId id, EntityType type) {
+	entity_list.transformEntityToType(this, id, type);
+}
+
 EntityFoundList Game::findEntity(const Vec2& position, float radius) {
 	return entity_list.findEntity(position, radius);
 }

@@ -155,6 +155,17 @@ EntityFoundList EntityList::findCollision(const Hitbox& hitbox) {
 	return found_entities;
 }
 
+void EntityList::transformEntityToType(Game *game, EntityId id, EntityType type) {
+	Entity *entity = getEntityFromId(id);
+	EntityHandler& handler = type_to_handler[type];
+
+	entity->type = type;
+	entity->alive = true;
+
+	if(handler.create != NULL)
+		handler.create(game, entity);
+}
+
 void EntityList::findAndSolveEntityCollisions(Game *game, const World *world, Entity& entity) {
 	EntityHandler& handler = type_to_handler[entity.type];
 

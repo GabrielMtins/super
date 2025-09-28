@@ -69,6 +69,8 @@ struct Entity {
 
 	private:
 		EntityId id;
+
+		friend class EntityList;
 };
 
 #endif
