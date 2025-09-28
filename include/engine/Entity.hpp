@@ -44,6 +44,10 @@ struct Entity {
 		Sprite sprite;
 	
 		EntityType type;
+		/**
+		 * Um tipo alternativo para a entidade.
+		 */
+		EntityType alt_type;
 
 		/**
 		 * Essa variável é definida como o tipo anterior de uma entidade,

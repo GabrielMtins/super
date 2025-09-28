@@ -8,4 +8,6 @@ void Custom_AddEntityTypes(Game *game) {
 	game->addHandlerToType(ENTITY_CAMERA, Camera_GetHandler());
 	game->addHandlerToType(ENTITY_LIFEBAR, Lifebar_GetHandler());
 	game->addHandlerToType(ENTITY_BALL, Ball_GetHandler());
+	game->addHandlerToType(ENTITY_ITEMBOX, ItemBox_GetHandler());
+	game->addHandlerToType(ENTITY_HEARTITEM, HeartItem_GetHandler());
 }

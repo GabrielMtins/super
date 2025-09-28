@@ -1,16 +1,18 @@
 #include "game/CustomEntities.hpp"
 
-namespace Ball {
-	const static int sprite_cell = 2;
+namespace ItemBox {
+	static const int sprite_cell = 0;
 
 	static void create(Game *game, Entity *entity) {
 		(void) game;
 		(void) entity;
 
-		entity->type = ENTITY_BALL;
+		entity->type = ENTITY_ITEMBOX;
 
 		entity->sprite.setTexture(game->getTexture("8x8-items"));
+		entity->sprite.flip_y = false;
 		entity->sprite.cell = sprite_cell;
+
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 
 		entity->hitbox.layer |= COLLISIONLAYER_STATIC;
@@ -20,6 +22,8 @@ namespace Ball {
 		entity->velocity = Vec2();
 		entity->sprite.flip_y = false;
 		entity->health = 1;
+
+		entity->alt_type = ENTITY_HEARTITEM;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
@@ -37,7 +41,7 @@ namespace Ball {
 	}
 }
 
-EntityHandler Ball_GetHandler(void) {
-	using namespace Ball;
+EntityHandler ItemBox_GetHandler(void) {
+	using namespace ItemBox;
 	return EntityHandler(create, update, collision);
 }

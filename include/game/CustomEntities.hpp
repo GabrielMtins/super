@@ -14,6 +14,8 @@ enum EntityHandlerTypes {
  	ENTITY_CAMERA,
  	ENTITY_LIFEBAR,
  	ENTITY_BALL,
+ 	ENTITY_ITEMBOX,
+ 	ENTITY_HEARTITEM,
 	NUM_ENTITY_TYPE
 };
 
@@ -22,6 +24,7 @@ enum CollisionLayers {
 	COLLISIONLAYER_PLAYER = 1 << 1,
 	COLLISIONLAYER_ENEMY = 1 << 2,
 	COLLISIONLAYER_THROWABLE = 1 << 3,
+	COLLISIONLAYER_ITEMS = 1 << 4,
 };
 
 void Custom_AddEntityTypes(Game *game);
@@ -39,5 +42,9 @@ EntityHandler Camera_GetHandler(void);
 EntityHandler Lifebar_GetHandler(void);
 
 EntityHandler Ball_GetHandler(void);
+
+EntityHandler ItemBox_GetHandler(void);
+
+EntityHandler HeartItem_GetHandler(void);
 
 #endif

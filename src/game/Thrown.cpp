@@ -47,10 +47,16 @@ namespace Thrown {
 		entity->sprite.offset.y = 0.0f;
 	}
 
-	static void deathBehavior(Game *game, Entity *entity) {
-		switch(entity->type) {
+	static void collisionInteractionBehavior(Game *game, Entity *entity) {
+		switch(entity->old_type) {
+			case ENTITY_ITEMBOX:
+				game->transformEntityToType(entity->getId(), entity->alt_type);
+				break;
+
 			default:
-				game->transformEntityToType(entity->getId(), entity->old_type);
+				if(entity->counters[COUNTER_BOUNCE] >= 2) {
+					game->transformEntityToType(entity->getId(), entity->old_type);
+				}
 				break;
 		}
 	}
@@ -64,10 +70,6 @@ namespace Thrown {
 			return;
 
 		entity->velocity += gravity * dt;
-
-		if(entity->counters[COUNTER_BOUNCE] >= 2 && entity->velocity.y < 0.0f) {
-			deathBehavior(game, entity);
-		}
 	}
 
 	static bool isImortal(Entity *entity) {
@@ -95,23 +97,26 @@ namespace Thrown {
 				entity->velocity.y = jump;
 				entity->counters[COUNTER_BOUNCE]++;
 			}
-
-			return;
 		}
 
-		if(other != NULL) {
-			Entity *new_throw = game->getEntityFromId(game->addEntity(ENTITY_THROWN));
-			other->alive = false;
+		if(other != NULL && !is_static) {
+			other->getDamage(game, 1);
+			
+			if(!other->health) {
+				game->transformEntityToType(other->getId(), ENTITY_THROWN);
+			}
 
-			copyEntity(new_throw, other);
-			new_throw->hitbox.mask = 0;
-			new_throw->flags[FLAG_CARRIED] = false;
-			new_throw->velocity = hit_velocity;
+			other->hitbox.mask = 0;
+			other->flags[FLAG_CARRIED] = false;
+			other->velocity = hit_velocity;
+			entity->velocity.y = jump;
 
 			if(!isImortal(entity)) {
 				entity->hitbox.mask = COLLISIONLAYER_ENEMY;
 			}
 		}
+
+		collisionInteractionBehavior(game, entity);
 	}
 
 	void copyEntity(Entity *entity, const Entity *other) {

@@ -4,6 +4,7 @@
 #include "game/Thrown.hpp"
 
 #define EPS 0.01f
+#define MAX_HEALTH 3
 
 namespace Player {
 	static const float max_speed_walking = 40.0f;
@@ -70,6 +71,7 @@ namespace Player {
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
+		entity->hitbox.mask |= COLLISIONLAYER_ITEMS;
 
 		//entity->hitbox.position.x += 128.0f;
 		entity->hitbox.position.y -= 128.0f;
@@ -79,7 +81,7 @@ namespace Player {
 
 		entity->direction.x = 1.0f;
 
-		entity->health = 3;
+		entity->health = MAX_HEALTH;
 		entity->damage_cooldown = 1500;
 	}
 
@@ -405,6 +407,18 @@ namespace Player {
 		entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
 	}
 
+	static void handleItemCollision(Game *game, Entity *entity, Entity *other) {
+		switch(other->type) {
+			case ENTITY_HEARTITEM:
+				if(entity->health < 3) {
+					entity->health++;
+				}
+
+				other->alive = false;
+				break;
+		}
+	}
+
 	static void collision(Game *game, Entity *entity, Entity *other) {
 		(void) game;
 		(void) entity;
@@ -415,11 +429,12 @@ namespace Player {
 		if(other == NULL)
 			return;
 
+		handleItemCollision(game, entity, other);
+
 		is_child_under_player = isChildUnderPlayer(game, entity, other);
 
 		if(is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_THROWABLE)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
-
 		}
 
 		if(!is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_ENEMY)) {
