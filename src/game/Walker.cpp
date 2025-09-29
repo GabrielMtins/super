@@ -1,5 +1,6 @@
 #include "game/CustomEntities.hpp"
 #include "game/Constants.hpp"
+#include "game/EnemyAI.hpp"
 
 namespace Walker {
 	enum WalkerStates {
@@ -19,7 +20,6 @@ namespace Walker {
 
 		entity->hitbox.layer |= COLLISIONLAYER_ENEMY;
 		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
-		//entity->hitbox.layer |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
@@ -39,29 +39,22 @@ namespace Walker {
 		(void) entity;
 		(void) dt;
 
-		Hitbox hitbox = entity->hitbox;
-		hitbox.mask |= COLLISIONLAYER_ENEMY;
-		hitbox.size.y /= 2;
-
 		switch(entity->state) {
 			case STATE_LEFT:
-				hitbox.position.x -= 2.0f;
-				hitbox.size.x = 1.0f;
 				entity->velocity.x = -walker_speed;
 				entity->sprite.flip_x = true;
 
-				if(game->checkCollision(hitbox)) {
+				if(!EnemyAI::canWalk(game, entity)) {
 					entity->state = STATE_RIGHT;
 				}
+
 				break;
 
 			case STATE_RIGHT:
-				hitbox.position.x += hitbox.size.x + 1.0f;
-				hitbox.size.x = 1.0f;
 				entity->velocity.x = walker_speed;
 				entity->sprite.flip_x = false;
 
-				if(game->checkCollision(hitbox)) {
+				if(!EnemyAI::canWalk(game, entity)) {
 					entity->state = STATE_LEFT;
 				}
 

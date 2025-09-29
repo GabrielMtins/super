@@ -73,7 +73,6 @@ namespace Player {
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
-		entity->hitbox.mask |= COLLISIONLAYER_ITEMS;
 
 		//entity->hitbox.position.x += 128.0f;
 		entity->hitbox.position.y -= 128.0f;
@@ -315,9 +314,32 @@ namespace Player {
 		}
 	}
 
+	static void handleItemCollision(Game *game, Entity *entity) {
+		Entity *other;
+		Hitbox hitbox = entity->hitbox;
+		hitbox.mask = COLLISIONLAYER_ITEMS;
+
+		EntityFoundList list = game->findCollision(hitbox);
+
+		for(const EntityId& id : list) {
+			other = game->getEntityFromId(id);
+
+			switch(other->type) {
+				case ENTITY_HEARTITEM:
+					if(entity->health < MAX_HEALTH) {
+						entity->health++;
+					}
+
+					other->alive = false;
+					break;
+			}
+		}
+	}
+
 	static void update(Game *game, Entity *entity, float dt) {
 		updateFlags(game, entity);
 		updateTimers(game, entity);
+		handleItemCollision(game, entity);
 
 		switch(entity->state) {
 			case STATE_MOVEMENT:
@@ -417,18 +439,24 @@ namespace Player {
 		entity->state = STATE_KNOCKBACK;
 		entity->timers[TIMER_STATE] = game->getCurrentTick();
 		entity->velocity = velocity_knockback;
-		entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
+
+		if(other != NULL)
+			entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
 	}
 
-	static void handleItemCollision(Game *game, Entity *entity, Entity *other) {
-		switch(other->type) {
-			case ENTITY_HEARTITEM:
-				if(entity->health < MAX_HEALTH) {
-					entity->health++;
-				}
+	static void damageHandler(Game *game, Entity *entity, Entity *other) {
+		if(entity->getDamage(game, 1)) {
+			applyKnockback(game, entity, other);
+		} 
 
-				other->alive = false;
-				break;
+		if(entity->health == 1) {
+			entity->hitbox.mask = 0;
+			entity->hitbox.layer = 0;
+			entity->state = STATE_DEAD;
+			entity->sprite.hud_element = true;
+			entity->blink_when_damaged = false;
+			entity->velocity.x = 0.0f;
+			entity->velocity.y = -200.0f;
 		}
 	}
 
@@ -442,8 +470,6 @@ namespace Player {
 		if(other == NULL)
 			return;
 
-		handleItemCollision(game, entity, other);
-
 		is_child_under_player = isChildUnderPlayer(game, entity, other);
 
 		if(is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_THROWABLE)) {
@@ -451,19 +477,7 @@ namespace Player {
 		}
 
 		if(!is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_ENEMY)) {
-			if(entity->getDamage(game, 1)) {
-				applyKnockback(game, entity, other);
-			} 
-
-			if(entity->health == 1) {
-				entity->hitbox.mask = 0;
-				entity->hitbox.layer = 0;
-				entity->state = STATE_DEAD;
-				entity->sprite.hud_element = true;
-				entity->blink_when_damaged = false;
-				entity->velocity.x = 0.0f;
-				entity->velocity.y = -200.0f;
-			}
+			damageHandler(game, entity, other);
 		}
 	}
 }

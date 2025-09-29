@@ -13,6 +13,7 @@
 namespace Thrown {
 	enum ThrownFlags {
 		FLAG_CARRIED = 0,
+		FLAG_GOINGDOWN,
 	};
 
 	enum ThrownCounters {
@@ -36,6 +37,7 @@ namespace Thrown {
 
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 		entity->flags[FLAG_CARRIED] = true;
+		entity->flags[FLAG_GOINGDOWN] = true;
 		entity->counters[COUNTER_BOUNCE] = 0;
 
 		entity->hitbox.mask = COLLISIONLAYER_ENEMY;
@@ -70,6 +72,9 @@ namespace Thrown {
 			return;
 
 		entity->velocity += gravity * dt;
+
+		if(entity->velocity.y != 0.0f)
+			entity->flags[FLAG_GOINGDOWN] = entity->velocity.y > 0.0f;
 	}
 
 	static bool isImortal(Entity *entity) {
@@ -93,7 +98,7 @@ namespace Thrown {
 		}
 
 		if(is_static) {
-			if(entity->velocity.y == 0.0f) {
+			if(entity->velocity.y == 0.0f && entity->flags[FLAG_GOINGDOWN]) {
 				entity->velocity.y = jump;
 				entity->counters[COUNTER_BOUNCE]++;
 			}

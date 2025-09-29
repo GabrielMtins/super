@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_PLAYER);
 	game->addEntity(ENTITY_CAMERA);
 	game->addEntity(ENTITY_LIFEBAR);
-	game->addEntity(ENTITY_ITEMBOX);
+	game->addEntity(ENTITY_BALL);
 
 	for(int i = 0; i < 2; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));

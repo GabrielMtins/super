@@ -16,6 +16,8 @@ enum EntityHandlerTypes {
  	ENTITY_BALL,
  	ENTITY_ITEMBOX,
  	ENTITY_HEARTITEM,
+ 	ENTITY_JUMPER,
+ 	ENTITY_FIREMAN,
 	NUM_ENTITY_TYPE
 };
 
@@ -46,5 +48,9 @@ EntityHandler Ball_GetHandler(void);
 EntityHandler ItemBox_GetHandler(void);
 
 EntityHandler HeartItem_GetHandler(void);
+
+EntityHandler Jumper_GetHandler(void);
+
+EntityHandler Fireman_GetHandler(void);
 
 #endif
