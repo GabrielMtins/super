@@ -12,7 +12,6 @@
 
 namespace Thrown {
 	enum ThrownFlags {
-		FLAG_CARRIED = 0,
 		FLAG_GOINGDOWN,
 	};
 
@@ -20,8 +19,16 @@ namespace Thrown {
 		COUNTER_BOUNCE = 0,
 	};
 
+	enum ThrownStates {
+		STATE_CARRIED,
+		STATE_START_THROW,
+		STATE_THROWN,
+		STATE_DEAD
+	};
+
 	static const float speed = 80.0f;
 	static const float jump = -100.0f;
+	static const Tick time_to_live = 10000;
 
 	static const std::unordered_set<EntityType> imortal_types = {
 		ENTITY_BALL
@@ -36,7 +43,6 @@ namespace Thrown {
 		entity->type = ENTITY_THROWN;
 
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
-		entity->flags[FLAG_CARRIED] = true;
 		entity->flags[FLAG_GOINGDOWN] = true;
 		entity->counters[COUNTER_BOUNCE] = 0;
 
@@ -47,6 +53,8 @@ namespace Thrown {
 		entity->sprite.hud_element = true;
 	
 		entity->sprite.offset.y = 0.0f;
+
+		entity->state = STATE_CARRIED;
 	}
 
 	static void collisionInteractionBehavior(Game *game, Entity *entity) {
@@ -68,13 +76,31 @@ namespace Thrown {
 		(void) entity;
 		(void) dt;
 
-		if(entity->flags[FLAG_CARRIED])
-			return;
+		switch(entity->state) {
+			case STATE_CARRIED:
+				break;
 
-		entity->velocity += gravity * dt;
+			case STATE_START_THROW:
+				entity->next_state_tick = game->getCurrentTick() + time_to_live;
+				entity->state = STATE_THROWN;
+				break;
 
-		if(entity->velocity.y != 0.0f)
-			entity->flags[FLAG_GOINGDOWN] = entity->velocity.y > 0.0f;
+			case STATE_THROWN:
+				entity->velocity += gravity * dt;
+
+				if(entity->velocity.y != 0.0f) {
+					entity->flags[FLAG_GOINGDOWN] = entity->velocity.y > 0.0f;
+				}
+
+				if(game->getCurrentTick() > entity->next_state_tick) {
+					entity->alive = false;
+				}
+				break;
+
+			case STATE_DEAD:
+				entity->alive = false;
+				break;
+		}
 	}
 
 	static bool isImortal(Entity *entity) {
@@ -88,7 +114,7 @@ namespace Thrown {
 
 		bool is_static;
 
-		if(entity->flags[FLAG_CARRIED])
+		if(entity->state == STATE_CARRIED)
 			return;
 
 		is_static = other == NULL;
@@ -107,24 +133,23 @@ namespace Thrown {
 		if(other != NULL && !is_static) {
 			other->getDamage(game, 1);
 			
-			if(!other->health) {
+			if(other->health == 0) {
 				game->transformEntityToType(other->getId(), ENTITY_THROWN);
 			}
 
 			other->hitbox.mask = 0;
-			other->flags[FLAG_CARRIED] = false;
+			other->state = STATE_START_THROW;
 			other->velocity = hit_velocity;
 			entity->velocity.y = jump;
 
 			if(!isImortal(entity)) {
 				entity->hitbox.mask = COLLISIONLAYER_ENEMY;
 			}
+
+			entity->next_state_tick = game->getCurrentTick() + time_to_live;
 		}
 
 		collisionInteractionBehavior(game, entity);
-	}
-
-	void copyEntity(Entity *entity, const Entity *other) {
 	}
 	
 	void throwEntity(Entity *entity, const Vec2& velocity, float direction) {
@@ -132,7 +157,7 @@ namespace Thrown {
 	
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
-		entity->flags[Thrown::FLAG_CARRIED] = false;
+		entity->state = STATE_START_THROW;
 	}
 }
 

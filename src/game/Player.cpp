@@ -43,7 +43,6 @@ namespace Player {
 	enum PlayerTimers {
 		TIMER_LAST_ON_GROUND = 0,
 		TIMER_START_JUMP,
-		TIMER_STATE
 	};
 
 	enum PlayerChildren {
@@ -196,7 +195,7 @@ namespace Player {
 					Entity *child = game->getEntityFromId(entity->children[CHILD_ENEMY_UNDER]);
 
 					entity->state = STATE_PICKING_ITEM;
-					entity->timers[TIMER_STATE] = game->getCurrentTick();
+					entity->next_state_tick = game->getCurrentTick() + 400;
 
 					game->transformEntityToType(child->getId(), ENTITY_THROWN);
 
@@ -210,7 +209,7 @@ namespace Player {
 
 			case STATE_HOLDING_ITEM:
 				entity->state = STATE_THROWING_ITEM;
-				entity->timers[TIMER_STATE] = game->getCurrentTick();
+				entity->next_state_tick = game->getCurrentTick() + 200;
 
 				item = game->getEntityFromId(entity->children[CHILD_ITEM_HOLDING]);
 
@@ -291,11 +290,11 @@ namespace Player {
 				entity->hitbox.position.y + entity->hitbox.size.y
 				);
 
-		if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 100) {
+		if(game->getCurrentTick() < entity->next_state_tick - 300) {
 			item_holding->hitbox.position.y -= 0;
-		} else if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 200) {
-			item_holding->hitbox.position.y -= 16;
-		} else if(game->getCurrentTick() < entity->timers[TIMER_STATE] + 400) {
+		} else if(game->getCurrentTick() < entity->next_state_tick - 200) {
+			item_holding->hitbox.position.y -= 8;
+		} else if(game->getCurrentTick() < entity->next_state_tick) {
 			item_holding->hitbox.position.y -= 20;
 		}
 	}
@@ -323,7 +322,7 @@ namespace Player {
 		}
 
 		entity->state = STATE_KNOCKBACK;
-		entity->timers[TIMER_STATE] = game->getCurrentTick();
+		entity->next_state_tick = game->getCurrentTick() + 400;
 		entity->velocity = velocity_knockback;
 
 		if(other != NULL)
@@ -431,7 +430,7 @@ namespace Player {
 						handleInput(game, entity)
 						);
 
-				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 200) {
+				if(game->getCurrentTick() > entity->next_state_tick) {
 					entity->state = STATE_MOVEMENT;
 				}
 				break;
@@ -441,7 +440,7 @@ namespace Player {
 				entity->velocity = Vec2::zero;
 				updateItemPicking(game, entity);
 
-				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 400) {
+				if(game->getCurrentTick() > entity->next_state_tick) {
 					entity->state = STATE_HOLDING_ITEM;
 				}
 				break;
@@ -456,7 +455,7 @@ namespace Player {
 						Vec2::zero
 						);
 
-				if(game->getCurrentTick() > entity->timers[TIMER_STATE] + 400) {
+				if(game->getCurrentTick() > entity->next_state_tick) {
 					entity->state = STATE_MOVEMENT;
 				}
 				break;

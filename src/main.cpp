@@ -10,11 +10,12 @@
 /*
  * TODO:
  * Adicionar leitor de configuração via json
- * Adicionar one way collisions
  * Refazer o sistema de geração de textura de textos
- * Programar sistema de knockback no player
+ * Fazer um sistema de hud melhorado (não depender de várias entidades, adicionar sprites individualmente)
  *
  * DONE:
+ * Programar sistema de knockback no player
+ * Adicionar one way collisions
  * Adicionar interface de input no game
  * Adicionar colisão de mundo
  * Adicionar interface sfx
@@ -58,7 +59,7 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(60);
+	game->setFps(165);
 	game->setMinFps(50);
 	game->loadRes("res/res.json");
 
@@ -84,15 +85,13 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_LIFEBAR);
 	game->addEntity(ENTITY_ITEMBOX);
 
-	for(int i = 0; i < 2; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
+	for(int i = 0; i < 1; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_FIREMAN));
 
 		entity->hitbox.position.x += 16 * i + 80;
 	}
 
 	game->run();
-
-	printf("%lu\n", sizeof(Entity));
 
 	game->quit();
 

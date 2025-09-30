@@ -26,6 +26,7 @@ Entity::Entity(void) {
 
 	damage_cooldown = 0;
 	invicibility_end_tick = 0;
+	next_state_tick = 0;
 	health = 100;
 
 	blink_when_damaged = false;

@@ -66,6 +66,7 @@ struct Entity {
 		EntityId parent_id;
 		
 		int state;
+		Tick next_state_tick;
 	
 		PauseMode pause_mode;
 		bool blink_when_damaged;
