@@ -314,10 +314,45 @@ namespace Player {
 		}
 	}
 
+	static void applyKnockback(Game *game, Entity *entity, Entity *other) {
+		if(entity->state == STATE_KNOCKBACK)
+			return;
+
+		if(entity->state == STATE_HOLDING_ITEM || entity->state == STATE_PICKING_ITEM) {
+			handleFire(game, entity);
+		}
+
+		entity->state = STATE_KNOCKBACK;
+		entity->timers[TIMER_STATE] = game->getCurrentTick();
+		entity->velocity = velocity_knockback;
+
+		if(other != NULL)
+			entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
+	}
+
+	static void damageHandler(Game *game, Entity *entity, Entity *other) {
+		if(entity->getDamage(game, 1)) {
+			applyKnockback(game, entity, other);
+		} 
+
+		if(entity->health == 1) {
+			entity->hitbox.mask = 0;
+			entity->hitbox.layer = 0;
+			entity->state = STATE_DEAD;
+			entity->sprite.hud_element = true;
+			entity->blink_when_damaged = false;
+			entity->velocity.x = 0.0f;
+			entity->velocity.y = -200.0f;
+		}
+	}
+
 	static void handleItemCollision(Game *game, Entity *entity) {
 		Entity *other;
 		Hitbox hitbox = entity->hitbox;
 		hitbox.mask = COLLISIONLAYER_ITEMS;
+
+		if((game->getCurrentFrame() & 0x3))
+			return;
 
 		EntityFoundList list = game->findCollision(hitbox);
 
@@ -336,10 +371,33 @@ namespace Player {
 		}
 	}
 
+	static void handleEnemyNoTouch(Game *game, Entity *entity) {
+		Entity *other;
+		Hitbox hitbox = entity->hitbox;
+		hitbox.mask = COLLISIONLAYER_ENEMY_NOTOUCH;
+
+		if((game->getCurrentFrame() & 0x1))
+			return;
+
+		EntityFoundList list = game->findCollision(hitbox);
+
+		for(const EntityId& id : list) {
+			other = game->getEntityFromId(id);
+
+			switch(other->type) {
+				case ENTITY_ENEMYBULLET:
+					damageHandler(game, entity, other);
+					other->alive = false;
+					break;
+			}
+		}
+	}
+
 	static void update(Game *game, Entity *entity, float dt) {
 		updateFlags(game, entity);
 		updateTimers(game, entity);
 		handleItemCollision(game, entity);
+		handleEnemyNoTouch(game, entity);
 
 		switch(entity->state) {
 			case STATE_MOVEMENT:
@@ -426,38 +484,6 @@ namespace Player {
 		// printf("%f\n", 1.0f / dt);
 
 		entity->children[CHILD_ENEMY_UNDER] = 0;
-	}
-
-	static void applyKnockback(Game *game, Entity *entity, Entity *other) {
-		if(entity->state == STATE_KNOCKBACK)
-			return;
-
-		if(entity->state == STATE_HOLDING_ITEM || entity->state == STATE_PICKING_ITEM) {
-			handleFire(game, entity);
-		}
-
-		entity->state = STATE_KNOCKBACK;
-		entity->timers[TIMER_STATE] = game->getCurrentTick();
-		entity->velocity = velocity_knockback;
-
-		if(other != NULL)
-			entity->velocity.x = copysignf(entity->velocity.x, entity->center.x - other->center.x);
-	}
-
-	static void damageHandler(Game *game, Entity *entity, Entity *other) {
-		if(entity->getDamage(game, 1)) {
-			applyKnockback(game, entity, other);
-		} 
-
-		if(entity->health == 1) {
-			entity->hitbox.mask = 0;
-			entity->hitbox.layer = 0;
-			entity->state = STATE_DEAD;
-			entity->sprite.hud_element = true;
-			entity->blink_when_damaged = false;
-			entity->velocity.x = 0.0f;
-			entity->velocity.y = -200.0f;
-		}
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {

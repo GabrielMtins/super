@@ -21,6 +21,7 @@ namespace Walker {
 		entity->hitbox.layer |= COLLISIONLAYER_ENEMY;
 		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
+		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 		entity->sprite.flip_y = false;
@@ -41,13 +42,17 @@ namespace Walker {
 		(void) entity;
 		(void) dt;
 
+		bool check_collision_frame = !(game->getCurrentFrame() & 0xf);
+
 		switch(entity->state) {
 			case STATE_LEFT:
 				entity->velocity.x = -walker_speed;
 				entity->sprite.flip_x = true;
 
-				if(!EnemyAI::canWalk(game, entity)) {
-					entity->state = STATE_RIGHT;
+				if(check_collision_frame) {
+					if(!EnemyAI::canWalk(game, entity)) {
+						entity->state = STATE_RIGHT;
+					}
 				}
 
 				break;
@@ -56,8 +61,10 @@ namespace Walker {
 				entity->velocity.x = walker_speed;
 				entity->sprite.flip_x = false;
 
-				if(!EnemyAI::canWalk(game, entity)) {
-					entity->state = STATE_LEFT;
+				if(check_collision_frame) {
+					if(!EnemyAI::canWalk(game, entity)) {
+						entity->state = STATE_LEFT;
+					}
 				}
 
 				break;

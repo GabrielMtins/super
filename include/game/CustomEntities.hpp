@@ -18,6 +18,7 @@ enum EntityHandlerTypes {
  	ENTITY_HEARTITEM,
  	ENTITY_JUMPER,
  	ENTITY_FIREMAN,
+ 	ENTITY_ENEMYBULLET,
 	NUM_ENTITY_TYPE
 };
 
@@ -27,6 +28,7 @@ enum CollisionLayers {
 	COLLISIONLAYER_ENEMY = 1 << 2,
 	COLLISIONLAYER_THROWABLE = 1 << 3,
 	COLLISIONLAYER_ITEMS = 1 << 4,
+	COLLISIONLAYER_ENEMY_NOTOUCH = 1 << 5,
 };
 
 void Custom_AddEntityTypes(Game *game);
@@ -52,5 +54,7 @@ EntityHandler HeartItem_GetHandler(void);
 EntityHandler Jumper_GetHandler(void);
 
 EntityHandler Fireman_GetHandler(void);
+
+EntityHandler EnemyBullet_GetHandler(void);
 
 #endif

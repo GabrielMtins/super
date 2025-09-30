@@ -75,6 +75,8 @@ class Game {
 		void setFps(uint32_t fps);
 		void setMinFps(uint32_t fps);
 
+		uint32_t getCurrentFrame(void) const;
+
 		void quit(void);
 
 	private:
@@ -95,6 +97,7 @@ class Game {
 		Vec2 mouse_position;
 
 		Tick current_tick;
+		uint32_t frame_counter;
 		float dt;
 
 		bool paused;

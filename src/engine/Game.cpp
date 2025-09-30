@@ -26,6 +26,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 
 	mouse_state = 0;
 	old_mouse_state = 0;
+
+	frame_counter = 0;
 }
 
 void Game::run(void) {
@@ -181,6 +183,10 @@ void Game::setMinFps(uint32_t fps) {
 	minimum_dt = 1.0f / fps;
 }
 
+uint32_t Game::getCurrentFrame(void) const {
+	return frame_counter;
+}
+
 void Game::quit(void) {
 	resource_manager.quit();
 	text_generator.quit();
@@ -230,6 +236,8 @@ void Game::loop(void) {
 	if(dt > minimum_dt) {
 		dt = minimum_dt;
 	}
+
+	frame_counter++;
 }
 
 void Game::updateMouseState(void) {

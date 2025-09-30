@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(165);
-	game->setMinFps(60);
+	game->setFps(60);
+	game->setMinFps(50);
 	game->loadRes("res/res.json");
 
 	game->loadFont("res/PublicPixel.ttf", 8);
@@ -84,8 +84,8 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_LIFEBAR);
 	game->addEntity(ENTITY_ITEMBOX);
 
-	for(int i = 0; i < 1; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_JUMPER));
+	for(int i = 0; i < 2; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
 		entity->hitbox.position.x += 16 * i + 80;
 	}
