@@ -82,10 +82,10 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_PLAYER);
 	game->addEntity(ENTITY_CAMERA);
 	game->addEntity(ENTITY_LIFEBAR);
-	game->addEntity(ENTITY_BALL);
+	game->addEntity(ENTITY_ITEMBOX);
 
-	for(int i = 0; i < 2; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
+	for(int i = 0; i < 1; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_JUMPER));
 
 		entity->hitbox.position.x += 16 * i + 80;
 	}

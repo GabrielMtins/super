@@ -69,6 +69,8 @@ struct Entity {
 	
 		PauseMode pause_mode;
 		bool blink_when_damaged;
+
+		bool only_update_when_visible;
 	
 		std::array<Tick, ENTITY_MAX_TIMERS> timers;
 		std::array<int, ENTITY_MAX_COUNTERS> counters;

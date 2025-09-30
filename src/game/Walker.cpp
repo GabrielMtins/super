@@ -32,6 +32,8 @@ namespace Walker {
 
 		entity->animator.setAnimation(walking_animation, 200);
 		entity->health = 1;
+
+		entity->only_update_when_visible = true;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

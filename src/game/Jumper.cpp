@@ -39,6 +39,8 @@ namespace Jumper {
 
 		entity->state = STATE_JUMP;
 		entity->flags[FLAG_ONFLOOR] = false;
+
+		entity->only_update_when_visible = true;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

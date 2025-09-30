@@ -29,6 +29,7 @@ Entity::Entity(void) {
 	health = 100;
 
 	blink_when_damaged = false;
+	only_update_when_visible = false;
 }
 
 Entity::Entity(EntityId id) : Entity() {
