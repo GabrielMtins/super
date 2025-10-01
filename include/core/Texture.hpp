@@ -8,6 +8,7 @@ class Texture {
 		Texture(void);
 		bool load(Context *context, const std::string& filename);
 		bool generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color);
+		bool generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color, int wrap_length);
 		void setCellSize(int cell_width, int cell_height);
 		void renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y);
 		void renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y, int center_x, int center_y, float angle);

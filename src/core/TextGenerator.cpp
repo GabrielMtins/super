@@ -70,6 +70,7 @@ bool TextGenerator::loadLocale(Context *context, const std::string& filename, co
 			const std::string& key_name = el.key();
 			const std::string& font_name = el.value().at("font");
 			SDL_Color color = el.value().at("color");
+			int wrap_length = el.value().at("wrap-length");
 			const std::string& text = data["languages"][lang][key_name];
 
 			if(fonts.find(font_name) == fonts.end())
@@ -79,7 +80,8 @@ bool TextGenerator::loadLocale(Context *context, const std::string& filename, co
 					context,
 					fonts.at(font_name),
 					text,
-					color
+					color,
+					wrap_length
 					);
 		}
 	} catch(const json::exception& ex) {

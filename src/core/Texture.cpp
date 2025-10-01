@@ -34,12 +34,23 @@ bool Texture::load(Context *context, const std::string& filename) {
 }
 
 bool Texture::generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color) {
+	return generateText(
+			context,
+			font,
+			text,
+			color,
+			0
+			);
+}
+
+bool Texture::generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color, int wrap_length) {
 	SDL_Surface *surface;
 
-	surface = TTF_RenderUTF8_Solid(
+	surface = TTF_RenderUTF8_Solid_Wrapped(
 			font,
 			text.c_str(),
-			color
+			color,
+			wrap_length
 			);
 
 	if(surface == NULL) {

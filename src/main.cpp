@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
 	game = new Game();
 
-	game->init("super", 240, 135);
+	game->init("super", 240, 136);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
 	game->setFps(200);
 	game->setMinFps(50);
