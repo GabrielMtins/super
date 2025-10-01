@@ -3,7 +3,7 @@
 
 namespace KeyItem {
 	static const int sprite_cell = 5;
-	static const float speed = 100.0f;
+	static const float speed = 150.0f;
 	static const float deacceleration = 500.0f;
 	static const float jump_speed = -150.0f;
 
