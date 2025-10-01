@@ -19,6 +19,8 @@ enum EntityHandlerTypes {
  	ENTITY_FIREMAN,
  	ENTITY_ENEMYBULLET,
  	ENTITY_HUD,
+ 	ENTITY_KEYITEM,
+ 	ENTITY_DOOR,
 	NUM_ENTITY_TYPE
 };
 
@@ -56,5 +58,9 @@ EntityHandler Fireman_GetHandler(void);
 EntityHandler EnemyBullet_GetHandler(void);
 
 EntityHandler Hud_GetHandler(void);
+
+EntityHandler KeyItem_GetHandler(void);
+
+EntityHandler Door_GetHandler(void);
 
 #endif

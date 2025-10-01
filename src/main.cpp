@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(165);
+	game->setFps(200);
 	game->setMinFps(50);
 	game->loadRes("res/res.json");
 
@@ -84,9 +84,10 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_CAMERA);
 	game->addEntity(ENTITY_HUD);
 	game->addEntity(ENTITY_ITEMBOX);
+	game->addEntity(ENTITY_DOOR);
 
 	for(int i = 0; i < 1; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_FIREMAN));
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_JUMPER));
 
 		entity->hitbox.position.x += 16 * i + 80;
 	}

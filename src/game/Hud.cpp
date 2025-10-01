@@ -24,18 +24,43 @@ namespace Hud {
 		sprite.ignore_camera = true;
 
 		for(int i = 1; i < player->health; i++) {
-			sprite.cell = 1;
+			static const int heart_cell = 1;
+			sprite.cell = heart_cell;
 			game->addSpriteToRenderList(sprite);
 
 			sprite.position.x += 9.0f;
 		}
 
 		for(int i = player->health; i < PLAYER_MAX_HEALTH; i++) {
-			sprite.cell = 4;
+			static const int hollow_heart_cell = 4;
+			sprite.cell = hollow_heart_cell;
 			game->addSpriteToRenderList(sprite);
 
 			sprite.position.x += 9.0f;
 		}
+	}
+
+	static void drawPlayerKey(Game *game, Entity *player) {
+		if(!Player::hasKey(player))
+			return;
+
+		Sprite sprite;
+
+		sprite.hud_element = true;
+		sprite.ignore_camera = true;
+
+		sprite.setTexture(game->getTexture("8x8-items"));
+		sprite.position = Vec2(
+				game->getScreenDimensions().x - 16.0f,
+				5.0f
+				);
+
+
+		static const int key_cell = 5;
+
+		sprite.cell = key_cell;
+
+		game->addSpriteToRenderList(sprite);
 	}
 
 	static void drawHud(Game *game, Entity *entity) {
@@ -47,6 +72,7 @@ namespace Hud {
 			return;
 
 		drawPlayerLifebar(game, player);
+		drawPlayerKey(game, player);
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

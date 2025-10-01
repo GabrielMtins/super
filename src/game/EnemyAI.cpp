@@ -49,4 +49,8 @@ namespace EnemyAI {
 
 		return true;
 	}
+
+	bool checkCollisionThisFrame(const Game *game) {
+		return !(game->getCurrentFrame() & 0xf);
+	}
 };

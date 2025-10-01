@@ -9,6 +9,8 @@ namespace EnemyAI {
 
 	bool canWalk(const Game *game, const Entity *entity);
 
+	bool checkCollisionThisFrame(const Game *game);
+
 };
 
 #endif

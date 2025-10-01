@@ -37,7 +37,8 @@ namespace Player {
 	enum PlayerFlags {
 		FLAG_RUNNING = 0,
 		FLAG_ONGROUND,
-		FLAG_CANCELJUMP
+		FLAG_CANCELJUMP,
+		FLAG_HASKEY,
 	};
 
 	enum PlayerTimers {
@@ -81,11 +82,13 @@ namespace Player {
 
 		entity->direction.x = 1.0f;
 
+		entity->flags[FLAG_HASKEY] = false;
+
 		entity->health = PLAYER_MAX_HEALTH;
 		entity->damage_cooldown = 1500;
 	}
 
-	static bool isChildUnderPlayer(Game *game, Entity *entity, Entity *other) {
+	static bool isChildUnderPlayer(Entity *entity, Entity *other) {
 		float tolerance = other->hitbox.size.y * 0.5f;
 		float player_bottom_y = entity->hitbox.position.y + entity->hitbox.size.y;
 		float other_top_y = other->hitbox.position.y;
@@ -97,7 +100,7 @@ namespace Player {
 		return false;
 	}
 
-	static bool isOnGround(Game *game, Entity *entity) {
+	static bool isOnGround(const Game *game, const Entity *entity) {
 		Hitbox jump_hitbox;
 
 		jump_hitbox.mask = entity->hitbox.mask;
@@ -359,6 +362,11 @@ namespace Player {
 			other = game->getEntityFromId(id);
 
 			switch(other->type) {
+				case ENTITY_KEYITEM:
+					entity->flags[FLAG_HASKEY] = true;
+					other->alive = false;
+					break;
+
 				case ENTITY_HEARTITEM:
 					if(entity->health < PLAYER_MAX_HEALTH) {
 						entity->health++;
@@ -495,7 +503,7 @@ namespace Player {
 		if(other == NULL)
 			return;
 
-		is_child_under_player = isChildUnderPlayer(game, entity, other);
+		is_child_under_player = isChildUnderPlayer(entity, other);
 
 		if(is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_THROWABLE)) {
 			entity->children[CHILD_ENEMY_UNDER] = other->getId();
@@ -504,6 +512,14 @@ namespace Player {
 		if(!is_child_under_player && (other->hitbox.layer & COLLISIONLAYER_ENEMY)) {
 			damageHandler(game, entity, other);
 		}
+	}
+
+	bool hasKey(const Entity *entity) {
+		return entity->flags[FLAG_HASKEY];
+	}
+
+	void useKey(Entity *entity) {
+		entity->flags[FLAG_HASKEY] = false;
 	}
 }
 

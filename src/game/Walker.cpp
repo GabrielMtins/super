@@ -42,7 +42,7 @@ namespace Walker {
 		(void) entity;
 		(void) dt;
 
-		bool check_collision_frame = !(game->getCurrentFrame() & 0xf);
+		bool check_collision_frame = EnemyAI::checkCollisionThisFrame(game);
 
 		switch(entity->state) {
 			case STATE_LEFT:

@@ -13,6 +13,8 @@ namespace HeartItem {
 		entity->sprite.cell = sprite_cell;
 		entity->sprite.flip_y = 0;
 
+		entity->hitbox.size = Vec2(8.0f, 8.0f);
+
 		entity->velocity = Vec2(0, -100.0f);
 
 		entity->hitbox.layer = COLLISIONLAYER_ITEMS;
