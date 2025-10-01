@@ -48,8 +48,8 @@ void Game::loadRes(const std::string& filename) {
 	resource_manager.load(&context, filename);
 }
 
-void Game::loadFont(const std::string& filename, int size) {
-	text_generator.loadFont(filename, size);
+void Game::loadFontData(const std::string& filename) {
+	text_generator.loadFontData(filename);
 }
 
 void Game::loadLocale(const std::string& filename, const std::string& locale_name) {
@@ -74,6 +74,10 @@ Sfx * Game::getSfx(const std::string& name) {
 
 Music * Game::getMusic(const std::string& name) {
 	return resource_manager.getMusic(name);
+}
+
+Texture * Game::getTextTexture(const std::string& key) {
+	return text_generator.getTexture(key);
 }
 
 const Vec2& Game::getCameraPosition(void) const {

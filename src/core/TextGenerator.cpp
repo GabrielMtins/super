@@ -10,20 +10,37 @@ using json = nlohmann::json;
 static void from_json(const json& j, SDL_Color &color);
 
 TextGenerator::TextGenerator(void) {
-	font = NULL;
 }
 
-bool TextGenerator::loadFont(const std::string& filename, int size) {
-	font = TTF_OpenFont(filename.c_str(), size);
-	
-	if(font == NULL) {
+bool TextGenerator::loadFontData(const std::string& filename) {
+	std::ifstream file;
+
+	json data;
+
+	file.open(filename);
+
+	if(!file.is_open()) {
 		console.error("[Text Generator] Failed to open file: " + filename);
 		return false;
 	}
 
-	console.log("[Text Generator] Loaded font: " + filename);
+	try {
+		data = json::parse(file);
+	} catch(const json::exception& ex) {
+		console.error((std::string) "[Text Generator] " + ex.what());
+		return false;
+	}
 
-	path = filename;
+	try {
+		const json& fonts_json = data.at("fonts");
+
+		for(const json& font_data : fonts_json) {
+			loadFont(font_data);
+		}
+	} catch(const json::exception& ex) {
+		console.error((std::string) "[Text Generator] " + ex.what());
+		return false;
+	}
 
 	return true;
 }
@@ -31,11 +48,6 @@ bool TextGenerator::loadFont(const std::string& filename, int size) {
 bool TextGenerator::loadLocale(Context *context, const std::string& filename, const std::string& lang) {
 	std::ifstream file;
 	json data;
-
-	if(font == NULL) {
-		console.error("[Text Generator] There is no font loaded!");
-		return false;
-	}
 
 	file.open(filename);
 
@@ -52,11 +64,23 @@ bool TextGenerator::loadLocale(Context *context, const std::string& filename, co
 	}
 
 	try {
-		json& locale = data["languages"][lang];
-		SDL_Color color = data["color"];
+		const json& keys_data = data["keys"];
 
-		for(auto& el : locale.items()) {
-			textures[el.key()].generateText(context, font, el.value(), color);
+		for(const auto& el : keys_data.items()) {
+			const std::string& key_name = el.key();
+			const std::string& font_name = el.value().at("font");
+			SDL_Color color = el.value().at("color");
+			const std::string& text = data["languages"][lang][key_name];
+
+			if(fonts.find(font_name) == fonts.end())
+				continue;
+
+			textures[key_name].generateText(
+					context,
+					fonts.at(font_name),
+					text,
+					color
+					);
 		}
 	} catch(const json::exception& ex) {
 		console.error((std::string) "[Text Generator] " + ex.what());
@@ -74,14 +98,28 @@ Texture * TextGenerator::getTexture(const std::string& name) {
 }
 
 void TextGenerator::quit(void) {
-	if(font != NULL) {
+	for(auto& [_, font] : fonts) {
 		TTF_CloseFont(font);
-		console.log("[Text Generator] Unloading font: " + path);
 	}
 
 	for(auto& [_, texture] : textures) {
 		texture.unload();
 	}
+}
+
+bool TextGenerator::loadFont(const json& data) {
+	const std::string& path = data.at("path");
+	const std::string& name = data.at("name");
+	int size = data.at("size");
+
+	TTF_Font *font = TTF_OpenFont(path.c_str(), size);
+
+	if(font == NULL)
+		return false;
+
+	fonts[name] = font;
+
+	return true;
 }
 
 static void from_json(const json& j, SDL_Color &color) {
@@ -92,3 +130,4 @@ static void from_json(const json& j, SDL_Color &color) {
 	color.b = ((color_index & 0x0000ff));
 	color.a = 0xff;
 }
+

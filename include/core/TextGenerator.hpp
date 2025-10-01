@@ -6,6 +6,8 @@
 
 #include <unordered_map>
 
+#include "nlohmann/json_fwd.hpp"
+
 /**
  * Classe que lê um arquivo locale e gera texturas de texto
  * dado strings. Útil para computar as texturas de texto no início
@@ -18,7 +20,7 @@ class TextGenerator {
 		/** 
 		 * Carrega uma fonte dado o seu diretório e seu tamanho.
 		 */
-		bool loadFont(const std::string& filename, int size);
+		bool loadFontData(const std::string& filename);
 
 		/**
 		 * Carrega o arquivo de locale, um arquivo json contendo as strings
@@ -39,9 +41,11 @@ class TextGenerator {
 		void quit(void);
 
 	private:
-		TTF_Font *font;
+		bool loadFont(const nlohmann::json& data);
+
 		std::string path;
 
+		std::unordered_map<std::string, TTF_Font *> fonts;
 		std::unordered_map<std::string, Texture> textures;
 
 };

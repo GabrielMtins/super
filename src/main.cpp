@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 	game->setMinFps(50);
 	game->loadRes("res/res.json");
 
-	game->loadFont("res/PublicPixel.ttf", 8);
+	game->loadFontData("res/locale.json");
 	game->loadLocale("res/locale.json", "pt-br");
 
 	game->setInputKey(InputType::LEFT, SDL_SCANCODE_A);

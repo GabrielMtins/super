@@ -30,13 +30,15 @@ class Game {
 		World * getWorld(void);
 
 		void loadRes(const std::string& filename);
-		void loadFont(const std::string& filename, int size);
+		void loadFontData(const std::string& filename);
 		void loadLocale(const std::string& filename, const std::string& locale_name);
 		void loadWorld(const std::string& filename);
 
 		Texture * getTexture(const std::string& name);
 		Sfx * getSfx(const std::string& name);
 		Music * getMusic(const std::string& name);
+
+		Texture * getTextTexture(const std::string& key);
 
 		const Vec2& getCameraPosition(void) const;
 		void setCameraPosition(const Vec2& camera_position);
