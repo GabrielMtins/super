@@ -72,6 +72,8 @@ class Game {
 		bool checkCollision(const Hitbox& hitbox) const;
 		void setBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
 
+		void addSpriteToRenderList(const Sprite& sprite);
+
 		void setFps(uint32_t fps);
 		void setMinFps(uint32_t fps);
 

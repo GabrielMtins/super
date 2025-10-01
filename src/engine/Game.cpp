@@ -175,6 +175,10 @@ void Game::setBackgroundColor(uint8_t r, uint8_t g, uint8_t b) {
 	bg.a = 0xff;
 }
 
+void Game::addSpriteToRenderList(const Sprite& sprite) {
+	sprite_renderer.addSpriteToRenderList(this, sprite);
+}
+
 void Game::setFps(uint32_t fps) {
 	delay_fps = 1000 / fps;
 }

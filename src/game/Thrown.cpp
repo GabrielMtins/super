@@ -55,6 +55,7 @@ namespace Thrown {
 		entity->sprite.offset.y = 0.0f;
 
 		entity->state = STATE_CARRIED;
+		entity->only_update_when_visible = false;
 	}
 
 	static void collisionInteractionBehavior(Game *game, Entity *entity) {

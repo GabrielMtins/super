@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 
 	game->addEntity(ENTITY_PLAYER);
 	game->addEntity(ENTITY_CAMERA);
-	game->addEntity(ENTITY_LIFEBAR);
+	game->addEntity(ENTITY_HUD);
 	game->addEntity(ENTITY_ITEMBOX);
 
 	for(int i = 0; i < 1; i++) {
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 }
 
 static bool loadObject(Game *game, const nlohmann::json& object) {
-	EntityType type;
+	EntityType type = 0;
 
 	if(object.contains("type")) {
 		std::string str = object.at("type");

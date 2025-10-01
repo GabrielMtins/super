@@ -1,10 +1,10 @@
 #include "game/CustomEntities.hpp"
 #include "game/Constants.hpp"
 
+#include "game/Player.hpp"
 #include "game/Thrown.hpp"
 
 #define EPS 0.01f
-#define MAX_HEALTH 4
 
 namespace Player {
 	static const float max_speed_walking = 40.0f;
@@ -36,7 +36,7 @@ namespace Player {
 
 	enum PlayerFlags {
 		FLAG_RUNNING = 0,
-		FLAG_ONGROUD,
+		FLAG_ONGROUND,
 		FLAG_CANCELJUMP
 	};
 
@@ -81,7 +81,7 @@ namespace Player {
 
 		entity->direction.x = 1.0f;
 
-		entity->health = MAX_HEALTH;
+		entity->health = PLAYER_MAX_HEALTH;
 		entity->damage_cooldown = 1500;
 	}
 
@@ -113,16 +113,16 @@ namespace Player {
 	static void updateTimers(Game *game, Entity *entity) {
 		Tick& last_on_ground_timer = entity->timers[TIMER_LAST_ON_GROUND];
 
-		if(entity->flags[FLAG_ONGROUD]) {
+		if(entity->flags[FLAG_ONGROUND]) {
 			last_on_ground_timer = game->getCurrentTick();
 		}
 	}
 
 	static void updateFlags(Game *game, Entity *entity) {
-		entity->flags[FLAG_ONGROUD] = isOnGround(game, entity);
+		entity->flags[FLAG_ONGROUND] = isOnGround(game, entity);
 		entity->flags[FLAG_RUNNING] = game->getInput(InputType::FIRE);
 
-		if(entity->flags[FLAG_ONGROUD]) {
+		if(entity->flags[FLAG_ONGROUND]) {
 			entity->flags[FLAG_CANCELJUMP] = false;
 		}
 	}
@@ -142,7 +142,7 @@ namespace Player {
 	}
 
 	static void applyPhysics(Game *game, Entity *entity, float dt, const Vec2& wish_dir) {
-		bool is_on_ground = entity->flags[FLAG_ONGROUD];
+		bool is_on_ground = entity->flags[FLAG_ONGROUND];
 		bool has_movement_x = fabsf(wish_dir.x) > EPS;
 
 		entity->velocity += gravity * dt;
@@ -360,7 +360,7 @@ namespace Player {
 
 			switch(other->type) {
 				case ENTITY_HEARTITEM:
-					if(entity->health < MAX_HEALTH) {
+					if(entity->health < PLAYER_MAX_HEALTH) {
 						entity->health++;
 					}
 

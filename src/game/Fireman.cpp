@@ -43,7 +43,7 @@ namespace Fireman {
 		entity->health = 1;
 
 		entity->only_update_when_visible = true;
-		entity->next_state_tick = 0;
+		entity->next_state_tick = game->getCurrentTick() + walk_time;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

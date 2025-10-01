@@ -12,13 +12,13 @@ enum EntityHandlerTypes {
  	ENTITY_THROWN,
  	ENTITY_PLATFORM,
  	ENTITY_CAMERA,
- 	ENTITY_LIFEBAR,
  	ENTITY_BALL,
  	ENTITY_ITEMBOX,
  	ENTITY_HEARTITEM,
  	ENTITY_JUMPER,
  	ENTITY_FIREMAN,
  	ENTITY_ENEMYBULLET,
+ 	ENTITY_HUD,
 	NUM_ENTITY_TYPE
 };
 
@@ -43,8 +43,6 @@ EntityHandler Platform_GetHandler(void);
 
 EntityHandler Camera_GetHandler(void);
 
-EntityHandler Lifebar_GetHandler(void);
-
 EntityHandler Ball_GetHandler(void);
 
 EntityHandler ItemBox_GetHandler(void);
@@ -56,5 +54,7 @@ EntityHandler Jumper_GetHandler(void);
 EntityHandler Fireman_GetHandler(void);
 
 EntityHandler EnemyBullet_GetHandler(void);
+
+EntityHandler Hud_GetHandler(void);
 
 #endif
