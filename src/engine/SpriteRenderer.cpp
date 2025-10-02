@@ -9,7 +9,6 @@ SpriteRenderer::SpriteRenderer(void) {
 
 void SpriteRenderer::reset(void) {
 	num_sprites = 0;
-	num_hud = 0;
 	start_sprite_index = 0;
 }
 
@@ -17,11 +16,9 @@ void SpriteRenderer::addSpriteToRenderList(const Game *game, const Sprite& sprit
 	if(!sprite.isOnCamera(game))
 		return;
 
-	if(!sprite.hud_element && num_sprites < MAX_SPRITES) {
+	if(num_sprites < MAX_SPRITES) {
 		sprites[num_sprites++] = sprite;
-	} else if(sprite.hud_element && num_hud < MAX_SPRITES){
-		hud[num_hud++] = sprite;
-	}
+	} 
 }
 
 void SpriteRenderer::renderSprites(Game *game) {
@@ -40,18 +37,6 @@ void SpriteRenderer::renderSpritesUntilLayer(Game *game, int layer) {
 	while(sprites[start_sprite_index].layer < layer) {
 		sprites[start_sprite_index].render(game);
 		start_sprite_index++;
-	}
-}
-
-void SpriteRenderer::renderHud(Game *game) {
-	std::sort(
-			hud.begin(),
-			hud.begin() + num_hud,
-			spriteComparison
-			);
-
-	for(size_t i = 0; i < num_hud; i++) {
-		hud[i].render(game);
 	}
 }
 
