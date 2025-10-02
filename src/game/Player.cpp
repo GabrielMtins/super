@@ -6,6 +6,8 @@
 
 #define EPS 0.01f
 
+void loadNextScene(Game *game);
+
 namespace Player {
 	static const float max_speed_walking = 40.0f;
 	static const float max_speed_running = 100.0f;
@@ -248,6 +250,10 @@ namespace Player {
 
 		if(game->getInputDown(InputType::FIRE)) {
 			handleFire(game, entity);
+		}
+
+		if(game->getInputDown(InputType::START)) {
+			game->loadScene(loadNextScene);
 		}
 
 		return wish_dir;

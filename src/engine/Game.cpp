@@ -31,6 +31,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	frame_counter = 0;
 	world_render_layer_bg = 0;
 	world_render_layer_fg = 0;
+
+	load_scene_callback = NULL;
 }
 
 void Game::run(void) {
@@ -73,6 +75,10 @@ void Game::loadWorld(const std::string& filename) {
 			filename,
 			this
 			);
+}
+
+void Game::loadScene(LoadSceneCallback load_scene_callback) {
+	this->load_scene_callback = load_scene_callback;
 }
 
 Texture * Game::getTexture(const std::string& name) {
@@ -195,6 +201,10 @@ EntityFoundList Game::findCollision(const Hitbox& hitbox) {
 	return entity_list.findCollision(hitbox);
 }
 
+void Game::clearEntities(void) {
+	entity_list.clearEntities();
+}
+
 bool Game::checkCollision(const Hitbox& hitbox) const {
 	return entity_list.checkCollision(&world, hitbox);
 }
@@ -231,6 +241,13 @@ void Game::quit(void) {
 void Game::loop(void) {
 	uint32_t new_tick;
 	uint32_t delta_tick;
+
+	if(load_scene_callback != NULL) {
+		world.reset();
+		clearEntities();
+		load_scene_callback(this);
+		load_scene_callback = NULL;
+	}
 
 	update();
 	render();

@@ -24,7 +24,7 @@ namespace ItemBox {
 		entity->sprite.flip_y = false;
 		entity->health = 1;
 
-		entity->alt_type = ENTITY_KEYITEM;
+		entity->alt_type = ENTITY_HEARTITEM;
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {

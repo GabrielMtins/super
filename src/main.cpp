@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <istream>
 
 #include "engine/Game.hpp"
 #include "game/CustomEntities.hpp"
@@ -48,6 +49,7 @@
  */
 
 static bool loadObject(Game *game, const nlohmann::json& object);
+void loadNextScene(Game *game);
 
 int main(int argc, char **argv) {
 	Game *game;
@@ -59,7 +61,7 @@ int main(int argc, char **argv) {
 
 	game->init("super", 240, 135, 4);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
-	game->setFps(200);
+	game->setFps(165);
 	game->setMinFps(50);
 	game->loadRes("res/res.json");
 
@@ -88,24 +90,14 @@ int main(int argc, char **argv) {
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
-	game->loadWorld("res/levels/map01.tmj");
-
-	game->addEntity(ENTITY_PLAYER);
-	game->addEntity(ENTITY_CAMERA);
-	game->addEntity(ENTITY_BACKGROUND);
-	game->addEntity(ENTITY_HUD);
-	game->addEntity(ENTITY_ITEMBOX);
-	game->addEntity(ENTITY_DOOR);
-
-	for(int i = 0; i < 2; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
-
-		entity->hitbox.position.x += 16 * i + 80;
-	}
+	game->loadScene(loadNextScene);
 
 	game->run();
 
 	game->quit();
+
+	printf("Game size: %lu KB\n", sizeof(Game) / 1024);
+	printf("Entity size: %lu B\n", sizeof(Entity));
 
 	delete game;
 
@@ -146,4 +138,21 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 	}
 
 	return true;
+}
+
+void loadNextScene(Game *game) {
+	game->loadWorld("res/levels/map01.tmj");
+
+	game->addEntity(ENTITY_PLAYER);
+	game->addEntity(ENTITY_CAMERA);
+	game->addEntity(ENTITY_BACKGROUND);
+	game->addEntity(ENTITY_HUD);
+	game->addEntity(ENTITY_ITEMBOX);
+	game->addEntity(ENTITY_DOOR);
+
+	for(int i = 0; i < 2; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
+
+		entity->hitbox.position.x += 16 * i + 80;
+	}
 }

@@ -15,6 +15,8 @@
 #include <array>
 #include <unordered_map>
 
+using LoadSceneCallback = void (*)(Game *);
+
 class Game {
 	public:
 		enum MouseButton {
@@ -36,6 +38,8 @@ class Game {
 		void loadFontData(const std::string& filename);
 		void loadLocale(const std::string& filename, const std::string& locale_name);
 		void loadWorld(const std::string& filename);
+
+		void loadScene(LoadSceneCallback load_scene_callback);
 
 		Texture * getTexture(const std::string& name);
 		Sfx * getSfx(const std::string& name);
@@ -77,6 +81,8 @@ class Game {
 		EntityFoundList findEntity(EntityType type);
 		EntityFoundList findEntity(EntityType type, const Vec2& position, float radius);
 		EntityFoundList findCollision(const Hitbox& hitbox);
+
+		void clearEntities(void);
 
 		bool checkCollision(const Hitbox& hitbox) const;
 		void setBackgroundColor(uint8_t r, uint8_t g, uint8_t b);
@@ -125,6 +131,8 @@ class Game {
 		float minimum_dt;
 
 		SDL_Color bg;
+
+		LoadSceneCallback load_scene_callback;
 };
 
 #endif

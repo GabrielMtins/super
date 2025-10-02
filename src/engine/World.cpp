@@ -13,10 +13,14 @@
 using json = nlohmann::json;
 
 World::World(void) {
-	width = 0;
-	height = 0;
+	reset();
 	texture = NULL;
 	load_object_callback = NULL;
+}
+
+void World::reset(void) {
+	width = 0;
+	height = 0;
 }
 
 void World::setLoadObjectCallback(LoadObjectCallback callback) {

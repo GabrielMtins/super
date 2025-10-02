@@ -25,6 +25,7 @@ using LoadObjectCallback = bool (*)(Game *, const nlohmann::json&);
 class World {
 	public:
 		World(void);
+		void reset(void);
 		void setLoadObjectCallback(LoadObjectCallback callback);
 		bool load(const Context *context, const std::string& filename, Game *game);
 		TileId getTile(int i, int j, int layer) const;
