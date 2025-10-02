@@ -11,7 +11,6 @@
 #define MAX_ENTITIES 1024
 #define MAX_ENTITY_TYPES 64
 
-#define MAX_INPUT 64
 #define MAX_SPRITES 64
 
 #define MAX_LAYERS 3

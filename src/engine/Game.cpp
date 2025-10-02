@@ -128,8 +128,24 @@ bool Game::getMouseButtonUp(MouseButton mouse_button) const {
 		(old_mouse_state & SDL_BUTTON(mouse_button));
 }
 
+bool Game::openController(int index) {
+	return input.openController(index);
+}
+
+void Game::closeController(void) {
+	input.closeController();
+}
+
+void Game::setInputMode(Input::Mode mode) {
+	input.setMode(mode);
+}
+
 void Game::setInputKey(int input_type, int scancode) {
 	input.setInputKey(input_type, scancode);
+}
+
+void Game::setInputButton(int input_type, int button) {
+	input.setInputButton(input_type, button);
 }
 
 Tick Game::getCurrentTick(void) const {

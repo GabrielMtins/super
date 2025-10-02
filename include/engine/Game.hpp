@@ -57,7 +57,11 @@ class Game {
 		bool getMouseButtonDown(MouseButton mouse_button) const;
 		bool getMouseButtonUp(MouseButton mouse_button) const;
 
+		bool openController(int index);
+		void closeController(void);
+		void setInputMode(Input::Mode mode);
 		void setInputKey(int input_type, int scancode);
+		void setInputButton(int input_type, int button);
 
 		Tick getCurrentTick(void) const;
 

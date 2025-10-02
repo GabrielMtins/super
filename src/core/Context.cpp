@@ -17,7 +17,7 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 	this->window_width = internal_width * 6;
 	this->window_height = internal_height * 6;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		console.error((std::string) "[Context] Failed to initialize SDL2: " + SDL_GetError());
 		console.exit(1);
 	}
