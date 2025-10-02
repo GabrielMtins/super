@@ -73,8 +73,8 @@ void Sprite::render(Game *game) const {
 
 	texture->renderCell(
 			game->getContext(),
-			(int) roundf(render_position.x),
-			(int) roundf(render_position.y),
+			(render_position.x),
+			(render_position.y),
 			cell,
 			flip_x,
 			flip_y,

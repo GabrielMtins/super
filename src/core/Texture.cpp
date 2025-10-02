@@ -81,7 +81,7 @@ void Texture::setCellSize(int cell_width, int cell_height) {
 	num_cells_x = width / cell_width;
 }
 
-void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y) {
+void Texture::renderCell(Context *context, float x, float y, int cell, bool flip_x, bool flip_y) {
 	renderCell(
 			context,
 			x,
@@ -95,16 +95,16 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 			);
 }
 
-void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y, int center_x, int center_y, float angle) {
+void Texture::renderCell(Context *context, float x, float y, int cell, bool flip_x, bool flip_y, float center_x, float center_y, float angle) {
 	SDL_Rect src_rect, dst_rect;
 	SDL_Point center;
 	const SDL_Point *used_center = NULL;
 	const SDL_Rect *used_src_rect = NULL;
 
-	dst_rect.x = x;
-	dst_rect.y = y;
-	dst_rect.w = cell_width;
-	dst_rect.h = cell_height;
+	dst_rect.x = x * context->getScale();
+	dst_rect.y = y * context->getScale();
+	dst_rect.w = cell_width * context->getScale();
+	dst_rect.h = cell_height * context->getScale();
 
 	if(cell >= 0) {
 		src_rect = getCell(cell);
@@ -114,8 +114,8 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 		dst_rect.h = height;
 	}
 
-	center.x = center_x;
-	center.y = center_y;
+	center.x = center_x * context->getScale();
+	center.y = center_y * context->getScale();
 
 	if(center_x >= 0 && center_y >= 0) {
 		used_center = &center;
@@ -132,7 +132,7 @@ void Texture::renderCell(Context *context, int x, int y, int cell, bool flip_x, 
 			);
 }
 
-void Texture::render(Context *context, int x, int y) {
+void Texture::render(Context *context, float x, float y) {
 	renderCell(
 			context,
 			x,

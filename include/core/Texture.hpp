@@ -10,9 +10,9 @@ class Texture {
 		bool generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color);
 		bool generateText(Context *context, TTF_Font *font, const std::string& text, const SDL_Color& color, int wrap_length);
 		void setCellSize(int cell_width, int cell_height);
-		void renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y);
-		void renderCell(Context *context, int x, int y, int cell, bool flip_x, bool flip_y, int center_x, int center_y, float angle);
-		void render(Context *context, int x, int y);
+		void renderCell(Context *context, float x, float y, int cell, bool flip_x, bool flip_y);
+		void renderCell(Context *context, float x, float y, int cell, bool flip_x, bool flip_y, float center_x, float center_y, float angle);
+		void render(Context *context, float x, float y);
 		void unload(void);
 		int getCellWidth(void) const;
 		int getCellHeight(void) const;

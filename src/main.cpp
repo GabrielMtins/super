@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
 	game = new Game();
 
-	game->init("super", 240, 135);
+	game->init("super", 240, 135, 4);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
 	game->setFps(200);
 	game->setMinFps(50);
@@ -73,11 +73,13 @@ int main(int argc, char **argv) {
 	game->setInputKey(InputType::RIGHT, SDL_SCANCODE_D);
 	game->setInputKey(InputType::JUMP, SDL_SCANCODE_K);
 	game->setInputKey(InputType::FIRE, SDL_SCANCODE_J);
+	game->setInputKey(InputType::START, SDL_SCANCODE_RETURN);
 
 	game->setInputButton(InputType::LEFT, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
 	game->setInputButton(InputType::RIGHT, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
 	game->setInputButton(InputType::JUMP, SDL_CONTROLLER_BUTTON_A);
 	game->setInputButton(InputType::FIRE, SDL_CONTROLLER_BUTTON_X);
+	game->setInputButton(InputType::START, SDL_CONTROLLER_BUTTON_START);
 
 	Custom_AddEntityTypes(game);
 

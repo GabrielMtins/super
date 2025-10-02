@@ -10,9 +10,10 @@ Context::Context(void) {
 	mouse_y = 0;
 }
 
-void Context::init(const std::string& title, int internal_width, int internal_height) {
+void Context::init(const std::string& title, int internal_width, int internal_height, int scale) {
 	this->internal_width = internal_width;
 	this->internal_height = internal_height;
+	this->scale = scale;
 
 	this->window_width = internal_width * 6;
 	this->window_height = internal_height * 6;
@@ -77,7 +78,7 @@ void Context::init(const std::string& title, int internal_width, int internal_he
 
 	console.log("[Context] Created window and renderer.");
 
-	SDL_RenderSetLogicalSize(renderer, internal_width, internal_height);
+	SDL_RenderSetLogicalSize(renderer, internal_width * scale, internal_height * scale);
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//window_width = 1920;
@@ -161,4 +162,8 @@ int Context::getMouseX(void) const {
 }
 int Context::getMouseY(void) const {
 	return mouse_y;
+}
+
+int Context::getScale(void) const {
+	return scale;
 }

@@ -14,7 +14,7 @@ class Context {
 	public:
 		Context(void);
 
-		void init(const std::string& title, int internal_width, int internal_height);
+		void init(const std::string& title, int internal_width, int internal_height, int scale);
 		void pollEvents(void);
 		SDL_Renderer * getRenderer(void);
 		bool isRunning(void) const;
@@ -31,6 +31,8 @@ class Context {
 		int getMouseX(void) const;
 		int getMouseY(void) const;
 
+		int getScale(void) const;
+
 	private:
 		SDL_Window *window;
 		SDL_Renderer* renderer;
@@ -38,6 +40,7 @@ class Context {
 		SDL_Event event;
 		bool running;
 		int internal_width, internal_height;
+		int scale;
 		int window_width, window_height;
 
 		int mouse_x, mouse_y;

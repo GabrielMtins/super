@@ -15,6 +15,8 @@ namespace Background {
 		(void) game;
 		(void) entity;
 		(void) dt;
+
+		entity->hitbox.position.x = -game->getCameraPosition().x * 0.8f;
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {

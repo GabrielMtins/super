@@ -6,11 +6,12 @@ Game::Game(void) {
 	current_tick = 0;
 }
 
-void Game::init(const std::string& title, int internal_width, int internal_height) {
+void Game::init(const std::string& title, int internal_width, int internal_height, int scale) {
 	context.init(
 			title,
 			internal_width,
-			internal_height
+			internal_height,
+			scale
 			);
 
 	setBackgroundColor(0xff, 0xff, 0xff);

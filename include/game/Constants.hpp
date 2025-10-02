@@ -12,7 +12,8 @@ namespace InputType {
 		UP,
 		DOWN,
 		JUMP,
-		FIRE
+		FIRE,
+		START
 	};
 };
 

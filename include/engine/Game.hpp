@@ -24,7 +24,7 @@ class Game {
 		};
 
 		Game(void);
-		void init(const std::string& title, int internal_width, int internal_height);
+		void init(const std::string& title, int internal_width, int internal_height, int scale);
 		void run(void);
 		Context * getContext(void);
 		World * getWorld(void);
