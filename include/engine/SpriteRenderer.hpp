@@ -11,6 +11,7 @@ class SpriteRenderer {
 		SpriteRenderer(void);
 		void reset(void);
 		void addSpriteToRenderList(const Game *game, const Sprite& sprite);
+		void sortSprites(void);
 		void renderSprites(Game *game);
 		void renderSpritesUntilLayer(Game *game, int layer);
 

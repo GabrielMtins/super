@@ -11,7 +11,7 @@
 #define MAX_ENTITIES 1024
 #define MAX_ENTITY_TYPES 64
 
-#define MAX_SPRITES 64
+#define MAX_SPRITES 128
 
 #define MAX_LAYERS 3
 #define WORLD_LAYER_BG 0

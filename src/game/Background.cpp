@@ -6,8 +6,8 @@ namespace Background {
 		(void) entity;
 
 		entity->type = ENTITY_BACKGROUND;
+		entity->sprite.layer = RENDERLAYER_BACKGROUND;
 		entity->sprite.setTexture(game->getTexture("background-city"));
-		entity->sprite.layer = -10;
 		entity->sprite.ignore_camera = true;
 	}
 

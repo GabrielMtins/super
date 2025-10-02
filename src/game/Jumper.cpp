@@ -30,6 +30,7 @@ namespace Jumper {
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 		entity->sprite.flip_y = false;
 		entity->sprite.offset = Vec2(2.0f, 4.0f);
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
 
 		entity->sprite.setTexture(game->getTexture("walker"));
 		entity->velocity.x = 0.0f;

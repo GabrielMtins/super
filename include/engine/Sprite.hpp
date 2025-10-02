@@ -19,7 +19,6 @@ struct Sprite {
 	Vec2 offset;
 	int cell;
 	Texture *texture;
-	bool hud_element;
 	bool ignore_camera;
 	bool visible;
 

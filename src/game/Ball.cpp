@@ -13,6 +13,8 @@ namespace Ball {
 		entity->sprite.cell = sprite_cell;
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
+
 		entity->hitbox.layer |= COLLISIONLAYER_STATIC;
 		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
 

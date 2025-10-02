@@ -28,6 +28,8 @@ void Game::init(const std::string& title, int internal_width, int internal_heigh
 	old_mouse_state = 0;
 
 	frame_counter = 0;
+	world_render_layer_bg = 0;
+	world_render_layer_fg = 0;
 }
 
 void Game::run(void) {
@@ -42,6 +44,14 @@ Context * Game::getContext(void) {
 
 World * Game::getWorld(void) {
 	return &world;
+}
+
+void Game::setWorldRenderLayerBg(int layer) {
+	world_render_layer_bg = layer;
+}
+
+void Game::setWorldRenderLayerFg(int layer) {
+	world_render_layer_fg = layer;
 }
 
 void Game::loadRes(const std::string& filename) {
@@ -221,27 +231,8 @@ void Game::loop(void) {
 	uint32_t new_tick;
 	uint32_t delta_tick;
 
-	context.pollEvents();
-	input.update(current_tick);
-	updateMouseState();
-
-	entity_list.update(this, dt);
-
-	context.renderClear(bg.r, bg.g, bg.b, bg.a);
-
-	for(int i = WORLD_LAYER_BG; i < WORLD_LAYER_FG; i++) {
-		world.render(this, i);
-	}
-
-	entity_list.setSpriteRenderList(this, &sprite_renderer);
-	sprite_renderer.renderSprites(this);
-
-	world.render(this, WORLD_LAYER_FG);
-
-	sprite_renderer.renderHud(this);
-	sprite_renderer.reset();
-
-	context.renderPresent();
+	update();
+	render();
 
 	new_tick = SDL_GetTicks();
 
@@ -262,6 +253,36 @@ void Game::loop(void) {
 	}
 
 	frame_counter++;
+}
+
+void Game::update(void) {
+	context.pollEvents();
+	input.update(current_tick);
+	updateMouseState();
+
+	entity_list.update(this, dt);
+}
+
+void Game::render(void) {
+	context.renderClear(bg.r, bg.g, bg.b, bg.a);
+	entity_list.setSpriteRenderList(this, &sprite_renderer);
+	sprite_renderer.sortSprites();
+
+	sprite_renderer.renderSpritesUntilLayer(this, world_render_layer_bg);
+
+	for(int i = WORLD_LAYER_BG; i < WORLD_LAYER_FG; i++) {
+		world.render(this, i);
+	}
+
+	sprite_renderer.renderSpritesUntilLayer(this, world_render_layer_fg);
+
+	world.render(this, WORLD_LAYER_FG);
+
+	sprite_renderer.renderSpritesUntilLayer(this, 9999);
+
+	sprite_renderer.reset();
+
+	context.renderPresent();
 }
 
 void Game::updateMouseState(void) {

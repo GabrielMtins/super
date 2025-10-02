@@ -21,6 +21,14 @@ void SpriteRenderer::addSpriteToRenderList(const Game *game, const Sprite& sprit
 	} 
 }
 
+void SpriteRenderer::sortSprites(void) {
+	std::sort(
+			sprites.begin(),
+			sprites.begin() + num_sprites,
+			spriteComparison
+			);
+}
+
 void SpriteRenderer::renderSprites(Game *game) {
 	std::sort(
 			sprites.begin(),
@@ -34,7 +42,7 @@ void SpriteRenderer::renderSprites(Game *game) {
 }
 
 void SpriteRenderer::renderSpritesUntilLayer(Game *game, int layer) {
-	while(sprites[start_sprite_index].layer < layer) {
+	while(sprites[start_sprite_index].layer < layer && start_sprite_index < num_sprites) {
 		sprites[start_sprite_index].render(game);
 		start_sprite_index++;
 	}

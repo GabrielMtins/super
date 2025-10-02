@@ -11,6 +11,7 @@ namespace Door {
 		entity->sprite.setTexture(game->getTexture("door"));
 		entity->sprite.cell = 0;
 		entity->hitbox.size = Vec2(8.0f, 24.0f);
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
 
 		entity->hitbox.position = Vec2(32.0f, 32.0f);
 

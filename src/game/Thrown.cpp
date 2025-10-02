@@ -50,7 +50,7 @@ namespace Thrown {
 		entity->hitbox.layer = 0;
 	
 		entity->sprite.flip_y = true;
-		entity->sprite.hud_element = true;
+		entity->sprite.layer = RENDERLAYER_THROWN;
 	
 		entity->sprite.offset.y = 0.0f;
 

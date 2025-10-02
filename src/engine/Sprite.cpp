@@ -7,7 +7,6 @@ Sprite::Sprite(void) {
 	texture = NULL;
 	flip_x = false;
 	flip_y = false;
-	hud_element = false;
 	ignore_camera = false;
 	layer = 0;
 	angle = 0.0f;

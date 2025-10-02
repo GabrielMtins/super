@@ -34,6 +34,15 @@ enum CollisionLayers {
 	COLLISIONLAYER_ENEMY_NOTOUCH = 1 << 5,
 };
 
+enum RenderLayers {
+	RENDERLAYER_BACKGROUND = 0,
+	RENDERLAYER_WORLD_BACKGROUND = 10,
+	RENDERLAYER_ENTITIES = 11,
+	RENDERLAYER_WORLD_FOREGROUND = 20,
+	RENDERLAYER_THROWN = 21,
+	RENDERLAYER_HUD = 22,
+};
+
 void Custom_AddEntityTypes(Game *game);
 
 EntityHandler Player_GetHandler(void);

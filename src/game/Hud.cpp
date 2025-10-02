@@ -20,7 +20,7 @@ namespace Hud {
 
 		sprite.setTexture(game->getTexture("8x8-items"));
 		sprite.position = Vec2(2.0f, 2.0f);
-		sprite.hud_element = true;
+		sprite.layer = RENDERLAYER_HUD;
 		sprite.ignore_camera = true;
 
 		for(int i = 1; i < player->health; i++) {
@@ -46,7 +46,7 @@ namespace Hud {
 
 		Sprite sprite;
 
-		sprite.hud_element = true;
+		sprite.layer = RENDERLAYER_HUD;
 		sprite.ignore_camera = true;
 
 		sprite.setTexture(game->getTexture("8x8-items"));

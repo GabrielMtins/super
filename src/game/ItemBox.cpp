@@ -12,6 +12,7 @@ namespace ItemBox {
 		entity->sprite.setTexture(game->getTexture("8x8-items"));
 		entity->sprite.flip_y = false;
 		entity->sprite.cell = sprite_cell;
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 

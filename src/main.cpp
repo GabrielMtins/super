@@ -66,6 +66,9 @@ int main(int argc, char **argv) {
 	game->loadFontData("res/locale.json");
 	game->loadLocale("res/locale.json", "pt-br");
 
+	game->setWorldRenderLayerBg(RENDERLAYER_WORLD_BACKGROUND);
+	game->setWorldRenderLayerFg(RENDERLAYER_WORLD_FOREGROUND);
+
 	game->setInputKey(InputType::LEFT, SDL_SCANCODE_A);
 	game->setInputKey(InputType::RIGHT, SDL_SCANCODE_D);
 	game->setInputKey(InputType::JUMP, SDL_SCANCODE_K);
@@ -87,13 +90,13 @@ int main(int argc, char **argv) {
 
 	game->addEntity(ENTITY_PLAYER);
 	game->addEntity(ENTITY_CAMERA);
+	game->addEntity(ENTITY_BACKGROUND);
 	game->addEntity(ENTITY_HUD);
 	game->addEntity(ENTITY_ITEMBOX);
 	game->addEntity(ENTITY_DOOR);
-	game->addEntity(ENTITY_BACKGROUND);
 
-	for(int i = 0; i < 1; i++) {
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_JUMPER));
+	for(int i = 0; i < 2; i++) {
+		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_WALKER));
 
 		entity->hitbox.position.x += 16 * i + 80;
 	}

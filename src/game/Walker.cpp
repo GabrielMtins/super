@@ -22,6 +22,7 @@ namespace Walker {
 		entity->hitbox.layer |= COLLISIONLAYER_THROWABLE;
 		entity->hitbox.mask |= COLLISIONLAYER_STATIC;
 		entity->hitbox.mask |= COLLISIONLAYER_ENEMY;
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
 
 		entity->hitbox.size = Vec2(8.0f, 8.0f);
 		entity->sprite.flip_y = false;

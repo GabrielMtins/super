@@ -8,12 +8,12 @@
 
 namespace Player {
 	static const float max_speed_walking = 40.0f;
-	static const float max_speed_running = 120.0f;
-	static const float acceleration = 500.0f;
-	static const float air_acceleration = 250.0f;
+	static const float max_speed_running = 100.0f;
+	static const float acceleration = 400.0f;
+	static const float air_acceleration = 200.0f;
 	static const float friction = 200.0f;
 	static const float min_speed = 4.0f;
-	static const float jump_velocity = -150.0f;
+	static const float jump_velocity = -120.0f;
 
 	static const int start_jump_timer_id = 1;
 
@@ -65,6 +65,7 @@ namespace Player {
 		(void) entity;
 
 		entity->sprite.setTexture(game->getTexture("character"));
+		entity->sprite.layer = RENDERLAYER_ENTITIES;
 
 		entity->hitbox.size = Vec2(8.0f, 16.0f);
 		entity->sprite.offset = Vec2(4.0f, 0.0f);
@@ -341,7 +342,7 @@ namespace Player {
 			entity->hitbox.mask = 0;
 			entity->hitbox.layer = 0;
 			entity->state = STATE_DEAD;
-			entity->sprite.hud_element = true;
+			entity->sprite.layer = RENDERLAYER_THROWN;
 			entity->blink_when_damaged = false;
 			entity->velocity.x = 0.0f;
 			entity->velocity.y = -200.0f;

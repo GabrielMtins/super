@@ -29,6 +29,9 @@ class Game {
 		Context * getContext(void);
 		World * getWorld(void);
 
+		void setWorldRenderLayerBg(int layer);
+		void setWorldRenderLayerFg(int layer);
+
 		void loadRes(const std::string& filename);
 		void loadFontData(const std::string& filename);
 		void loadLocale(const std::string& filename, const std::string& locale_name);
@@ -89,6 +92,8 @@ class Game {
 
 	private:
 		void loop(void);
+		void update(void);
+		void render(void);
 		void updateKeyState(void);
 		void updateMouseState(void);
 
@@ -98,6 +103,10 @@ class Game {
 		SpriteRenderer sprite_renderer;
 		TextGenerator text_generator;
 		World world;
+
+		int world_render_layer_bg;
+		int world_render_layer_fg;
+
 		Input input;
 
 		Vec2 camera_position;
