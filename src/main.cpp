@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
 	game->addEntity(ENTITY_HUD);
 	game->addEntity(ENTITY_ITEMBOX);
 	game->addEntity(ENTITY_DOOR);
+	game->addEntity(ENTITY_BACKGROUND);
 
 	for(int i = 0; i < 1; i++) {
 		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_JUMPER));

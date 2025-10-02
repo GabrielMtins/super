@@ -21,6 +21,7 @@ enum EntityHandlerTypes {
  	ENTITY_HUD,
  	ENTITY_KEYITEM,
  	ENTITY_DOOR,
+ 	ENTITY_BACKGROUND,
 	NUM_ENTITY_TYPE
 };
 
@@ -62,5 +63,7 @@ EntityHandler Hud_GetHandler(void);
 EntityHandler KeyItem_GetHandler(void);
 
 EntityHandler Door_GetHandler(void);
+
+EntityHandler Background_GetHandler(void);
 
 #endif

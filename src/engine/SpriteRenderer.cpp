@@ -10,6 +10,7 @@ SpriteRenderer::SpriteRenderer(void) {
 void SpriteRenderer::reset(void) {
 	num_sprites = 0;
 	num_hud = 0;
+	start_sprite_index = 0;
 }
 
 void SpriteRenderer::addSpriteToRenderList(const Game *game, const Sprite& sprite) {
@@ -32,6 +33,13 @@ void SpriteRenderer::renderSprites(Game *game) {
 
 	for(size_t i = 0; i < num_sprites; i++) {
 		sprites[i].render(game);
+	}
+}
+
+void SpriteRenderer::renderSpritesUntilLayer(Game *game, int layer) {
+	while(sprites[start_sprite_index].layer < layer) {
+		sprites[start_sprite_index].render(game);
+		start_sprite_index++;
 	}
 }
 

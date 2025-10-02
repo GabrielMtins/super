@@ -12,6 +12,7 @@ class SpriteRenderer {
 		void reset(void);
 		void addSpriteToRenderList(const Game *game, const Sprite& sprite);
 		void renderSprites(Game *game);
+		void renderSpritesUntilLayer(Game *game, int layer);
 		void renderHud(Game *game);
 
 	private:
@@ -21,6 +22,8 @@ class SpriteRenderer {
 		std::array<Sprite, MAX_SPRITES> hud;
 		size_t num_sprites;
 		size_t num_hud;
+
+		size_t start_sprite_index;
 };
 
 #endif
