@@ -62,8 +62,6 @@ namespace KeyItem {
 
 		switch(entity->state) {
 			case STATE_FLOAT:
-				entity->velocity.y -= copysignf(200.0f, entity->velocity.y) * dt;
-				printf("entity->velocity.y = %f\n", entity->velocity.y);
 				break;
 
 			case STATE_START:

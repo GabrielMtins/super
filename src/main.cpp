@@ -5,6 +5,7 @@
 #include "game/CustomEntities.hpp"
 #include "core/TextGenerator.hpp"
 #include "game/Constants.hpp"
+#include "game/Scenes.hpp"
 
 #include "nlohmann/json.hpp"
 
@@ -59,7 +60,7 @@ int main(int argc, char **argv) {
 
 	game = new Game();
 
-	game->init("super", 240, 135, 4);
+	game->init("super", 240, 135, 8);
 	game->setBackgroundColor(0xe0, 0xf8, 0xd0);
 	game->setFps(165);
 	game->setMinFps(50);
@@ -90,7 +91,8 @@ int main(int argc, char **argv) {
 	world->setTexture(game->getTexture("world_tilemap"));
 	world->setCollisionLayer(COLLISIONLAYER_STATIC);
 
-	game->loadScene(loadNextScene);
+	//game->loadScene(loadNextScene);
+	game->loadScene(Scene::levelScreen);
 
 	game->run();
 
@@ -109,13 +111,13 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 
 	if(object.contains("type")) {
 		std::string str = object.at("type");
-		printf("%s\n", str.c_str());
-
-		Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_PLATFORM));
-		entity->hitbox.position.x = object.at("x");
-		entity->hitbox.position.y = object.at("y");
-		entity->hitbox.size.x = object.at("width");
-		entity->hitbox.size.y = object.at("height");
+		if(!str.empty()) {
+			Entity *entity = game->getEntityFromId(game->addEntity(ENTITY_PLATFORM));
+			entity->hitbox.position.x = object.at("x");
+			entity->hitbox.position.y = object.at("y");
+			entity->hitbox.size.x = object.at("width");
+			entity->hitbox.size.y = object.at("height");
+		}
 	}
 
 	if(!object.contains("gid"))
@@ -123,7 +125,15 @@ static bool loadObject(Game *game, const nlohmann::json& object) {
 
 	switch((int) object["gid"]) {
 		case 257:
-			return false;
+			type = ENTITY_WALKER;
+			break;
+
+		case 258:
+			type = ENTITY_ITEMBOX;
+			break;
+
+		case 259:
+			type = ENTITY_BALL;
 			break;
 	}
 

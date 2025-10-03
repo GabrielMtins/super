@@ -17,6 +17,7 @@ namespace Player {
 	static const float min_speed = 4.0f;
 	static const float jump_velocity = -120.0f;
 
+	static const float terminal_velocity = 1000.0f;
 	static const int start_jump_timer_id = 1;
 
 	static const Tick coyote_time = 100;
@@ -78,7 +79,6 @@ namespace Player {
 		entity->hitbox.mask |= COLLISIONLAYER_THROWABLE;
 
 		//entity->hitbox.position.x += 128.0f;
-		entity->hitbox.position.y -= 128.0f;
 
 		entity->state = STATE_MOVEMENT;
 		entity->blink_when_damaged = true;
@@ -412,6 +412,10 @@ namespace Player {
 		updateTimers(game, entity);
 		handleItemCollision(game, entity);
 		handleEnemyNoTouch(game, entity);
+
+		if(entity->velocity.y > terminal_velocity) {
+			entity->velocity.y = terminal_velocity;
+		}
 
 		switch(entity->state) {
 			case STATE_MOVEMENT:

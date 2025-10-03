@@ -16,4 +16,5 @@ void Custom_AddEntityTypes(Game *game) {
 	game->addHandlerToType(ENTITY_KEYITEM, KeyItem_GetHandler());
 	game->addHandlerToType(ENTITY_DOOR, Door_GetHandler());
 	game->addHandlerToType(ENTITY_BACKGROUND, Background_GetHandler());
+	game->addHandlerToType(ENTITY_MENUHANDLER, MenuHandler_GetHandler());
 }

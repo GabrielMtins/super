@@ -6,9 +6,28 @@ namespace Background {
 		(void) entity;
 
 		entity->type = ENTITY_BACKGROUND;
-		entity->sprite.layer = RENDERLAYER_BACKGROUND;
-		entity->sprite.setTexture(game->getTexture("background-city"));
-		entity->sprite.ignore_camera = true;
+	}
+
+	static void renderBackground(Game *game, const std::string& name, float velocity) {
+		Sprite background;
+
+		background.setTexture(game->getTexture(name));
+		background.ignore_camera = true;
+		background.layer = RENDERLAYER_BACKGROUND;
+		background.position.x = -game->getCameraPosition().x * velocity;
+
+		for(int i = 0; i < 2; i++) {
+			while(background.position.x + game->getScreenDimensions().x < 0.0f) {
+				background.position.x += game->getScreenDimensions().x;
+			}
+			game->addSpriteToRenderList(background);
+
+			background.position.x += game->getScreenDimensions().x;
+		}
+	}
+
+	static void backgroundCity(Game *game) {
+		renderBackground(game, "background-city", 0.5f);
 	}
 
 	static void update(Game *game, Entity *entity, float dt) {
@@ -16,7 +35,7 @@ namespace Background {
 		(void) entity;
 		(void) dt;
 
-		entity->hitbox.position.x = -game->getCameraPosition().x * 0.8f;
+		backgroundCity(game);
 	}
 
 	static void collision(Game *game, Entity *entity, Entity *other) {
