@@ -21,7 +21,7 @@ class Input {
 		/**
 		 * Atualiza os inputs dado o tick atual.
 		 */
-		void update(Tick tick);
+		void update(void);
 
 		/**
 		 * Define uma tecla (SDL_Scancode) para o input.
@@ -37,19 +37,19 @@ class Input {
 		/**
 		 * Retorna verdadeiro caso a tecla esteja pressionada.
 		 */
-		bool getInput(int key) const;
+		bool getInput(int input) const;
 
 		/**
 		 * Retorna verdadeiro caso a tecla tenha sido pressionada
 		 * naquele tick.
 		 */
-		bool getInputDown(int key, Tick tick) const;
+		bool getInputDown(int input) const;
 
 		/**
 		 * Retorna verdadeiro caso a tecla tenha sido solta
 		 * naquele tick.
 		 */
-		bool getInputUp(int key, Tick tick) const;
+		bool getInputUp(int input) const;
 
 		/**
 		 * Se conecta com o controle dado o index.
@@ -67,17 +67,15 @@ class Input {
 		void setMode(Mode mode);
 	
 	private:
-		void updateKeyState(Tick tick);
-		void updateButtonState(Tick tick);
+		void updateKeyState(void);
+		void updateButtonState(void);
 		bool valid(int input) const;
 
 		std::array<int, MAX_INPUT_TYPES> input_to_key;
 		std::array<int, MAX_INPUT_TYPES> input_to_button;
 
 		std::bitset<MAX_INPUT_TYPES> pressed;
-
-		std::array<Tick, MAX_INPUT_TYPES> input_tick_down;
-		std::array<Tick, MAX_INPUT_TYPES> input_tick_up;
+		std::bitset<MAX_INPUT_TYPES> old_pressed;
 
 		SDL_GameController *controller;
 		Mode mode;

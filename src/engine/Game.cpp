@@ -126,11 +126,11 @@ bool Game::getInput(int input_type) const {
 }
 
 bool Game::getInputDown(int input_type) const {
-	return input.getInputDown(input_type, current_tick);
+	return input.getInputDown(input_type);
 }
 
 bool Game::getInputUp(int input_type) const {
-	return input.getInputUp(input_type, current_tick);
+	return input.getInputUp(input_type);
 }
 
 bool Game::getMouseButton(MouseButton mouse_button) const {
@@ -275,7 +275,7 @@ void Game::loop(void) {
 
 void Game::update(void) {
 	context.pollEvents();
-	input.update(current_tick);
+	input.update();
 	updateMouseState();
 
 	entity_list.update(this, dt);
